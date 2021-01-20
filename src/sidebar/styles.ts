@@ -62,8 +62,8 @@ css(`.${cls.sidebarRow}:hover`, {
 
 css(
   [
-    `.${cls.sidebarRowFocused}.${cls.sidebarRow}`,
-    `.${cls.sidebarRowChildrenContainerFocused} .${cls.sidebarRow}`,
+    `.${cls.sidebar} .${cls.sidebarRowFocused}.${cls.sidebarRow}`,
+    `.${cls.sidebar} .${cls.sidebarRowChildrenContainerFocused} .${cls.sidebarRow}`,
   ],
   {
     opacity: "1",
