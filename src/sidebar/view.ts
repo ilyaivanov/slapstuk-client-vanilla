@@ -1,5 +1,5 @@
 import { cls, dom, ClassName } from "../infra";
-import { DivDefinition } from "../infra/dom";
+import { DivDefinition, EventsDefinition } from "../infra/dom";
 import * as controller from "./controller";
 
 export const viewRow = (item: Item, level: number): DivDefinition[] => {
@@ -25,12 +25,9 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
             click: () => controller.toggleSidebarVisibilityForItem(item),
           },
         },
-        {
-          className: cls.sidebarRowCircle,
-          on: {
-            click: () => controller.focusOnItem(item),
-          },
-        },
+        arrow(cls.sidebarRowCircle, {
+          click: () => controller.onCirclePressed(item),
+        }),
         {
           className: cls.sidebarRowText,
           children: item.title,
@@ -52,14 +49,6 @@ export const viewChildren = (itemId: string, level: number): DivDefinition => {
       : [],
   };
 };
-export const viewUnfocusButton = (): DivDefinition => ({
-  className: cls.unfocusButton,
-  type: "button",
-  children: "unfocus",
-  on: {
-    click: controller.unfocus,
-  },
-});
 
 export const rowId = (itemId: string) => `row-${itemId}`;
 
@@ -68,6 +57,11 @@ export const findRowById = (itemId: string) => dom.findById(rowId(itemId));
 export const findToggleButton = (itemId: string) => {
   return dom.findFirstByClass(cls.sidebarRowExpandButton, findRowById(itemId));
 };
+
+export const findFocusButton = (row: HTMLElement) => {
+  return dom.findFirstByClass(cls.sidebarRowCircle, row);
+};
+
 export const findItemChildrenContainer = (itemId: string): HTMLElement => {
   return findRowById(itemId).nextSibling as HTMLElement;
 };
@@ -88,18 +82,31 @@ const chevron = (className?: ClassName | ClassName[]): DivDefinition =>
     "0 0 256 512",
     className
   );
+
+export const arrow = (
+  className?: ClassName | ClassName[],
+  on?: EventsDefinition
+): DivDefinition =>
+  svgPath(
+    "M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z",
+    "0 0 448 512",
+    className,
+    on
+  );
 //UTILS
 
 const svgPath = (
   path: string,
   viewBox: string,
-  className?: ClassName | ClassName[]
+  className?: ClassName | ClassName[],
+  on?: dom.EventsDefinition
 ): DivDefinition => ({
   type: "svg",
   className,
   attributes: {
     viewBox,
   },
+  on,
   children: {
     type: "path",
     attributes: {

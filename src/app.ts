@@ -1,6 +1,7 @@
 import { cls, dom } from "./infra";
 import * as sidebarController from "./sidebar/controller";
-import * as playground from "./playground/collapsingItems";
+// import * as playground from "./playground/collapsingItems";
+// import * as playground from "./playground/iconTransition";
 
 export const init = () => {
   const root = dom.findById("root");

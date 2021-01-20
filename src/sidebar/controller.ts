@@ -2,23 +2,20 @@ import { cls, dom, anim } from "../infra";
 import { startItems } from "../items";
 import * as view from "./view";
 import * as style from "./styles";
+
 // MODEL
 export const items: Items = startItems;
 
 //Event handler (controller)
 export const init = (sidebarParent: HTMLElement) => {
-  const root = dom.findById("root");
   const itemsToRender = items.HOME.children.map((id) =>
     view.viewRow(items[id], 0)
   );
   sidebarParent.appendChild(
-    dom.fragment([
-      view.viewUnfocusButton(),
-      {
-        className: cls.sidebarFocusContainer,
-        children: itemsToRender.flat(),
-      },
-    ])
+    dom.div({
+      className: cls.sidebarFocusContainer,
+      children: itemsToRender.flat(),
+    })
   );
 };
 
@@ -58,7 +55,13 @@ const removeItemChildren = (itemId: string) => {
   );
 };
 
-export const focusOnItem = (item: Item) => {
+export const onCirclePressed = (item: Item) => {
+  const row = view.findRowById(item.id);
+  if (row.classList.contains(cls.sidebarRowFocused)) unfocus();
+  else focusOnItem(item);
+};
+
+const focusOnItem = (item: Item) => {
   dom.removeClassFromElement(cls.sidebarRowFocused);
   dom.removeClassFromElement(cls.sidebarRowChildrenContainerFocused);
 
@@ -82,12 +85,12 @@ export const focusOnItem = (item: Item) => {
   );
 };
 
-export const unfocus = () => {
+const unfocus = () => {
   dom.removeClassFromElement(cls.sidebarFocusContainerFocused);
   const row = dom.findFirstByClass(cls.sidebarRowFocused);
   row.classList.remove(cls.sidebarRowFocused);
   const itemId = row.id.substr(4);
-  console.log(view.findItemChildrenContainer(itemId))
+  console.log(view.findItemChildrenContainer(itemId));
   if (
     !items[itemId].isOpenFromSidebar &&
     !dom.isEmpty(view.findItemChildrenContainer(itemId))

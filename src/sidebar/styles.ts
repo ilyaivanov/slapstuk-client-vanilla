@@ -117,7 +117,16 @@ cssClass(cls.hidden, {
 
 cssClass(cls.sidebarRowText, {
   padding: "4px",
+  transition: `
+  font-size ${expandCollapseTransitionTime}ms ease-out, 
+  margin-bottom ${expandCollapseTransitionTime}ms ease-out, 
+  padding ${expandCollapseTransitionTime}ms ease-out`,
   whiteSpace: "nowrap",
+});
+css(`.${cls.sidebarRowFocused} .${cls.sidebarRowText}`, {
+  fontSize: "22px",
+  padding: "0 4px",
+  marginBottom: "2px",
 });
 
 cssClass(cls.sidebarRowChildrenContainer, {
@@ -131,13 +140,33 @@ cssClass(cls.sidebarRowCircle, {
   height: "6px",
   borderRadius: "3px",
   backgroundColor: "rgb(184, 184, 184)",
+  color: "rgb(184, 184, 184)",
   margin: "0 2px",
-  transition: "transform 200ms ease-out, background-color 200ms ease-out",
+  transition: "transform 200ms ease-out, color 200ms ease-out",
+});
+
+css(`.${cls.sidebarRowFocused} .${cls.sidebarRowCircle}`, {
+  backgroundColor: "rgba(0,0,0,0)",
+  minWidth: "10px",
+  width: "10px",
+  height: "20px",
+  margin: "0",
 });
 
 css(`.${cls.sidebarRowCircle}:hover`, {
   transform: "scale(1.6)",
   backgroundColor: "white",
+  color: "white",
+});
+
+css(`.${cls.sidebarRowCircle}:active`, {
+  transform: "scale(1.2)",
+});
+
+css(`.${cls.sidebarRowFocused} .${cls.sidebarRowCircle}:hover`, {
+  color: "white",
+  backgroundColor: "rgba(0,0,0,0)",
+  transform: "scale(1.2)",
 });
 
 cssClass(cls.unfocusButton, {

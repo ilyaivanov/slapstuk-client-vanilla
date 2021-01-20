@@ -1,5 +1,9 @@
 import { ClassName } from "./keys";
 
+export type EventsDefinition = {
+  [key in string]: (e: MouseEvent) => void;
+}
+
 export type DivDefinition = {
   id?: string;
   className?: ClassName | (ClassName | undefined)[];
@@ -7,9 +11,7 @@ export type DivDefinition = {
   style?: Partial<CSSStyleDeclaration>;
 
   attributes?: any;
-  on?: {
-    [key in string]: (e: MouseEvent) => void;
-  };
+  on?: EventsDefinition;
 
   type?: "button" | "div" | "svg" | "path" | "img";
   onClick?: (e: Event) => void;
@@ -149,3 +151,5 @@ export const addClassToElement = (
   }
   return element;
 };
+
+// export const setChildren = (node: HTMLElement, )
