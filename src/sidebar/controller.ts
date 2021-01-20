@@ -61,7 +61,8 @@ export const onCirclePressed = (item: Item) => {
 };
 
 const focusOnItem = (item: Item) => {
-  dom.removeClassFromElement(cls.sidebarRowFocused);
+  // I'm not removing cls.sidebarRowFocused from DOM 
+  // because I'm traversing and closing all non-closed items on unfocus
   dom.removeClassFromElement(cls.sidebarRowChildrenContainerFocused);
 
   const row = view.findRowById(item.id);
@@ -86,15 +87,16 @@ const focusOnItem = (item: Item) => {
 
 const unfocus = () => {
   dom.removeClassFromElement(cls.sidebarFocusContainerFocused);
-  const row = dom.findFirstByClass(cls.sidebarRowFocused);
-  row.classList.remove(cls.sidebarRowFocused);
-  const itemId = row.id.substr(4);
-  console.log(view.findItemChildrenContainer(itemId));
-  if (
-    !items[itemId].isOpenFromSidebar &&
-    !dom.isEmpty(view.findItemChildrenContainer(itemId))
-  ) {
-    removeItemChildren(itemId);
-  }
+  dom.findAllByClass(cls.sidebarRowFocused).forEach((row) => {
+    row.classList.remove(cls.sidebarRowFocused);
+    const itemId = row.id.substr(4);
+    if (
+      !items[itemId].isOpenFromSidebar &&
+      !dom.isEmpty(view.findItemChildrenContainer(itemId))
+    ) {
+      removeItemChildren(itemId);
+    }
+  });
+
   view.setFocusContainerNegativeMargins(0, 0);
 };
