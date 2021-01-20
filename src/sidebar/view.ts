@@ -13,6 +13,9 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
       attributes: {
         ["data-level"]: level + "",
       },
+      on: {
+        mousedown: () => controller.onItemMouseDown(item.id),
+      },
       children: [
         {
           className: cls.sidebarRowExpandButtonContainer,
@@ -31,6 +34,13 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
         {
           className: cls.sidebarRowText,
           children: item.title,
+        },
+        {
+          className: cls.sidebarRemoveItemButton,
+          children: "x",
+          on: {
+            click: () => controller.removeItem(item),
+          },
         },
       ],
     },
@@ -51,6 +61,7 @@ export const viewChildren = (itemId: string, level: number): DivDefinition => {
 };
 
 export const rowId = (itemId: string) => `row-${itemId}`;
+export const itemIdFromRow = (row: HTMLElement) => row.id.substr(4);
 
 export const findRowById = (itemId: string) => dom.findById(rowId(itemId));
 
@@ -72,7 +83,6 @@ export const setFocusContainerNegativeMargins = (left: number, top: number) => {
   s.style.marginTop = -top + "px";
 };
 
-
 export const parseLevelFromRow = (row: HTMLElement): number => {
   const levelStr = row.getAttribute("data-level");
   if (!levelStr) {
@@ -81,7 +91,6 @@ export const parseLevelFromRow = (row: HTMLElement): number => {
   }
   return parseInt(levelStr);
 };
-
 
 //ICONS
 const chevron = (className?: ClassName | ClassName[]): DivDefinition =>

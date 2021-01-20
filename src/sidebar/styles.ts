@@ -2,6 +2,8 @@ import { cls, css, cssClass, styles, cssText } from "../infra";
 
 export const headerHeight = 56;
 export const expandCollapseTransitionTime = 200;
+export const focusTransitionTime = 200;
+export const fadeOutTime = 400;
 
 cssClass(cls.page, {
   display: "grid",
@@ -12,6 +14,14 @@ cssClass(cls.page, {
     "sidebar gallery"`,
   height: "100vh",
   backgroundColor: "#181818",
+});
+
+css(`.${cls.page}.${cls.pageDuringDrag}`, {
+  cursor: "grabbing",
+});
+
+cssClass(cls.noUserSelect, {
+  userSelect: "none",
 });
 
 cssClass(cls.header, {
@@ -29,7 +39,7 @@ cssClass(cls.sidebar, {
 });
 
 cssClass(cls.sidebarFocusContainer, {
-  transition: "margin 200ms ease-out",
+  transition: `margin ${focusTransitionTime}ms ease-out`,
   position: "relative",
 });
 
@@ -53,11 +63,37 @@ cssClass(cls.sidebarRow, {
   flexDirection: "row",
   alignItems: "center",
   cursor: "pointer",
-  transition: "opacity 200ms ease-out",
+  transition: `opacity ${focusTransitionTime}ms ease-out, 
+  height ${focusTransitionTime}ms ease-out`,
+  overflow: "hidden",
+  position: "relative",
+});
+
+cssClass(cls.sidebarRemoveItemButton, {
+  position: "absolute",
+  right: "0",
+  top: "0",
+  bottom: "0",
+  width: "30px",
+  color: "black",
+  opacity: "0",
+});
+
+css(`.${cls.sidebarRemoveItemButton}:hover`, {
+  color: "#f44336",
+});
+
+css(`.${cls.sidebarRow}:hover .${cls.sidebarRemoveItemButton}`, {
+  opacity: "1",
 });
 
 css(`.${cls.sidebarRow}:hover`, {
-  backgroundColor: "#333336",
+  backgroundColor: "rgba(255,255,255, 0.08)",
+});
+
+css(`.${cls.pageDuringDrag} .${cls.sidebarRow}`, {
+  cursor: "inherit",
+  backgroundColor: "inherit",
 });
 
 css(
@@ -90,6 +126,10 @@ cssClass(cls.sidebarRowChildrenContainer, {
   overflow: "hidden",
 });
 
+cssClass(cls.sidebarRowChildrenContainerHighlighted, {
+  backgroundColor: "rgba(255,255,255,0.04)",
+});
+
 //Row chevron
 cssClass(cls.sidebarRowExpandButton, {
   width: "14px",
@@ -119,6 +159,7 @@ css(
   [
     `.${cls.sidebarFocusContainerFocused} .${cls.sidebarRow}`,
     `.${cls.sidebarRowFocused} .${cls.sidebarRowExpandButtonContainer}`,
+    `.${cls.pageDuringDrag} .${cls.sidebarRowExpandButtonContainer}`,
   ],
   {
     opacity: "0",
@@ -167,6 +208,13 @@ cssClass(cls.unfocusButton, {
   zIndex: "200",
 });
 
+//DND
+cssClass(cls.dragAvatar, {
+  pointerEvents: "none",
+  backgroundColor: "rgba(255,255,255,0.08)",
+  overflow: "hidden",
+});
+
 //Common
 cssClass(cls.rotated, {
   ...styles.rotate(90),
@@ -174,5 +222,30 @@ cssClass(cls.rotated, {
 
 cssClass(cls.hidden, {
   visibility: "hidden",
+  pointerEvents: "none",
+});
+
+cssClass(cls.deleted, {
+  animation: `fadeOut ${fadeOutTime}ms ease-out forwards`,
+});
+
+cssText(`
+@keyframes fadeOut {
+  0%{
+    opacity: 1
+  }
+  30%{
+    background-color: #af4448;
+  }
+  100%{
+    background-color: #af4448;
+    margin-left: -80px;
+    opacity: 0;
+  }
+}
+`);
+
+cssClass(cls.transparent, {
+  opacity: "0",
   pointerEvents: "none",
 });

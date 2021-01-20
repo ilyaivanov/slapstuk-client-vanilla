@@ -1,4 +1,4 @@
-import { cls, dom, anim } from "../infra";
+import { cls, dom, anim, styles } from "../infra";
 import { startItems } from "../items";
 import * as view from "./view";
 import * as style from "./styles";
@@ -16,8 +16,32 @@ export const init = (sidebarParent: HTMLElement) => {
       children: itemsToRender.flat(),
     })
   );
+  //Add removeEventListener when I will have multiple pages (Login included)
+  document.addEventListener("mousemove", onMouseMove);
+  document.addEventListener("mouseup", onMouseUp);
+};
+var currentRemoveTimeouts: { [itemId: string]: NodeJS.Timeout } = {};
+export const removeItem = (item: Item) => {
+  if (currentRemoveTimeouts[item.id]) return;
+
+  const parent = Object.values(items).find(
+    (v) => v.children.indexOf(item.id) >= 0
+  );
+  if (parent) {
+    parent.children = parent.children.filter((id) => id != item.id);
+    const cont = view.findItemChildrenContainer(item.id);
+    const row = view.findRowById(item.id);
+    cont.classList.add(cls.deleted);
+    row.classList.add(cls.deleted);
+    currentRemoveTimeouts[item.id] = setTimeout(() => {
+      anim.collapseElementHeight(row, style.focusTransitionTime, true);
+      anim.collapseElementHeight(cont, style.focusTransitionTime, true);
+      delete currentRemoveTimeouts[item.id];
+    }, style.fadeOutTime);
+  }
 };
 
+//Items expand\collapse
 export const toggleSidebarVisibilityForItem = (item: Item) => {
   const level = view.parseLevelFromRow(view.findRowById(item.id));
 
@@ -54,6 +78,7 @@ const removeItemChildren = (itemId: string) => {
   );
 };
 
+//Focus management
 export const onCirclePressed = (item: Item) => {
   const row = view.findRowById(item.id);
   if (row.classList.contains(cls.sidebarRowFocused)) unfocus();
@@ -61,7 +86,7 @@ export const onCirclePressed = (item: Item) => {
 };
 
 const focusOnItem = (item: Item) => {
-  // I'm not removing cls.sidebarRowFocused from DOM 
+  // I'm not removing cls.sidebarRowFocused from DOM
   // because I'm traversing and closing all non-closed items on unfocus
   dom.removeClassFromElement(cls.sidebarRowChildrenContainerFocused);
 
@@ -89,7 +114,7 @@ const unfocus = () => {
   dom.removeClassFromElement(cls.sidebarFocusContainerFocused);
   dom.findAllByClass(cls.sidebarRowFocused).forEach((row) => {
     row.classList.remove(cls.sidebarRowFocused);
-    const itemId = row.id.substr(4);
+    const itemId = view.itemIdFromRow(row);
     if (
       !items[itemId].isOpenFromSidebar &&
       !dom.isEmpty(view.findItemChildrenContainer(itemId))
@@ -100,3 +125,153 @@ const unfocus = () => {
 
   view.setFocusContainerNegativeMargins(0, 0);
 };
+
+//DND
+let itemIdMouseDownOn: string | undefined;
+let distanceTraveledWithMouseDown = 0;
+let isDragging = false;
+let dragAvatar: HTMLElement | undefined;
+let dragDestination: HTMLElement | undefined;
+let dragAvatarX = 0;
+let dragAvatarY = 0;
+
+let targetItemId = "";
+let destinationType: Destination | undefined;
+type Destination = "inside" | "after" | "before";
+
+export const onItemMouseDown = (itemId: string) => {
+  dom.addClassToElement(cls.sidebar, cls.noUserSelect);
+  distanceTraveledWithMouseDown = 0;
+  itemIdMouseDownOn = itemId;
+};
+
+const onMouseMove = (e: MouseEvent) => {
+  if (itemIdMouseDownOn) {
+    distanceTraveledWithMouseDown += Math.sqrt(
+      e.movementX * e.movementX + e.movementY * e.movementY
+    );
+    if (distanceTraveledWithMouseDown > 3 && !isDragging) {
+      startDrag(itemIdMouseDownOn);
+    } else if (isDragging && dragAvatar && dragDestination) {
+      onMouseMoveDuringDrag(dragAvatar, dragDestination, e);
+    }
+  }
+};
+
+const startDrag = (itemId: string) => {
+  dom.addClassToElement(cls.page, cls.pageDuringDrag);
+  view
+    .findItemChildrenContainer(itemId)
+    .classList.add(cls.sidebarRowChildrenContainerHighlighted);
+  const originalRow = view.findRowById(itemId);
+  const row = originalRow.cloneNode(true);
+  originalRow.classList.add(cls.transparent);
+  var rect = originalRow.getBoundingClientRect();
+  dragAvatar = dom.div({
+    className: cls.dragAvatar,
+    style: {
+      ...styles.absoluteTopLeft(rect.top, rect.left),
+      width: rect.width + "px",
+      height: rect.height + "px",
+      zIndex: "200",
+    },
+  });
+  dragDestination = dom.div({
+    id: "drag-destination",
+    style: {
+      backgroundColor: "#03a9f4",
+      position: "absolute",
+      height: "4px",
+    },
+  });
+  dragAvatar.appendChild(row);
+  dom.findById("root").appendChild(dragAvatar);
+  dom.findById("root").appendChild(dragDestination);
+  dragAvatarX = rect.left;
+  dragAvatarY = rect.top;
+  isDragging = true;
+};
+
+const onMouseMoveDuringDrag = (
+  dragAvatar: HTMLElement,
+  dragDestination: HTMLElement,
+  e: MouseEvent
+) => {
+  dragAvatarX += e.movementX;
+  dragAvatarY += e.movementY;
+  dragAvatar.style.setProperty("left", dragAvatarX + "px");
+  dragAvatar.style.setProperty("top", dragAvatarY + "px");
+  const potentialRowUnder = document
+    .elementsFromPoint(e.clientX, e.clientY)
+    .filter((x) => x.classList.contains(cls.sidebarRow));
+
+  if (potentialRowUnder.length > 0) {
+    const rowUnder = potentialRowUnder[0] as HTMLElement;
+    targetItemId = view.itemIdFromRow(rowUnder);
+    const rect = rowUnder.getBoundingClientRect();
+    const isOnTheSecondHalf = e.clientY >= rect.top + rect.height / 2;
+    if (isOnTheSecondHalf) {
+      destinationType = "after";
+      dragDestination.style.top = rect.bottom - 2 + "px";
+    } else {
+      destinationType = "before";
+      dragDestination.style.top = rect.top - 2 + "px";
+    }
+    const iconsWidth = 20;
+    const elementLeft = parseInt(rowUnder.style.paddingLeft) + iconsWidth;
+    const isInside = e.clientX > elementLeft + 14 && isOnTheSecondHalf;
+    const left = isInside ? elementLeft + 14 : elementLeft;
+    if (isInside) destinationType = "inside";
+    dragDestination.style.left = left + "px";
+
+    dragDestination.style.width = rect.width - left + "px";
+  } else {
+    dragDestination.style.width = "0px";
+  }
+  document.elementsFromPoint;
+};
+
+const onMouseUp = () => {
+  if (itemIdMouseDownOn && isDragging) {
+    if (targetItemId) {
+      anim.collapseElementHeight(view.findRowById(itemIdMouseDownOn), style.focusTransitionTime, true);
+      anim.collapseElementHeight(view.findItemChildrenContainer(itemIdMouseDownOn), style.focusTransitionTime, true);
+      console.log(
+        `Dropping ${destinationType} for ${items[targetItemId].title}`
+      );
+    }
+
+    var originalRow = view.findRowById(itemIdMouseDownOn);
+    view
+      .findItemChildrenContainer(itemIdMouseDownOn)
+      .classList.remove(cls.sidebarRowChildrenContainerHighlighted);
+    originalRow.classList.remove(cls.transparent);
+    dom.findFirstByClass(cls.dragAvatar).remove();
+    dom.findById("drag-destination").remove();
+    dom.removeClassFromElement(cls.page, cls.pageDuringDrag);
+  }
+  dragAvatar = undefined;
+  dragDestination = undefined;
+  isDragging = false;
+  itemIdMouseDownOn = undefined;
+  targetItemId = "";
+  destinationType = undefined;
+};
+
+const removeFromParent = (itemId: string) => {
+  const parent = Object.values(items).find(
+    (v) => v.children.indexOf(itemId) >= 0
+  );
+  if (parent) parent.children = parent.children.filter((id) => id != itemId);
+};
+
+const insertAsFirstChild = () => {
+
+}
+
+const insertBefore = () => {
+  
+}
+const insertAfter = () => {
+  
+}
