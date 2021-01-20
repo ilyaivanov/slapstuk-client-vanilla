@@ -70,6 +70,12 @@ export const div = (divDefinition: DivDefinition): HTMLElement => {
   return elem as HTMLElement;
 };
 
+export const fragment = (nodes: DivDefinition[]) => {
+  const fragment = document.createDocumentFragment();
+  nodes.forEach((node) => fragment.appendChild(div(node)));
+  return fragment;
+};
+
 export const findFirstByClass = (
   className: ClassName,
   container: HTMLElement = document.body
@@ -118,8 +124,28 @@ export const query = (selector: string): Element => {
   return elem;
 };
 
-export const fragment = (nodes: Element[]) => {
-  const fragment = document.createDocumentFragment();
-  nodes.forEach((node) => fragment.appendChild(node));
-  return fragment;
+export const isEmpty = (node: HTMLElement) => node.childNodes.length === 0;
+
+//removes elementClass if classToRemove is not set
+export const removeClassFromElement = (
+  elementClass: ClassName,
+  classToRemove?: ClassName
+): Element | null => {
+  const element = maybeFindFirstByClass(elementClass);
+  if (element) {
+    const clsToRemove = classToRemove || elementClass;
+    element.classList.remove(clsToRemove);
+  }
+  return element;
+};
+
+export const addClassToElement = (
+  elementClass: ClassName,
+  classToAdd: ClassName
+): Element | null => {
+  const element = maybeFindFirstByClass(elementClass);
+  if (element) {
+    element.classList.add(classToAdd);
+  }
+  return element;
 };

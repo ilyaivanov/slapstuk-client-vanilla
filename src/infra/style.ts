@@ -47,4 +47,9 @@ export const styles = {
     top: top + "px",
     right: right + "px",
   }),
+  absoluteTopLeft: (top: number, left: number) => ({
+    position: "absolute",
+    top: top + "px",
+    left: left + "px",
+  }),
 };
