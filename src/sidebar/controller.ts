@@ -6,7 +6,6 @@ import * as style from "./styles";
 // MODEL
 export const items: Items = startItems;
 
-//Event handler (controller)
 export const init = (sidebarParent: HTMLElement) => {
   const itemsToRender = items.HOME.children.map((id) =>
     view.viewRow(items[id], 0)
@@ -79,7 +78,7 @@ const focusOnItem = (item: Item) => {
   view
     .findItemChildrenContainer(item.id)
     .classList.add(cls.sidebarRowChildrenContainerFocused);
-  setFocusContainerNegativeMargins(
+  view.setFocusContainerNegativeMargins(
     parseInt(row.style.paddingLeft),
     row.offsetTop
   );
@@ -97,11 +96,5 @@ const unfocus = () => {
   ) {
     removeItemChildren(itemId);
   }
-  setFocusContainerNegativeMargins(0, 0);
-};
-
-const setFocusContainerNegativeMargins = (left: number, top: number) => {
-  const s = dom.findFirstByClass(cls.sidebarFocusContainer);
-  s.style.marginLeft = -left + "px";
-  s.style.marginTop = -top + "px";
+  view.setFocusContainerNegativeMargins(0, 0);
 };

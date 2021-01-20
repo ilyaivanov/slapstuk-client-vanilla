@@ -66,6 +66,13 @@ export const findItemChildrenContainer = (itemId: string): HTMLElement => {
   return findRowById(itemId).nextSibling as HTMLElement;
 };
 
+export const setFocusContainerNegativeMargins = (left: number, top: number) => {
+  const s = dom.findFirstByClass(cls.sidebarFocusContainer);
+  s.style.marginLeft = -left + "px";
+  s.style.marginTop = -top + "px";
+};
+
+
 export const parseLevelFromRow = (row: HTMLElement): number => {
   const levelStr = row.getAttribute("data-level");
   if (!levelStr) {
@@ -74,6 +81,7 @@ export const parseLevelFromRow = (row: HTMLElement): number => {
   }
   return parseInt(levelStr);
 };
+
 
 //ICONS
 const chevron = (className?: ClassName | ClassName[]): DivDefinition =>

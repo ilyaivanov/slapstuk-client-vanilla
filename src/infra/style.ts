@@ -52,4 +52,7 @@ export const styles = {
     top: top + "px",
     left: left + "px",
   }),
+  rotate: (deg: number) => ({
+    transform: `rotateZ(${deg}deg)`,
+  }),
 };

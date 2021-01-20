@@ -3,7 +3,6 @@ import { cls, css, cssClass, styles, cssText } from "../infra";
 export const headerHeight = 56;
 export const expandCollapseTransitionTime = 200;
 
-//STYLES (goes into view)
 cssClass(cls.page, {
   display: "grid",
   gridTemplateColumns: "auto 1fr",
@@ -56,34 +55,11 @@ cssClass(cls.sidebarRow, {
   cursor: "pointer",
   transition: "opacity 200ms ease-out",
 });
+
 css(`.${cls.sidebarRow}:hover`, {
   backgroundColor: "#333336",
 });
 
-cssClass(cls.sidebarRowExpandButton, {
-  width: "14px",
-  height: "14px",
-  color: "rgb(184, 184, 184)",
-  transition: `transform ${expandCollapseTransitionTime}ms ease-out, 
-                 opacity ${expandCollapseTransitionTime}ms ease-out`,
-  opacity: "0",
-});
-
-cssClass(cls.sidebarRowExpandButtonContainer, {
-  padding: "2px",
-  color: "gray",
-  ...styles.flexCenter,
-});
-css(
-  [
-    `.${cls.sidebarFocusContainerFocused} .${cls.sidebarRow}`,
-    `.${cls.sidebarRowFocused} .${cls.sidebarRowExpandButtonContainer}`,
-  ],
-  {
-    opacity: "0",
-    pointerEvents: "none",
-  }
-);
 css(
   [
     `.${cls.sidebarRowFocused}.${cls.sidebarRow}`,
@@ -94,26 +70,6 @@ css(
     pointerEvents: "auto",
   }
 );
-
-css(
-  `.${cls.sidebarRowExpandButtonContainer}:hover > .${cls.sidebarRowExpandButton}`,
-  {
-    color: "white",
-  }
-);
-
-css(`.${cls.sidebar}:hover .${cls.sidebarRowExpandButton}`, {
-  opacity: "1",
-});
-
-cssClass(cls.rotated, {
-  transform: "rotateZ(90deg)",
-});
-
-cssClass(cls.hidden, {
-  visibility: "hidden",
-  pointerEvents: "none",
-});
 
 cssClass(cls.sidebarRowText, {
   padding: "4px",
@@ -134,6 +90,43 @@ cssClass(cls.sidebarRowChildrenContainer, {
   overflow: "hidden",
 });
 
+//Row chevron
+cssClass(cls.sidebarRowExpandButton, {
+  width: "14px",
+  height: "14px",
+  color: "rgb(184, 184, 184)",
+  transition: `transform ${expandCollapseTransitionTime}ms ease-out, 
+                 opacity ${expandCollapseTransitionTime}ms ease-out`,
+  opacity: "0",
+});
+
+css(`.${cls.sidebar}:hover .${cls.sidebarRowExpandButton}`, {
+  opacity: "1",
+});
+
+cssClass(cls.sidebarRowExpandButtonContainer, {
+  padding: "2px",
+  color: "gray",
+  ...styles.flexCenter,
+});
+css(
+  `.${cls.sidebarRowExpandButtonContainer}:hover > .${cls.sidebarRowExpandButton}`,
+  {
+    color: "white",
+  }
+);
+css(
+  [
+    `.${cls.sidebarFocusContainerFocused} .${cls.sidebarRow}`,
+    `.${cls.sidebarRowFocused} .${cls.sidebarRowExpandButtonContainer}`,
+  ],
+  {
+    opacity: "0",
+    pointerEvents: "none",
+  }
+);
+
+//Row Circle
 cssClass(cls.sidebarRowCircle, {
   minWidth: "6px",
   width: "6px",
@@ -172,4 +165,14 @@ css(`.${cls.sidebarRowFocused} .${cls.sidebarRowCircle}:hover`, {
 cssClass(cls.unfocusButton, {
   ...styles.absoluteTopRight(5, 5),
   zIndex: "200",
+});
+
+//Common
+cssClass(cls.rotated, {
+  ...styles.rotate(90),
+});
+
+cssClass(cls.hidden, {
+  visibility: "hidden",
+  pointerEvents: "none",
 });
