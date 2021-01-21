@@ -2,9 +2,11 @@ import { cls, dom, anim, styles } from "../infra";
 import { startItems } from "../items";
 import * as view from "./view";
 import * as style from "./styles";
+import * as galleryController from '../gallery/controller';
 
 // MODEL
 export const items: Items = startItems;
+export let selectedItemId = 'HOME';
 
 export const init = (sidebarParent: HTMLElement) => {
   const itemsToRender = items.HOME.children.map((id) =>
@@ -41,6 +43,13 @@ export const removeItem = (item: Item) => {
   }
 };
 
+export const selectItem = (itemId: string) => {
+  selectedItemId = itemId;
+  dom.removeClassFromElement(cls.sidebarRowSelected);
+  view.findRowById(itemId).classList.add(cls.sidebarRowSelected);
+  galleryController.renderItems(items[itemId].children.map(id => items[id]))
+};
+
 //Items expand\collapse
 export const toggleSidebarVisibilityForItem = (item: Item) => {
   const level = view.parseLevelFromRow(view.findRowById(item.id));
@@ -49,7 +58,6 @@ export const toggleSidebarVisibilityForItem = (item: Item) => {
 
   const button = view.findToggleButton(item.id);
 
-  console.log(item.children);
   if (item.isOpenFromSidebar) {
     button.classList.add(cls.rotated);
     showItemChildren(item, level);
@@ -248,7 +256,6 @@ const onMouseUp = () => {
       );
       removeFromParent(itemIdMouseDownOn);
       const onAnimationsDone = () => {
-        console.log("onAnimationsDone");
         dom.removeClassFromElement(cls.sidebar, cls.sidebarHideChevrons);
       };
       insertItemToLocation(

@@ -3,6 +3,7 @@ export { cssClass, css, styles, cssText } from "./style";
 export { div, findFirstByClass, findById, fragment } from "./dom";
 export * as dom from "./dom";
 export * as anim from "./animations";
+export * as colors from "./colors";
 import * as dom from "./dom";
 
 //@ts-ignore

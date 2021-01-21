@@ -6,7 +6,12 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
   return [
     {
       id: rowId(item.id),
-      className: cls.sidebarRow,
+      className: [
+        cls.sidebarRow,
+        item.id === controller.selectedItemId
+          ? cls.sidebarRowSelected
+          : cls.none,
+      ],
       style: {
         paddingLeft: level * 14 + "px",
       },
@@ -15,6 +20,7 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
       },
       on: {
         mousedown: () => controller.onItemMouseDown(item.id),
+        click: () => controller.selectItem(item.id),
       },
       children: [
         {
@@ -25,11 +31,17 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
             item.children.length == 0 ? cls.hidden : cls.none,
           ]),
           on: {
-            click: () => controller.toggleSidebarVisibilityForItem(item),
+            click: (e) => {
+              e.stopPropagation();
+              controller.toggleSidebarVisibilityForItem(item);
+            },
           },
         },
         arrow(cls.sidebarRowCircle, {
-          click: () => controller.onCirclePressed(item),
+          click: (e) => {
+            e.stopPropagation();
+            controller.onCirclePressed(item);
+          },
         }),
         {
           className: cls.sidebarRowText,
@@ -39,7 +51,10 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
           className: cls.sidebarRemoveItemButton,
           children: "x",
           on: {
-            click: () => controller.removeItem(item),
+            click: (e) => {
+              e.stopPropagation();
+              controller.removeItem(item);
+            },
           },
         },
       ],

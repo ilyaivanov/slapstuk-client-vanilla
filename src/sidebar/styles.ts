@@ -1,9 +1,14 @@
-import { cls, css, cssClass, styles, cssText } from "../infra";
+import { cls, css, cssClass, styles, cssText, colors } from "../infra";
 
 export const headerHeight = 56;
 export const expandCollapseTransitionTime = 300;
 export const focusTransitionTime = 200;
 export const fadeOutTime = 400;
+
+cssText(`
+body{
+  overflow: hidden;
+}`);
 
 cssClass(cls.page, {
   display: "grid",
@@ -12,8 +17,8 @@ cssClass(cls.page, {
   gridTemplateAreas: `
     "header header"
     "sidebar gallery"`,
+  backgroundColor: colors.gallery,
   height: "100vh",
-  backgroundColor: "#181818",
 });
 
 css(`.${cls.page}.${cls.grabbing}`, {
@@ -26,16 +31,22 @@ cssClass(cls.noUserSelect, {
 
 cssClass(cls.header, {
   height: `${headerHeight}px`,
-  backgroundColor: "#232325",
+  backgroundColor: colors.menu,
   gridArea: "header",
+  zIndex: "200",
 });
 
 cssClass(cls.sidebar, {
   position: "relative",
   gridArea: "sidebar",
-  backgroundColor: "#232325",
   overflowY: "overlay",
+  backgroundColor: colors.menu,
+  zIndex: "200",
   width: "300px",
+});
+
+cssClass(cls.gallery, {
+  gridArea: "gallery",
 });
 
 cssClass(cls.sidebarFocusContainer, {
@@ -43,18 +54,7 @@ cssClass(cls.sidebarFocusContainer, {
   position: "relative",
 });
 
-cssText(`
-  .${cls.sidebar}::-webkit-scrollbar {
-    width: 0;
-  }
-  
-  .${cls.sidebar}::-webkit-scrollbar-thumb {
-    background-color: rgba(63, 63, 97, 0.8);
-  }
-  
-  .${cls.sidebar}:hover::-webkit-scrollbar {
-    width: 8px;
-  }`);
+cssText(styles.cssTextForScrollBar(cls.sidebar, { width: 8 }));
 
 cssClass(cls.sidebarRow, {
   marginLeft: "2px",
@@ -89,6 +89,10 @@ css(`.${cls.sidebarRow}:hover .${cls.sidebarRemoveItemButton}`, {
 
 css(`.${cls.sidebarRow}:hover`, {
   backgroundColor: "rgba(255,255,255, 0.08)",
+});
+
+css(`.${cls.sidebar} .${cls.sidebarRowSelected}`, {
+  backgroundColor: colors.selectedRow,
 });
 
 css(`.${cls.grabbing} .${cls.sidebarRow}`, {

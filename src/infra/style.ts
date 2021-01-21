@@ -1,3 +1,4 @@
+import { colors } from ".";
 import { ClassName } from "./keys";
 
 const s = document.createElement("style");
@@ -42,6 +43,13 @@ export const styles = {
     justifyContent: "center",
     alignItems: "center",
   },
+  overlay: {
+    position: "absolute",
+    top: "0",
+    left: "0",
+    right: "0",
+    bottom: "0",
+  },
   absoluteTopRight: (top: number, right: number) => ({
     position: "absolute",
     top: top + "px",
@@ -55,4 +63,23 @@ export const styles = {
   rotate: (deg: number) => ({
     transform: `rotateZ(${deg}deg)`,
   }),
+
+  cssTextForScrollBar: (
+    className: ClassName,
+    { width, height }: { width?: number; height?: number }
+  ) =>
+    `
+  .${className}::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+  
+  .${className}::-webkit-scrollbar-thumb {
+    background-color: ${colors.scrollBar};
+  }
+  
+  .${className}:hover::-webkit-scrollbar {
+    ${width ? "width: " + width + "px" : ""}
+    ${height ? "height: " + height + "px" : ""}
+  }`,
 };

@@ -11,6 +11,7 @@ export const cls = {
   sidebarFocusContainer: "sidebar-focus-container",
   sidebarFocusContainerFocused: "sidebar-focus-container-focused",
   sidebarRow: "sidebar-row",
+  sidebarRowSelected: "sidebar-row-selected",
   sidebarRowFocused: "sidebar-row-focused",
   sidebarRowChildrenContainer: "sidebar-row-children-container",
   sidebarRowChildrenContainerHighlighted:
@@ -26,6 +27,15 @@ export const cls = {
   unfocusButton: "unfocus-button",
 
   dragAvatar: "drag-avatar",
+
+  //gallery
+  gallery: "gallery",
+  galleryContent: "gallery-content",
+  card: "card",
+  cardImage: "card-image",
+  cardText: "card-text",
+  galleryEndSpace: "gallery-end-space",
+
   //utils
   noUserSelect: "no-user-select",
   rotated: "rotated",

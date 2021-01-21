@@ -95,9 +95,9 @@ export const findFirstByClass = (
 export const maybeFindFirstByClass = (
   className: ClassName,
   container: HTMLElement = document.body
-): Element | null => {
+): HTMLElement | null => {
   const elem = container.getElementsByClassName(className);
-  return elem.item(0);
+  return elem.item(0) as HTMLElement;
 };
 
 export const findAllByClass = (
