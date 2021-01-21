@@ -49,6 +49,7 @@ export const toggleSidebarVisibilityForItem = (item: Item) => {
 
   const button = view.findToggleButton(item.id);
 
+  console.log(item.children);
   if (item.isOpenFromSidebar) {
     button.classList.add(cls.rotated);
     showItemChildren(item, level);
@@ -159,7 +160,8 @@ const onMouseMove = (e: MouseEvent) => {
 };
 
 const startDrag = (itemId: string) => {
-  dom.addClassToElement(cls.page, cls.pageDuringDrag);
+  dom.addClassToElement(cls.page, cls.grabbing);
+  dom.addClassToElement(cls.sidebar, cls.sidebarHideChevrons);
   view
     .findItemChildrenContainer(itemId)
     .classList.add(cls.sidebarRowChildrenContainerHighlighted);
@@ -233,22 +235,38 @@ const onMouseMoveDuringDrag = (
 
 const onMouseUp = () => {
   if (itemIdMouseDownOn && isDragging) {
-    if (targetItemId) {
-      anim.collapseElementHeight(view.findRowById(itemIdMouseDownOn), style.focusTransitionTime, true);
-      anim.collapseElementHeight(view.findItemChildrenContainer(itemIdMouseDownOn), style.focusTransitionTime, true);
-      console.log(
-        `Dropping ${destinationType} for ${items[targetItemId].title}`
+    if (targetItemId && destinationType) {
+      anim.collapseElementHeight(
+        view.findRowById(itemIdMouseDownOn),
+        style.expandCollapseTransitionTime,
+        true
+      );
+      anim.collapseElementHeight(
+        view.findItemChildrenContainer(itemIdMouseDownOn),
+        style.expandCollapseTransitionTime,
+        true
+      );
+      removeFromParent(itemIdMouseDownOn);
+      const onAnimationsDone = () => {
+        console.log("onAnimationsDone");
+        dom.removeClassFromElement(cls.sidebar, cls.sidebarHideChevrons);
+      };
+      insertItemToLocation(
+        itemIdMouseDownOn,
+        targetItemId,
+        destinationType,
+        onAnimationsDone
       );
     }
 
     var originalRow = view.findRowById(itemIdMouseDownOn);
+    dom.removeClassFromElement(cls.page, cls.grabbing);
     view
       .findItemChildrenContainer(itemIdMouseDownOn)
       .classList.remove(cls.sidebarRowChildrenContainerHighlighted);
     originalRow.classList.remove(cls.transparent);
     dom.findFirstByClass(cls.dragAvatar).remove();
     dom.findById("drag-destination").remove();
-    dom.removeClassFromElement(cls.page, cls.pageDuringDrag);
   }
   dragAvatar = undefined;
   dragDestination = undefined;
@@ -259,19 +277,96 @@ const onMouseUp = () => {
 };
 
 const removeFromParent = (itemId: string) => {
-  const parent = Object.values(items).find(
-    (v) => v.children.indexOf(itemId) >= 0
-  );
+  const parent = findParentItem(itemId);
   if (parent) parent.children = parent.children.filter((id) => id != itemId);
 };
 
-const insertAsFirstChild = () => {
+const findParentItem = (itemId: string) =>
+  Object.values(items).find((v) => v.children.indexOf(itemId) >= 0);
 
-}
+const insertItemToLocation = (
+  itemBeingDraggedId: string,
+  targetItemId: string,
+  placement: Destination,
+  onAnimationsDone: () => void
+) => {
+  const itemBeingDragged = items[itemBeingDraggedId];
+  const targetItem = items[targetItemId];
+  const targetItemRow = view.findRowById(targetItemId);
+  const targetItemLevel = view.parseLevelFromRow(targetItemRow);
 
-const insertBefore = () => {
-  
-}
-const insertAfter = () => {
-  
-}
+  if (placement == "inside") {
+    targetItem.children = [itemBeingDraggedId].concat(targetItem.children);
+
+    if (targetItem.isOpenFromSidebar) {
+      const childNodes = view.viewRow(itemBeingDragged, targetItemLevel + 1);
+      targetItemRow.after(dom.fragment(childNodes));
+    }
+    setTimeout(onAnimationsDone, style.expandCollapseTransitionTime);
+  } else if (placement == "before") {
+    const parent = findParentItem(targetItemId);
+
+    if (parent) {
+      parent.children = parent.children
+        .map((id) => (id == targetItemId ? [itemBeingDraggedId, id] : id))
+        .flat();
+    } else {
+      throw new Error(
+        `No parent found for item id ${targetItemId} (title: ${targetItem.title})`
+      );
+    }
+    const childNodes = view
+      .viewRow(itemBeingDragged, targetItemLevel)
+      .map(dom.div);
+    childNodes.forEach((n) => {
+      targetItemRow.insertAdjacentElement("beforebegin", n);
+    });
+    const [row, childContainer] = childNodes;
+    anim.expandElementHeight(
+      row,
+      style.expandCollapseTransitionTime,
+      row.clientHeight,
+      onAnimationsDone
+    );
+    anim.expandElementHeight(
+      childContainer,
+      style.expandCollapseTransitionTime,
+      childContainer.scrollHeight,
+      onAnimationsDone
+    );
+  } else if (placement == "after") {
+    const parent = findParentItem(targetItemId);
+    if (parent) {
+      parent.children = parent.children
+        .map((id) => (id == targetItemId ? [id, itemBeingDraggedId] : id))
+        .flat();
+    } else {
+      throw new Error(
+        `No parent found for item id ${targetItemId} (title: ${targetItem.title})`
+      );
+    }
+    const childNodes = view
+      .viewRow(itemBeingDragged, targetItemLevel)
+      .reverse()
+      .map(dom.div);
+    const targetItemChildContainer = view.findItemChildrenContainer(
+      targetItemId
+    );
+    childNodes.forEach((n) =>
+      targetItemChildContainer.insertAdjacentElement("afterend", n)
+    );
+    const [row, childContainer] = childNodes;
+    anim.expandElementHeight(
+      row,
+      style.expandCollapseTransitionTime,
+      row.clientHeight,
+      onAnimationsDone
+    );
+    anim.expandElementHeight(
+      childContainer,
+      style.expandCollapseTransitionTime,
+      childContainer.scrollHeight,
+      onAnimationsDone
+    );
+  }
+};

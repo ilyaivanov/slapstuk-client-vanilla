@@ -6,7 +6,7 @@ export const ids = {
 export const cls = {
   page: "page",
   sidebar: "sidebar",
-  pageDuringDrag: "page-during-drag",
+  grabbing: "page-grabbing",
   header: "header",
   sidebarFocusContainer: "sidebar-focus-container",
   sidebarFocusContainerFocused: "sidebar-focus-container-focused",
@@ -21,10 +21,11 @@ export const cls = {
   sidebarRowExpandButton: "sidebar-row-expand-button",
   sidebarRowExpandButtonContainer: "sidebar-row-expand-button-container",
   sidebarRemoveItemButton: "remove-item-button",
+  sidebarHideChevrons: "sidebar-hide-chevrons",
+
   unfocusButton: "unfocus-button",
 
   dragAvatar: "drag-avatar",
-
   //utils
   noUserSelect: "no-user-select",
   rotated: "rotated",

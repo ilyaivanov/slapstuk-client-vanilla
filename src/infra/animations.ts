@@ -49,6 +49,24 @@ export const openElementHeight = (
     node.setAttribute("data-timeout", timeout + "");
   }, 20);
 };
+export const expandElementHeight = (
+  node: HTMLElement,
+  time: number,
+  targetHeight: number,
+  onDone: () => void,
+) => {
+  node.style.height = "0px";
+  clearPendingTimeouts(node);
+  setTimeout(() => {
+    node.style.height = targetHeight + "px";
+    var timeout = setTimeout(() => {
+      node.style.removeProperty("height");
+      node.removeAttribute("data-timeout");
+      onDone();
+    }, time);
+    node.setAttribute("data-timeout", timeout + "");
+  }, 20);
+};
 
 const clearPendingTimeouts = (node: HTMLElement): boolean => {
   const timeout = node.dataset.timeout;

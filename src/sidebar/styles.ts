@@ -1,7 +1,7 @@
 import { cls, css, cssClass, styles, cssText } from "../infra";
 
 export const headerHeight = 56;
-export const expandCollapseTransitionTime = 200;
+export const expandCollapseTransitionTime = 300;
 export const focusTransitionTime = 200;
 export const fadeOutTime = 400;
 
@@ -16,7 +16,7 @@ cssClass(cls.page, {
   backgroundColor: "#181818",
 });
 
-css(`.${cls.page}.${cls.pageDuringDrag}`, {
+css(`.${cls.page}.${cls.grabbing}`, {
   cursor: "grabbing",
 });
 
@@ -64,7 +64,7 @@ cssClass(cls.sidebarRow, {
   alignItems: "center",
   cursor: "pointer",
   transition: `opacity ${focusTransitionTime}ms ease-out, 
-  height ${focusTransitionTime}ms ease-out`,
+  height ${expandCollapseTransitionTime}ms ease-out`,
   overflow: "hidden",
   position: "relative",
 });
@@ -91,7 +91,7 @@ css(`.${cls.sidebarRow}:hover`, {
   backgroundColor: "rgba(255,255,255, 0.08)",
 });
 
-css(`.${cls.pageDuringDrag} .${cls.sidebarRow}`, {
+css(`.${cls.grabbing} .${cls.sidebarRow}`, {
   cursor: "inherit",
   backgroundColor: "inherit",
 });
@@ -159,7 +159,7 @@ css(
   [
     `.${cls.sidebarFocusContainerFocused} .${cls.sidebarRow}`,
     `.${cls.sidebarRowFocused} .${cls.sidebarRowExpandButtonContainer}`,
-    `.${cls.pageDuringDrag} .${cls.sidebarRowExpandButtonContainer}`,
+    `.${cls.sidebarHideChevrons}.${cls.sidebar} .${cls.sidebarRowExpandButton}`,
   ],
   {
     opacity: "0",
