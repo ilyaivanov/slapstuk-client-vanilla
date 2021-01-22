@@ -7,6 +7,7 @@ type Item = {
   videoId?: string;
   children: string[];
   isOpenFromSidebar?: boolean;
+  isOpenInGallery?: boolean;
 };
 
 type Items = {

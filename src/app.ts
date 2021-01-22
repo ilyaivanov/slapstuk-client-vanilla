@@ -22,7 +22,7 @@ export const init = () => {
 
   sidebarController.init(dom.findFirstByClass(cls.sidebar));
   galleryController.renderItems(
-    sidebarController.items["oQKOMPvO"].children.map(
+    sidebarController.items["FLhAjBdk"].children.map(
       (id) => sidebarController.items[id]
     )
   );

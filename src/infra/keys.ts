@@ -30,10 +30,14 @@ export const cls = {
 
   //gallery
   gallery: "gallery",
-  galleryContent: "gallery-content",
   card: "card",
   cardImage: "card-image",
+  cardImageHidden: "card-image-hidden",
   cardText: "card-text",
+  cardTextForFolder: "card-text-folder",
+  subtracksContainer: "card-subtracks-container",
+  subtrack: "card-subtrack",
+  subtrackImage: "card-subtrack-image",
   galleryEndSpace: "gallery-end-space",
 
   //utils

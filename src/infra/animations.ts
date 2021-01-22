@@ -6,7 +6,7 @@ export const collapseElementHeight = (
   time: number,
   removeNodeAfter = false
 ) => {
-  node.style.height = node.scrollHeight + "px";
+  node.style.height = node.offsetHeight + "px";
   clearPendingTimeouts(node);
 
   setTimeout(() => {
@@ -31,7 +31,8 @@ export const collapseElementHeight = (
 export const openElementHeight = (
   node: HTMLElement,
   children: string | DivDefinition | DivDefinition[],
-  time: number
+  time: number,
+  getTargetHeightAfterAppend?: () => number
 ) => {
   node.style.height = "0px";
   var hasClearedTimeout = clearPendingTimeouts(node);
@@ -41,7 +42,9 @@ export const openElementHeight = (
     else node.append(dom.div(children));
   }
   setTimeout(() => {
-    node.style.height = node.scrollHeight + "px";
+    node.style.height = getTargetHeightAfterAppend
+      ? getTargetHeightAfterAppend() + "px"
+      : node.scrollHeight + "px";
     var timeout = setTimeout(() => {
       node.style.removeProperty("height");
       node.removeAttribute("data-timeout");
@@ -49,11 +52,12 @@ export const openElementHeight = (
     node.setAttribute("data-timeout", timeout + "");
   }, 20);
 };
+
 export const expandElementHeight = (
   node: HTMLElement,
   time: number,
   targetHeight: number,
-  onDone: () => void,
+  onDone: () => void
 ) => {
   node.style.height = "0px";
   clearPendingTimeouts(node);

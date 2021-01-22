@@ -2,7 +2,7 @@ import { ClassName } from "./keys";
 
 export type EventsDefinition = {
   [key in string]: (e: MouseEvent) => void;
-}
+};
 
 export type DivDefinition = {
   id?: string;
@@ -13,7 +13,7 @@ export type DivDefinition = {
   attributes?: any;
   on?: EventsDefinition;
 
-  type?: "button" | "div" | "svg" | "path" | "img";
+  type?: "button" | "div" | "svg" | "path" | "img" | "span";
   onClick?: (e: Event) => void;
 };
 
