@@ -1,6 +1,7 @@
 import { cls, dom, ids } from "../infra";
 import { play } from "./youtubePlayer";
 import * as items from "../items";
+import './styles';
 
 export let itemIdBeingPlayed = "";
 export const init = () => {
