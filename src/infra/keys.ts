@@ -32,6 +32,7 @@ export const cls = {
   gallery: "gallery",
   card: "card",
   cardImage: "card-image",
+  cardImageWithTextContainer: "card-text-image",
   cardImageHidden: "card-image-hidden",
   cardText: "card-text",
   cardTextForFolder: "card-text-folder",

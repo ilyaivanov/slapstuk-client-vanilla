@@ -88,19 +88,27 @@ const viewCard = (item: Item): DivDefinition => ({
   },
   children: [
     {
-      type: "img",
-      className: [
-        cls.cardImage,
-        item.isOpenInGallery ? cls.cardImageHidden : cls.none,
+      className: cls.cardImageWithTextContainer,
+      children: [
+        {
+          type: "img",
+          className: [
+            cls.cardImage,
+            item.isOpenInGallery ? cls.cardImageHidden : cls.none,
+          ],
+          attributes: {
+            src: getImageSrc(item) || defaultSrc,
+            draggable: "false",
+          },
+        },
+        {
+          className: [
+            cls.cardText,
+            item.children.length > 0 ? cls.cardTextForFolder : cls.none,
+          ],
+          children: item.title,
+        },
       ],
-      attributes: { src: getImageSrc(item) || defaultSrc, draggable: "false" },
-    },
-    {
-      className: [
-        cls.cardText,
-        item.children.length > 0 ? cls.cardTextForFolder : cls.none,
-      ],
-      children: item.title,
     },
     {
       className: cls.subtracksContainer,
@@ -116,6 +124,11 @@ const viewSubtracks = (itemId: string) =>
 
 const viewSubtrack = (item: Item): DivDefinition => ({
   className: cls.subtrack,
+  on: {
+    click: (e) => {
+      e.stopPropagation();
+    },
+  },
   children: [
     {
       type: "img",

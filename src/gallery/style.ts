@@ -39,6 +39,9 @@ cssClass(cls.card, {
 
 css(`.${cls.card}:hover`, {
   border: "1px solid rgba(255, 255, 255, 0.2)",
+});
+
+css(`.${cls.cardImageWithTextContainer}:hover`, {
   backgroundColor: colors.cardHover,
 });
 
@@ -91,6 +94,10 @@ cssClass(cls.subtrack, {
   fontWeight: "400",
   borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
   cursor: "pointer",
+});
+
+css(`.${cls.subtrack}:hover`, {
+  backgroundColor: colors.cardHover,
 });
 
 cssClass(cls.subtrackImage, {
