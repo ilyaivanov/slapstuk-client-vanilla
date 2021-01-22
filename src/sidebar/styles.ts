@@ -5,22 +5,6 @@ export const expandCollapseTransitionTime = 300;
 export const focusTransitionTime = 200;
 export const fadeOutTime = 400;
 
-cssText(`
-body{
-  overflow: hidden;
-}`);
-
-cssClass(cls.page, {
-  display: "grid",
-  gridTemplateColumns: "auto 1fr",
-  gridTemplateRows: "auto 1fr",
-  gridTemplateAreas: `
-    "header header"
-    "sidebar gallery"`,
-  backgroundColor: colors.gallery,
-  height: "100vh",
-});
-
 css(`.${cls.page}.${cls.grabbing}`, {
   cursor: "grabbing",
 });
@@ -29,25 +13,6 @@ cssClass(cls.noUserSelect, {
   userSelect: "none",
 });
 
-cssClass(cls.header, {
-  height: `${headerHeight}px`,
-  backgroundColor: colors.menu,
-  gridArea: "header",
-  zIndex: "200",
-});
-
-cssClass(cls.sidebar, {
-  position: "relative",
-  gridArea: "sidebar",
-  overflowY: "overlay",
-  backgroundColor: colors.menu,
-  zIndex: "200",
-  width: "300px",
-});
-
-cssClass(cls.gallery, {
-  gridArea: "gallery",
-});
 
 cssClass(cls.sidebarFocusContainer, {
   transition: `margin ${focusTransitionTime}ms ease-out`,
@@ -205,11 +170,6 @@ css(`.${cls.sidebarRowFocused} .${cls.sidebarRowCircle}:hover`, {
   color: "white",
   backgroundColor: "rgba(0,0,0,0)",
   transform: "scale(1.2)",
-});
-
-cssClass(cls.unfocusButton, {
-  ...styles.absoluteTopRight(5, 5),
-  zIndex: "200",
 });
 
 //DND

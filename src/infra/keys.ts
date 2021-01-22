@@ -1,6 +1,8 @@
 export const ids = {
   sidebarRow: (itemId: string) => "row-" + itemId,
   sidebarRowChildren: (itemId: string) => "row-children-" + itemId,
+  card: (itemId: string) => "card-" + itemId,
+  subtrack: (itemId: string) => "subtrack-" + itemId,
 } as const;
 
 export const cls = {
@@ -24,8 +26,6 @@ export const cls = {
   sidebarRemoveItemButton: "remove-item-button",
   sidebarHideChevrons: "sidebar-hide-chevrons",
 
-  unfocusButton: "unfocus-button",
-
   dragAvatar: "drag-avatar",
 
   //gallery
@@ -41,6 +41,9 @@ export const cls = {
   subtrackImage: "card-subtrack-image",
   galleryEndSpace: "gallery-end-space",
 
+  //player
+  player: "player",
+  itemBeingPlayed: "item-being-played",
   //utils
   noUserSelect: "no-user-select",
   rotated: "rotated",
@@ -49,5 +52,13 @@ export const cls = {
   transparent: "transparent",
   none: "",
 } as const;
+
+export const zIndexes = {
+  leftSidebarMenu: "200",
+  dragAvatar: "400",
+  dragDestinationIndicator: "350",
+  topMenu: "300",
+  player: "300",
+};
 
 export type ClassName = valueof<typeof cls>;

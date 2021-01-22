@@ -1,12 +1,13 @@
-import { cls, dom, anim, styles } from "../infra";
-import { startItems } from "../items";
+import { cls, dom, anim, styles, zIndexes } from "../infra";
+import { startItems } from "../initialItems";
 import * as view from "./view";
 import * as style from "./styles";
-import * as galleryController from '../gallery/controller';
+import * as galleryController from "../gallery/controller";
+import * as itemsC from '../items';
 
 // MODEL
 export const items: Items = startItems;
-export let selectedItemId = 'HOME';
+export let selectedItemId = "HOME";
 
 export const init = (sidebarParent: HTMLElement) => {
   const itemsToRender = items.HOME.children.map((id) =>
@@ -47,7 +48,7 @@ export const selectItem = (itemId: string) => {
   selectedItemId = itemId;
   dom.removeClassFromElement(cls.sidebarRowSelected);
   view.findRowById(itemId).classList.add(cls.sidebarRowSelected);
-  galleryController.renderItems(items[itemId].children.map(id => items[id]))
+  galleryController.renderItems(items[itemId].children.map((id) => items[id]));
 };
 
 //Items expand\collapse
@@ -183,7 +184,7 @@ const startDrag = (itemId: string) => {
       ...styles.absoluteTopLeft(rect.top, rect.left),
       width: rect.width + "px",
       height: rect.height + "px",
-      zIndex: "200",
+      zIndex: zIndexes.dragAvatar,
     },
   });
   dragDestination = dom.div({
@@ -192,6 +193,7 @@ const startDrag = (itemId: string) => {
       backgroundColor: "#03a9f4",
       position: "absolute",
       height: "4px",
+      zIndex: zIndexes.dragDestinationIndicator,
     },
   });
   dragAvatar.appendChild(row);
@@ -284,12 +286,10 @@ const onMouseUp = () => {
 };
 
 const removeFromParent = (itemId: string) => {
-  const parent = findParentItem(itemId);
+  const parent = itemsC.findParentItem(itemId);
   if (parent) parent.children = parent.children.filter((id) => id != itemId);
 };
 
-const findParentItem = (itemId: string) =>
-  Object.values(items).find((v) => v.children.indexOf(itemId) >= 0);
 
 const insertItemToLocation = (
   itemBeingDraggedId: string,
@@ -311,7 +311,7 @@ const insertItemToLocation = (
     }
     setTimeout(onAnimationsDone, style.expandCollapseTransitionTime);
   } else if (placement == "before") {
-    const parent = findParentItem(targetItemId);
+    const parent = itemsC.findParentItem(targetItemId);
 
     if (parent) {
       parent.children = parent.children
@@ -342,7 +342,7 @@ const insertItemToLocation = (
       onAnimationsDone
     );
   } else if (placement == "after") {
-    const parent = findParentItem(targetItemId);
+    const parent = itemsC.findParentItem(targetItemId);
     if (parent) {
       parent.children = parent.children
         .map((id) => (id == targetItemId ? [id, itemBeingDraggedId] : id))

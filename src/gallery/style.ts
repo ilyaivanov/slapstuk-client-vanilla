@@ -44,6 +44,9 @@ css(`.${cls.card}:hover`, {
 css(`.${cls.cardImageWithTextContainer}:hover`, {
   backgroundColor: colors.cardHover,
 });
+css(`.${cls.itemBeingPlayed} .${cls.cardImageWithTextContainer}`, {
+  backgroundColor: "inherit",
+});
 
 cssClass(cls.cardImage, {
   display: "block",

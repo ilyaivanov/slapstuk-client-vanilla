@@ -1,7 +1,8 @@
-import { anim, cls, dom } from "../infra";
+import { anim, cls, dom, ids } from "../infra";
 import { DivDefinition } from "../infra/dom";
 import * as style from "./style";
 import * as sidebarController from "../sidebar/controller";
+import * as player from "../player/controller";
 
 let items: Item[] = [];
 export const renderItems = (newItems: Item[]) => {
@@ -81,10 +82,16 @@ const toggleCardExpandCollapse = (item: Item) => {
 
 //VIEW
 const viewCard = (item: Item): DivDefinition => ({
-  id: "card-" + item.id,
-  className: cls.card,
+  id: ids.card(item.id),
+  className: [
+    cls.card,
+    player.itemIdBeingPlayed == item.id ? cls.itemBeingPlayed : cls.none,
+  ],
   on: {
-    click: () => toggleCardExpandCollapse(item),
+    click: () => {
+      if (item.itemType == "video") player.playItem(item.id);
+      else toggleCardExpandCollapse(item);
+    },
   },
   children: [
     {
@@ -123,10 +130,15 @@ const viewSubtracks = (itemId: string) =>
     .map(viewSubtrack);
 
 const viewSubtrack = (item: Item): DivDefinition => ({
-  className: cls.subtrack,
+  id: ids.subtrack(item.id),
+  className: [
+    cls.subtrack,
+    player.itemIdBeingPlayed == item.id ? cls.itemBeingPlayed : cls.none,
+  ],
   on: {
     click: (e) => {
       e.stopPropagation();
+      if (item.videoId) player.playItem(item.id);
     },
   },
   children: [

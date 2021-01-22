@@ -119,6 +119,11 @@ export const findById = (id: string): HTMLElement => {
   if (!elem) throw new Error(`Couldn't find any element with a id ${id}`);
   return elem;
 };
+
+export const maybefindById = (id: string): HTMLElement | null => {
+  return document.getElementById(id);
+};
+
 export const query = (selector: string): Element => {
   const elem = document.querySelector(selector);
   if (!elem)
@@ -150,6 +155,19 @@ export const addClassToElement = (
     element.classList.add(classToAdd);
   }
   return element;
+};
+
+export const addClassToElementById = (id: string, classToAdd: ClassName) => {
+  const elem = maybefindById(id);
+  if (elem) elem.classList.add(classToAdd);
+};
+
+export const removeClassFromElementById = (
+  id: string,
+  classToRemove: ClassName
+) => {
+  const elem = maybefindById(id);
+  if (elem) elem.classList.remove(classToRemove);
 };
 
 // export const setChildren = (node: HTMLElement, )
