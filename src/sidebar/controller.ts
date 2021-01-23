@@ -1,12 +1,18 @@
 import { cls, dom, anim, styles, zIndexes } from "../infra";
-import { startItems } from "../initialItems";
 import * as view from "./view";
 import * as style from "./styles";
 import * as galleryController from "../gallery/controller";
 import * as itemsC from "../items";
 
 // MODEL
-export let items: Items = startItems;
+export let items: Items = {
+  HOME: {
+    id: "HOME",
+    itemType: "folder",
+    children: [],
+    title: "Home",
+  },
+};
 export let selectedItemId = "HOME";
 
 export const setItems = (newItesm: Items, nodeFocused: string) => {
