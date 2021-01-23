@@ -7,28 +7,32 @@ document.head.appendChild(s);
 export const cssClass = (
   clas: ClassName,
   styles: Partial<CSSStyleDeclaration>
-) => {
-  const text = cssToString("." + clas, styles);
-  s.innerHTML += text;
-  return text;
-};
+) => appensTextToStyle(formatStyleDeclarations("." + clas, styles));
+
+export const cssClassOnHover = (
+  clas: ClassName,
+  styles: Partial<CSSStyleDeclaration>
+) => appensTextToStyle(formatStyleDeclarations("." + clas + ":hover", styles));
+
 export const css = (
   selector: string | string[],
   styles: Partial<CSSStyleDeclaration>
 ) => {
   const res = Array.isArray(selector) ? selector.join(", ") : selector;
-  const text = cssToString(res, styles);
-  s.innerHTML += text;
-  return text;
+  appensTextToStyle(formatStyleDeclarations(res, styles));
 };
-const cssToString = (selector: string, props: Partial<CSSStyleDeclaration>) => {
+
+export const cssText = (text: string) => appensTextToStyle(text);
+
+const appensTextToStyle = (text: string) => (s.innerHTML += text);
+
+const formatStyleDeclarations = (
+  selector: string,
+  props: Partial<CSSStyleDeclaration>
+) => {
   const div = document.createElement("div");
   Object.assign(div.style, props);
   return formatStyle(selector, div.style.cssText);
-};
-
-export const cssText = (text: string) => {
-  s.innerHTML += text;
 };
 
 const formatStyle = (selector: string, body: string) =>

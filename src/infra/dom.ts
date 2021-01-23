@@ -78,10 +78,10 @@ export const fragment = (nodes: DivDefinition[]) => {
   return fragment;
 };
 
-export const findFirstByClass = (
+export const findFirstByClass = <T extends HTMLElement>(
   className: ClassName,
   container: HTMLElement = document.body
-): HTMLElement => {
+): T => {
   const elem = container.getElementsByClassName(className);
   if (elem.length === 0) {
     if (process.env.NODE_ENV == "test") {
@@ -89,7 +89,7 @@ export const findFirstByClass = (
     }
     throw new Error(`Couldn't find any element with a class ${className}`);
   }
-  return elem.item(0) as HTMLElement;
+  return elem.item(0) as T;
 };
 
 export const maybeFindFirstByClass = (

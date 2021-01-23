@@ -44,6 +44,11 @@ export const cls = {
   //player
   player: "player",
   itemBeingPlayed: "item-being-played",
+
+  //login
+  loginContainer: "login-container",
+  loginForm: "login-form",
+  loginButton: "login-button",
   //utils
   noUserSelect: "no-user-select",
   rotated: "rotated",
