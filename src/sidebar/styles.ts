@@ -1,4 +1,12 @@
-import { cls, css, cssClass, styles, cssText, colors } from "../infra";
+import {
+  cls,
+  css,
+  cssClass,
+  styles,
+  cssClassOnHover,
+  cssText,
+  colors,
+} from "../infra";
 
 export const headerHeight = 56;
 export const expandCollapseTransitionTime = 300;
@@ -12,7 +20,6 @@ css(`.${cls.page}.${cls.grabbing}`, {
 cssClass(cls.noUserSelect, {
   userSelect: "none",
 });
-
 
 cssClass(cls.sidebarFocusContainer, {
   transition: `margin ${focusTransitionTime}ms ease-out`,
@@ -44,7 +51,7 @@ cssClass(cls.sidebarRemoveItemButton, {
   opacity: "0",
 });
 
-css(`.${cls.sidebarRemoveItemButton}:hover`, {
+cssClassOnHover(cls.sidebarRemoveItemButton, {
   color: "#f44336",
 });
 
@@ -52,7 +59,7 @@ css(`.${cls.sidebarRow}:hover .${cls.sidebarRemoveItemButton}`, {
   opacity: "1",
 });
 
-css(`.${cls.sidebarRow}:hover`, {
+cssClassOnHover(cls.sidebarRow, {
   backgroundColor: "rgba(255,255,255, 0.08)",
 });
 

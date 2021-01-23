@@ -1,5 +1,4 @@
-import { cls, colors, cssClass, styles } from "../infra";
-import { cssClassOnHover } from "../infra/style";
+import { cls, colors, cssClass, cssClassOnHover, styles } from "../infra";
 
 cssClass(cls.loginContainer, {
   height: "100vh",
