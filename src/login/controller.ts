@@ -1,8 +1,9 @@
 import { cls, dom } from "../infra";
-import { authorize } from "./loginService";
+import { authorize, firebaseAuth } from "./loginService";
 import "./style";
 
 export const init = () => {
+  console.log("Init login");
   const loginPage = dom.div({
     className: cls.loginContainer,
     children: {
@@ -31,30 +32,35 @@ export const init = () => {
       ],
     },
   });
-  dom.findById("root").appendChild(loginPage);
+  const root = dom.findById("root");
+  root.innerHTML = "";
+  root.appendChild(loginPage);
 };
 type EventType = "login" | "logout";
 
 //TODO: consider extracting events to a separate file
 //making a nice generic type expencting EventMap
 //check document.addEventListener as an example
-type Callback = () => void;
+type Callback<T> = (val: T) => void;
 
 const listeners = {
-  login: [] as Callback[],
-  logout: [] as Callback[],
+  login: [] as Callback<any>[],
+  logout: [] as Callback<any>[],
 } as const;
 
-export const addEventListener = (event: EventType, callback: () => void) => {
+export const addEventListener = (event: EventType, callback: Callback<any>) => {
   listeners[event].push(callback);
 };
 
-export const removeEventListener = (event: EventType, callback: () => void) => {
+export const removeEventListener = (
+  event: EventType,
+  callback: Callback<any>
+) => {
   listeners[event].slice(listeners[event].indexOf(callback), 1);
 };
 
-const notifyListeners = (event: EventType) => {
-  listeners[event].forEach((callback) => callback());
+const notifyListeners = (event: EventType, args: any) => {
+  listeners[event].forEach((callback) => callback(args));
 };
 
 export const onLoginClick = () => {
@@ -62,12 +68,29 @@ export const onLoginClick = () => {
   button.disabled = true;
 
   authorize()
-    .then(() => {
+    .then((e: any) => {
       button.disabled = false;
-      notifyListeners("login");
+      notifyListeners("login", e.user.uid);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error(error);
       button.disabled = false;
     });
 };
+
+firebaseAuth.onAuthStateChanged(function (user: any) {
+  if (user) notifyListeners("login", user.uid);
+  //   actions.setUserState({
+  //     state: "userLoggedIn",
+  //     userId: user.uid,
+  //     userName: user.displayName,
+  //     picture: user.photoURL,
+  //     email: user.email || "",
+  //   });
+  else {
+    notifyListeners("logout", undefined);
+    //   actions.setUserState({
+    //     state: "anonymous",
+    //   });
+  }
+});

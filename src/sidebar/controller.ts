@@ -3,11 +3,16 @@ import { startItems } from "../initialItems";
 import * as view from "./view";
 import * as style from "./styles";
 import * as galleryController from "../gallery/controller";
-import * as itemsC from '../items';
+import * as itemsC from "../items";
 
 // MODEL
-export const items: Items = startItems;
+export let items: Items = startItems;
 export let selectedItemId = "HOME";
+
+export const setItems = (newItesm: Items, nodeFocused: string) => {
+  items = newItesm;
+  selectedItemId = nodeFocused;
+};
 
 export const init = (sidebarParent: HTMLElement) => {
   const itemsToRender = items.HOME.children.map((id) =>
@@ -289,7 +294,6 @@ const removeFromParent = (itemId: string) => {
   const parent = itemsC.findParentItem(itemId);
   if (parent) parent.children = parent.children.filter((id) => id != itemId);
 };
-
 
 const insertItemToLocation = (
   itemBeingDraggedId: string,
