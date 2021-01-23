@@ -1,6 +1,7 @@
-import { cls, dom, ClassName } from "../infra";
+import { cls, dom, ClassName, styles } from "../infra";
 import { DivDefinition, EventsDefinition } from "../infra/dom";
 import * as controller from "./controller";
+import * as style from './styles';
 
 export const viewRow = (item: Item, level: number): DivDefinition[] => {
   return [
@@ -13,7 +14,7 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
           : cls.none,
       ],
       style: {
-        paddingLeft: level * 14 + "px",
+        paddingLeft: level * style.rowMarginPerLevel + "px",
       },
       attributes: {
         ["data-level"]: level + "",

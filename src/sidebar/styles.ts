@@ -12,6 +12,7 @@ export const headerHeight = 56;
 export const expandCollapseTransitionTime = 300;
 export const focusTransitionTime = 200;
 export const fadeOutTime = 400;
+export const rowMarginPerLevel = 16;
 
 css(`.${cls.page}.${cls.grabbing}`, {
   cursor: "grabbing",
@@ -151,7 +152,7 @@ cssClass(cls.sidebarRowCircle, {
   borderRadius: "3px",
   backgroundColor: "rgb(184, 184, 184)",
   color: "rgb(184, 184, 184)",
-  margin: "0 2px",
+  margin: "0 4px",
   transition: "transform 200ms ease-out, color 200ms ease-out",
 });
 
@@ -163,7 +164,7 @@ css(`.${cls.sidebarRowFocused} .${cls.sidebarRowCircle}`, {
   margin: "0",
 });
 
-css(`.${cls.sidebarRowCircle}:hover`, {
+cssClassOnHover(cls.sidebarRowCircle, {
   transform: "scale(1.6)",
   backgroundColor: "white",
   color: "white",
