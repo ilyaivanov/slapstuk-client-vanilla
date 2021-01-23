@@ -32,6 +32,7 @@ cssClass(cls.sidebarFocusContainer, {
 cssText(styles.cssTextForScrollBar(cls.sidebar, { width: 8 }));
 
 cssClass(cls.sidebarRow, {
+  height: "27px",
   marginLeft: "2px",
   color: "white",
   display: "flex",
@@ -87,18 +88,12 @@ css(
 );
 
 cssClass(cls.sidebarRowText, {
-  padding: "4px",
-  transition: `
-  font-size ${focusTransition}, 
-  margin-bottom ${focusTransition}, 
-  padding ${focusTransition}`,
+  transition: `font-size ${focusTransition}`,
   whiteSpace: "nowrap",
 });
 
 css(`.${cls.sidebarRowFocused} .${cls.sidebarRowText}`, {
   fontSize: "22px",
-  padding: "0 4px",
-  marginBottom: "2px",
 });
 
 cssClass(cls.sidebarRowChildrenContainer, {
@@ -155,7 +150,8 @@ cssClass(cls.sidebarRowCircle, {
   borderRadius: "3px",
   backgroundColor: "rgb(184, 184, 184)",
   color: "rgb(184, 184, 184)",
-  margin: "0 4px",
+  marginRight: "8px",
+  marginLeft: "4px",
   transition: `
   transform 200ms ease-out,
   color 200ms ease-out`,
@@ -166,7 +162,7 @@ css(`.${cls.sidebarRowFocused} .${cls.sidebarRowCircle}`, {
   minWidth: "10px",
   width: "10px",
   height: "20px",
-  margin: "0",
+  marginRight: "4px",
 });
 
 cssClassOnHover(cls.sidebarRowCircle, {
