@@ -19,12 +19,6 @@
     "url": "https://github.com/ilyaivanov/naivejs/issues"
   },
   "homepage": "https://github.com/ilyaivanov/naivejs#readme",
-  "jest": {
-    "preset": "ts-jest",
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/testing/setup.ts"
-    ]
-  },
   "devDependencies": {
     "@testing-library/dom": "^7.29.4",
     "@testing-library/jest-dom": "^5.11.9",
