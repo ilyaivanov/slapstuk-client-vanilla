@@ -10,9 +10,11 @@ import {
 
 export const headerHeight = 56;
 export const expandCollapseTransitionTime = 300;
-export const focusTransitionTime = 200;
+export const focusTransitionTime = 400;
 export const fadeOutTime = 400;
 export const rowMarginPerLevel = 16;
+
+const focusTransition = `${focusTransitionTime}ms ease-in-out`;
 
 css(`.${cls.page}.${cls.grabbing}`, {
   cursor: "grabbing",
@@ -23,7 +25,7 @@ cssClass(cls.noUserSelect, {
 });
 
 cssClass(cls.sidebarFocusContainer, {
-  transition: `margin ${focusTransitionTime}ms ease-out`,
+  transition: `margin ${focusTransition}`,
   position: "relative",
 });
 
@@ -36,7 +38,7 @@ cssClass(cls.sidebarRow, {
   flexDirection: "row",
   alignItems: "center",
   cursor: "pointer",
-  transition: `opacity ${focusTransitionTime}ms ease-out, 
+  transition: `opacity ${focusTransition}, 
   height ${expandCollapseTransitionTime}ms ease-out`,
   overflow: "hidden",
   position: "relative",
@@ -87,11 +89,12 @@ css(
 cssClass(cls.sidebarRowText, {
   padding: "4px",
   transition: `
-  font-size ${expandCollapseTransitionTime}ms ease-out, 
-  margin-bottom ${expandCollapseTransitionTime}ms ease-out, 
-  padding ${expandCollapseTransitionTime}ms ease-out`,
+  font-size ${focusTransition}, 
+  margin-bottom ${focusTransition}, 
+  padding ${focusTransition}`,
   whiteSpace: "nowrap",
 });
+
 css(`.${cls.sidebarRowFocused} .${cls.sidebarRowText}`, {
   fontSize: "22px",
   padding: "0 4px",
@@ -153,7 +156,9 @@ cssClass(cls.sidebarRowCircle, {
   backgroundColor: "rgb(184, 184, 184)",
   color: "rgb(184, 184, 184)",
   margin: "0 4px",
-  transition: "transform 200ms ease-out, color 200ms ease-out",
+  transition: `
+  transform 200ms ease-out,
+  color 200ms ease-out`,
 });
 
 css(`.${cls.sidebarRowFocused} .${cls.sidebarRowCircle}`, {
