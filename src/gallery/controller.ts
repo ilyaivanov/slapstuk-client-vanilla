@@ -1,14 +1,11 @@
-import { anim, cls, dom, ids } from "../infra";
-import { DivDefinition } from "../infra/dom";
+import { anim, cls, dom, ids, DivDefinition } from "../infra";
 import * as style from "./style";
-import * as sidebarController from "../sidebar/controller";
 import * as player from "../player/controller";
+import * as items from "../items";
 
-let items: Item[] = [];
 export const renderItems = (newItems: Item[]) => {
   const gallery = dom.findFirstByClass(cls.gallery);
-  items = newItems;
-  const preparedViews = dom.fragment(items.map(viewCard));
+  const preparedViews = dom.fragment(newItems.map(viewCard));
 
   if (!dom.isEmpty(gallery)) {
     //extract this to a crossfade animation
@@ -125,9 +122,7 @@ const viewCard = (item: Item): DivDefinition => ({
 });
 
 const viewSubtracks = (itemId: string) =>
-  sidebarController.items[itemId].children
-    .map((id) => sidebarController.items[id])
-    .map(viewSubtrack);
+  items.getChildren(itemId).map(viewSubtrack);
 
 const viewSubtrack = (item: Item): DivDefinition => ({
   id: ids.subtrack(item.id),

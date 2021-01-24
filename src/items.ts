@@ -1,7 +1,25 @@
-import * as sidebarController from "./sidebar/controller";
+let allItems: Items = {
+  HOME: {
+    id: "HOME",
+    itemType: "folder",
+    children: [],
+    title: "Home",
+  },
+};
 
-export const getItem = (itemId: string): Item =>
-  sidebarController.items[itemId];
+export let selectedItemId = "HOME";
+export let focusedItemId = "HOME";
+
+export const setItems = (newItesm: Items) => (allItems = newItesm);
+export const setSelectedItem = (itemId: string) => (selectedItemId = itemId);
+export const setFocusedItem = (itemId: string) => (focusedItemId = itemId);
+
+export const getHomeItems = (): Item[] => getChildren("HOME");
+
+export const getItem = (itemId: string): Item => allItems[itemId];
+
+export const getChildren = (itemId: string): Item[] =>
+  allItems[itemId].children.map((id) => allItems[id]);
 
 export const getNextItem = (itemId: string): Item | undefined => {
   const parent = findParentItem(itemId);
@@ -15,7 +33,5 @@ export const getNextItem = (itemId: string): Item | undefined => {
   return undefined;
 };
 
-export const findParentItem = (itemId: string) =>
-  Object.values(sidebarController.items).find(
-    (v) => v.children.indexOf(itemId) >= 0
-  );
+export const findParentItem = (itemId: string): Item | undefined =>
+  Object.values(allItems).find((v) => v.children.indexOf(itemId) >= 0);

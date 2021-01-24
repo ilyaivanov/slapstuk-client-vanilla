@@ -5,6 +5,7 @@ var videoRequested: string | undefined;
 var isLoadingPlayer = false;
 var isReady = false;
 
+//TODO: create player types
 declare const YT: any;
 
 export function play(videoId: string) {
@@ -28,7 +29,6 @@ function init() {
 //@ts-ignore
 global.onYouTubeIframeAPIReady = () => {
   isLoadingPlayer = false;
-  console.log("player ready", videoRequested);
   player = new YT.Player("youtubePlayer", {
     height: "100%",
     width: "100%",

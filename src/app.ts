@@ -5,6 +5,7 @@ import * as player from "./player/controller";
 import * as login from "./login/controller";
 import "./app.style";
 import { loadUserSettings, logout } from "./login/loginService";
+import * as items from "./items";
 
 export const init = () => {
   //check if logged in or subscribe to login status change
@@ -27,10 +28,9 @@ export const initLogin = () => login.init();
 
 export const initApp = (userId: string) => {
   loadUserSettings(userId).then((data) => {
-    sidebarController.setItems(
-      JSON.parse(data.itemsSerialized),
-      data.nodeFocused
-    );
+    const selectedItemId = data.nodeFocused;
+    items.setItems(JSON.parse(data.itemsSerialized));
+    items.setSelectedItem(selectedItemId);
 
     const root = dom.findById("root");
     root.innerHTML = "";
@@ -75,11 +75,7 @@ export const initApp = (userId: string) => {
 
     sidebarController.init(dom.findFirstByClass(cls.sidebar));
     player.init();
-    galleryController.renderItems(
-      sidebarController.items[sidebarController.selectedItemId].children.map(
-        (id) => sidebarController.items[id]
-      )
-    );
+    galleryController.renderItems(items.getChildren(selectedItemId));
   });
 };
 

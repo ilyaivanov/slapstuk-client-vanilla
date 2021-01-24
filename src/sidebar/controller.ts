@@ -2,28 +2,12 @@ import { cls, dom, anim, styles, zIndexes } from "../infra";
 import * as view from "./view";
 import * as style from "./styles";
 import * as galleryController from "../gallery/controller";
-import * as itemsC from "../items";
-
-// MODEL
-export let items: Items = {
-  HOME: {
-    id: "HOME",
-    itemType: "folder",
-    children: [],
-    title: "Home",
-  },
-};
-export let selectedItemId = "HOME";
-
-export const setItems = (newItesm: Items, nodeFocused: string) => {
-  items = newItesm;
-  selectedItemId = nodeFocused;
-};
+import * as items from "../items";
 
 export const init = (sidebarParent: HTMLElement) => {
-  const itemsToRender = items.HOME.children.map((id) =>
-    view.viewRow(items[id], 0)
-  );
+  const itemsToRender = items
+    .getHomeItems()
+    .map((item) => view.viewRow(item, 0));
   sidebarParent.appendChild(
     dom.div({
       className: cls.sidebarFocusContainer,
@@ -38,9 +22,7 @@ var currentRemoveTimeouts: { [itemId: string]: NodeJS.Timeout } = {};
 export const removeItem = (item: Item) => {
   if (currentRemoveTimeouts[item.id]) return;
 
-  const parent = Object.values(items).find(
-    (v) => v.children.indexOf(item.id) >= 0
-  );
+  const parent = items.findParentItem(item.id);
   if (parent) {
     parent.children = parent.children.filter((id) => id != item.id);
     const cont = view.findItemChildrenContainer(item.id);
@@ -56,10 +38,10 @@ export const removeItem = (item: Item) => {
 };
 
 export const selectItem = (itemId: string) => {
-  selectedItemId = itemId;
+  items.setSelectedItem(itemId);
   dom.removeClassFromElement(cls.sidebarRowSelected);
   view.findRowById(itemId).classList.add(cls.sidebarRowSelected);
-  galleryController.renderItems(items[itemId].children.map((id) => items[id]));
+  galleryController.renderItems(items.getChildren(itemId));
 };
 
 //Items expand\collapse
@@ -81,8 +63,9 @@ export const toggleSidebarVisibilityForItem = (item: Item) => {
 
 const showItemChildren = (item: Item, level: number) => {
   const childrenElement = view.findItemChildrenContainer(item.id);
-  const children = item.children
-    .map((id) => view.viewRow(items[id], level + 1))
+  const children = items
+    .getChildren(item.id)
+    .map((item) => view.viewRow(item, level + 1))
     .flat();
   anim.openElementHeight(
     childrenElement,
@@ -142,10 +125,9 @@ const unfocus = () => {
   dom.findAllByClass(cls.sidebarRowFocused).forEach((row) => {
     row.classList.remove(cls.sidebarRowFocused);
     const itemId = view.itemIdFromRow(row);
-    if (
-      !items[itemId].isOpenFromSidebar &&
-      !dom.isEmpty(view.findItemChildrenContainer(itemId))
-    ) {
+    const item = items.getItem(itemId);
+    const isItemEmpty = dom.isEmpty(view.findItemChildrenContainer(itemId));
+    if (!item.isOpenFromSidebar && !isItemEmpty) {
       removeItemChildren(itemId);
     }
   });
@@ -306,7 +288,7 @@ const onMouseUp = () => {
 };
 
 const removeFromParent = (itemId: string) => {
-  const parent = itemsC.findParentItem(itemId);
+  const parent = items.findParentItem(itemId);
   if (parent) parent.children = parent.children.filter((id) => id != itemId);
 };
 
@@ -316,8 +298,8 @@ const insertItemToLocation = (
   placement: Destination,
   onAnimationsDone: () => void
 ) => {
-  const itemBeingDragged = items[itemBeingDraggedId];
-  const targetItem = items[targetItemId];
+  const itemBeingDragged = items.getItem(itemBeingDraggedId);
+  const targetItem = items.getItem(targetItemId);
   const targetItemRow = view.findRowById(targetItemId);
   const targetItemLevel = view.parseLevelFromRow(targetItemRow);
 
@@ -330,7 +312,7 @@ const insertItemToLocation = (
     }
     setTimeout(onAnimationsDone, style.expandCollapseTransitionTime);
   } else if (placement == "before") {
-    const parent = itemsC.findParentItem(targetItemId);
+    const parent = items.findParentItem(targetItemId);
 
     if (parent) {
       parent.children = parent.children
@@ -361,7 +343,7 @@ const insertItemToLocation = (
       onAnimationsDone
     );
   } else if (placement == "after") {
-    const parent = itemsC.findParentItem(targetItemId);
+    const parent = items.findParentItem(targetItemId);
     if (parent) {
       parent.children = parent.children
         .map((id) => (id == targetItemId ? [id, itemBeingDraggedId] : id))

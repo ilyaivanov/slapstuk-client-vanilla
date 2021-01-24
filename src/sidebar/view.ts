@@ -1,7 +1,7 @@
-import { cls, dom, ClassName, styles } from "../infra";
-import { DivDefinition, EventsDefinition } from "../infra/dom";
+import { cls, dom, ClassName, DivDefinition, EventsDefinition } from "../infra";
 import * as controller from "./controller";
 import * as style from "./styles";
+import * as items from "../items";
 
 export const viewRow = (item: Item, level: number): DivDefinition[] => {
   return [
@@ -9,9 +9,7 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
       id: rowId(item.id),
       className: [
         cls.sidebarRow,
-        item.id === controller.selectedItemId
-          ? cls.sidebarRowSelected
-          : cls.none,
+        item.id === items.selectedItemId ? cls.sidebarRowSelected : cls.none,
       ],
       style: {
         paddingLeft: level * style.rowMarginPerLevel + "px",
@@ -65,12 +63,10 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
 };
 
 export const viewChildren = (itemId: string, level: number): DivDefinition => {
-  const children = controller.items[itemId].children.map(
-    (id) => controller.items[id]
-  );
+  const children = items.getChildren(itemId);
   return {
     className: cls.sidebarRowChildrenContainer,
-    children: controller.items[itemId].isOpenFromSidebar
+    children: items.getItem(itemId).isOpenFromSidebar
       ? children.map((row) => viewRow(row, level)).flat()
       : [],
   };
