@@ -259,15 +259,7 @@ const onMouseUp = () => {
         true
       );
       removeFromParent(itemIdMouseDownOn);
-      const onAnimationsDone = () => {
-        dom.removeClassFromElement(cls.sidebar, cls.sidebarHideChevrons);
-      };
-      insertItemToLocation(
-        itemIdMouseDownOn,
-        targetItemId,
-        destinationType,
-        onAnimationsDone
-      );
+      insertItemToLocation(itemIdMouseDownOn, targetItemId, destinationType);
     }
 
     var originalRow = view.findRowById(itemIdMouseDownOn);
@@ -295,8 +287,7 @@ const removeFromParent = (itemId: string) => {
 const insertItemToLocation = (
   itemBeingDraggedId: string,
   targetItemId: string,
-  placement: Destination,
-  onAnimationsDone: () => void
+  placement: Destination
 ) => {
   const itemBeingDragged = items.getItem(itemBeingDraggedId);
   const targetItem = items.getItem(targetItemId);
@@ -307,10 +298,14 @@ const insertItemToLocation = (
     targetItem.children = [itemBeingDraggedId].concat(targetItem.children);
 
     if (targetItem.isOpenFromSidebar) {
-      const childNodes = view.viewRow(itemBeingDragged, targetItemLevel + 1);
-      targetItemRow.after(dom.fragment(childNodes));
+      const childNodes = view
+        .viewRow(itemBeingDragged, targetItemLevel + 1)
+        .map(dom.div);
+      const container = view.findItemChildrenContainer(targetItemId);
+      container.insertAdjacentElement("beforebegin", childNodes[1]);
+      container.insertAdjacentElement("beforebegin", childNodes[0]);
+      animateExpandForRowAndChildContainer(childNodes[0], childNodes[1]);
     }
-    setTimeout(onAnimationsDone, style.expandCollapseTransitionTime);
   } else if (placement == "before") {
     const parent = items.findParentItem(targetItemId);
 
@@ -329,19 +324,7 @@ const insertItemToLocation = (
     childNodes.forEach((n) => {
       targetItemRow.insertAdjacentElement("beforebegin", n);
     });
-    const [row, childContainer] = childNodes;
-    anim.expandElementHeight(
-      row,
-      style.expandCollapseTransitionTime,
-      row.clientHeight,
-      onAnimationsDone
-    );
-    anim.expandElementHeight(
-      childContainer,
-      style.expandCollapseTransitionTime,
-      childContainer.scrollHeight,
-      onAnimationsDone
-    );
+    animateExpandForRowAndChildContainer(childNodes[0], childNodes[1]);
   } else if (placement == "after") {
     const parent = items.findParentItem(targetItemId);
     if (parent) {
@@ -363,18 +346,27 @@ const insertItemToLocation = (
     childNodes.forEach((n) =>
       targetItemChildContainer.insertAdjacentElement("afterend", n)
     );
-    const [row, childContainer] = childNodes;
-    anim.expandElementHeight(
-      row,
-      style.expandCollapseTransitionTime,
-      row.clientHeight,
-      onAnimationsDone
-    );
-    anim.expandElementHeight(
-      childContainer,
-      style.expandCollapseTransitionTime,
-      childContainer.scrollHeight,
-      onAnimationsDone
-    );
+    animateExpandForRowAndChildContainer(childNodes[0], childNodes[1]);
   }
+};
+
+const animateExpandForRowAndChildContainer = (
+  row: HTMLElement,
+  childContainer: HTMLElement
+) => {
+  //TODO: onAnimationsDone is triggered twice. need to think about race conditions here 
+  const onAnimationsDone = () =>
+    dom.removeClassFromElement(cls.sidebar, cls.sidebarHideChevrons);
+  anim.expandElementHeight(
+    row,
+    style.expandCollapseTransitionTime,
+    row.clientHeight,
+    onAnimationsDone
+  );
+  anim.expandElementHeight(
+    childContainer,
+    style.expandCollapseTransitionTime,
+    childContainer.scrollHeight,
+    onAnimationsDone
+  );
 };

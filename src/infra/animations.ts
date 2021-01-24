@@ -59,9 +59,11 @@ export const expandElementHeight = (
   targetHeight: number,
   onDone: () => void
 ) => {
+  node.style.transition = 'height 0ms ease-in';
   node.style.height = "0px";
   clearPendingTimeouts(node);
   setTimeout(() => {
+    node.style.removeProperty('transition');
     node.style.height = targetHeight + "px";
     var timeout = setTimeout(() => {
       node.style.removeProperty("height");

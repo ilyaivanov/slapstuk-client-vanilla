@@ -9,7 +9,7 @@ import {
 } from "../infra";
 
 export const headerHeight = 56;
-export const expandCollapseTransitionTime = 300;
+export const expandCollapseTransitionTime = 400;
 export const focusTransitionTime = 400;
 export const fadeOutTime = 400;
 //TODO: Fix this constant. change breaks layout (chevron is not properly positioned)
