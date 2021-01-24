@@ -1,7 +1,7 @@
 import { cls, dom, ClassName, styles } from "../infra";
 import { DivDefinition, EventsDefinition } from "../infra/dom";
 import * as controller from "./controller";
-import * as style from './styles';
+import * as style from "./styles";
 
 export const viewRow = (item: Item, level: number): DivDefinition[] => {
   return [
@@ -87,6 +87,11 @@ export const findToggleButton = (itemId: string) => {
 
 export const findFocusButton = (row: HTMLElement) => {
   return dom.findFirstByClass(cls.sidebarRowCircle, row);
+};
+
+export const findFocusButtonForItem = (itemId: string) => {
+  const row = dom.findById(rowId(itemId));
+  return findFocusButton(row);
 };
 
 export const findItemChildrenContainer = (itemId: string): HTMLElement => {

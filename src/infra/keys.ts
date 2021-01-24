@@ -20,6 +20,7 @@ export const cls = {
     "sidebar-row-children-container-highlighted",
   sidebarRowChildrenContainerFocused: "sidebar-row-children-container-focused",
   sidebarRowCircle: "sidebar-row-circle",
+  circlePlaying: "sidebar-row-circle-playing",
   sidebarRowText: "sidebar-row-text",
   sidebarRowExpandButton: "sidebar-row-expand-button",
   sidebarRowExpandButtonContainer: "sidebar-row-expand-button-container",

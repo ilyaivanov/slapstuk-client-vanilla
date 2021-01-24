@@ -170,6 +170,7 @@ cssClassOnHover(cls.sidebarRowCircle, {
   transform: "scale(1.6)",
   backgroundColor: "white",
   color: "white",
+  animation: "none",
 });
 
 css(`.${cls.sidebarRowCircle}:active`, {
@@ -179,8 +180,28 @@ css(`.${cls.sidebarRowCircle}:active`, {
 css(`.${cls.sidebarRowFocused} .${cls.sidebarRowCircle}:hover`, {
   color: "white",
   backgroundColor: "rgba(0,0,0,0)",
-  transform: "scale(1.2)",
+  transform: "scale(1.5)",
 });
+
+cssClass(cls.circlePlaying, {
+  animation: "pulsate 0.6s ease-in-out infinite both",
+});
+
+cssText(`
+@keyframes pulsate {
+  0% {
+    transform: scale(1) translate3d(0px, 0px, 0px);
+  }
+  33% {
+    transform: scale(1.4, 0.9) translate3d(0px, 3px, 0px);
+  }
+  66% {
+    transform: scale(0.9, 1.1) translate3d(0px, -1px, 0px);
+  }
+  100% {
+    transform: scale(1) translate3d(0px, 0px, 0px);
+  }
+}`);
 
 //DND
 cssClass(cls.dragAvatar, {
