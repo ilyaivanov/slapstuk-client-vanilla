@@ -13,13 +13,18 @@ css(`.${cls.page} .${cls.itemBeingPlayed}`, {
 });
 
 css("#youtubePlayer", {
-    position: "absolute",
-    right: "20px",
-    bottom: playerHeight + 20 + "px",
-    width: "400px",
-    height: "150px",
-  });
-  
-  cssClass(cls.player, {
-    position: "relative",
-  });
+  position: "absolute",
+  right: "20px",
+  bottom: playerHeight + 20 + "px",
+  width: "400px",
+  height: "150px",
+});
+
+cssClass(cls.player, {
+  position: "relative",
+  transition: "margin 200ms ease-out",
+});
+
+cssClass(cls.playerHidden, {
+  marginBottom: -playerHeight + "px",
+});

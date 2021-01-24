@@ -8,6 +8,7 @@ export const ids = {
 export const cls = {
   page: "page",
   sidebar: "sidebar",
+  sidebarHidden: "sidebar-hidden",
   grabbing: "page-grabbing",
   header: "header",
   sidebarFocusContainer: "sidebar-focus-container",
@@ -44,6 +45,7 @@ export const cls = {
 
   //player
   player: "player",
+  playerHidden: "player-hidden",
   itemBeingPlayed: "item-being-played",
 
   //login

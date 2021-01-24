@@ -1,7 +1,7 @@
 import { cls, dom } from "./infra";
 import * as sidebarController from "./sidebar/controller";
 import * as galleryController from "./gallery/controller";
-import * as playerController from "./player/controller";
+import * as player from "./player/controller";
 import * as login from "./login/controller";
 import "./app.style";
 import { loadUserSettings, logout } from "./login/loginService";
@@ -40,11 +40,31 @@ export const initApp = (userId: string) => {
         children: [
           {
             className: cls.header,
-            children: {
-              type: "button",
-              children: "logout",
-              on: { click: logout },
-            },
+            children: [
+              {
+                type: "button",
+                on: { click: player.playNext },
+                children: "next",
+              },
+              {
+                type: "button",
+                on: { click: sidebarController.toggleVisibility },
+                children: "toggle sidebar",
+              },
+              {
+                type: "button",
+                on: { click: player.toggleVisibility },
+                children: "toggle player",
+              },
+              {
+                type: "button",
+                style: {
+                  marginLeft: "800px",
+                },
+                children: "logout",
+                on: { click: logout },
+              },
+            ],
           },
           { className: cls.sidebar },
           { className: cls.gallery },
@@ -54,7 +74,7 @@ export const initApp = (userId: string) => {
     );
 
     sidebarController.init(dom.findFirstByClass(cls.sidebar));
-    playerController.init();
+    player.init();
     galleryController.renderItems(
       sidebarController.items[sidebarController.selectedItemId].children.map(
         (id) => sidebarController.items[id]

@@ -1,6 +1,7 @@
 import { cls, colors, cssText, cssClass, zIndexes } from "./infra";
 import * as sidebarStyle from "./sidebar/styles";
 
+const defaultSidebarWidth = 300;
 cssText(`
 body{
   overflow: hidden;
@@ -32,7 +33,12 @@ cssClass(cls.sidebar, {
   backgroundColor: colors.menu,
   boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.leftSidebarMenu,
-  width: "300px",
+  width: `${defaultSidebarWidth}px`,
+  transition: "margin 200ms ease-out",
+});
+
+cssClass(cls.sidebarHidden, {
+  marginLeft: -defaultSidebarWidth + "px",
 });
 
 cssClass(cls.gallery, {

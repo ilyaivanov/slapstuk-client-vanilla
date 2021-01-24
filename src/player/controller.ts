@@ -8,12 +8,7 @@ export let itemIdBeingPlayed = "";
 export const init = () => {
   dom
     .findFirstByClass(cls.player)
-    .appendChild(
-      dom.fragment([
-        { type: "button", on: { click: playNext }, children: "next" },
-        { id: "youtubePlayer" },
-      ])
-    );
+    .appendChild(dom.fragment([{ id: "youtubePlayer" }]));
 };
 
 export const playNext = () => {
@@ -31,10 +26,15 @@ export const playItem = (itemId: string) => {
     if (itemIdBeingPlayed) removeItemBeingPlayedFromItem(itemIdBeingPlayed);
 
     addItemBeingPlayedToItem(itemId);
-    
+
     itemIdBeingPlayed = itemId;
     play(item.videoId);
   }
+};
+
+export const toggleVisibility = () => {
+  console.log('foo')
+  dom.findFirstByClass(cls.player).classList.toggle(cls.playerHidden);
 };
 
 const removeItemBeingPlayedFromItem = (itemId: string) => {

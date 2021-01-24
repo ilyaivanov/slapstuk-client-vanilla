@@ -99,6 +99,10 @@ const removeItemChildren = (itemId: string) => {
   );
 };
 
+export const toggleVisibility = () => {
+  dom.findFirstByClass(cls.sidebar).classList.toggle(cls.sidebarHidden);
+};
+
 let focusLevel = 0;
 //Focus management
 export const onCirclePressed = (item: Item) => {
@@ -114,10 +118,9 @@ const focusOnItem = (item: Item) => {
 
   const row = view.findRowById(item.id);
 
-  focusLevel = view.parseLevelFromRow(row)
+  focusLevel = view.parseLevelFromRow(row);
   //I'm not changing model here, thus I would be able to close item back again when unfocus
-  if (!item.isOpenFromSidebar)
-    showItemChildren(item, focusLevel);
+  if (!item.isOpenFromSidebar) showItemChildren(item, focusLevel);
 
   dom.addClassToElement(
     cls.sidebarFocusContainer,
@@ -245,8 +248,10 @@ const onMouseMoveDuringDrag = (
     }
     const iconsWidth = 16;
     const focusShift = focusLevel * style.rowMarginPerLevel;
-    const elementLeft = parseInt(rowUnder.style.paddingLeft) + iconsWidth - focusShift;
-    const isInside = e.clientX > elementLeft + style.rowMarginPerLevel && isOnTheSecondHalf;
+    const elementLeft =
+      parseInt(rowUnder.style.paddingLeft) + iconsWidth - focusShift;
+    const isInside =
+      e.clientX > elementLeft + style.rowMarginPerLevel && isOnTheSecondHalf;
     const left = isInside ? elementLeft + style.rowMarginPerLevel : elementLeft;
     if (isInside) destinationType = "inside";
     dragDestination.style.left = left + "px";
