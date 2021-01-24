@@ -1,9 +1,11 @@
 import { cls, css, colors, cssText, styles, cssClass } from "../infra";
+import * as playerStyle from "../player/styles";
 
 export const gap = 20;
 export const galleryFadeSpeed = 150;
 export const cardExpandCollapseSpeed = 200;
 export const cardHeaderHeight = 35;
+
 cssClass(cls.gallery, {
   backgroundColor: colors.gallery,
   paddingTop: `${gap}px`,
@@ -35,6 +37,7 @@ cssClass(cls.card, {
   maxHeight: "calc(100% - 20px)",
   cursor: "pointer",
   overflow: "hidden",
+  transition: playerStyle.backgroundTransition
 });
 
 css(`.${cls.card}:hover`, {
@@ -44,6 +47,7 @@ css(`.${cls.card}:hover`, {
 css(`.${cls.cardImageWithTextContainer}:hover`, {
   backgroundColor: colors.cardHover,
 });
+
 css(`.${cls.itemBeingPlayed} .${cls.cardImageWithTextContainer}`, {
   backgroundColor: "inherit",
 });
@@ -97,6 +101,7 @@ cssClass(cls.subtrack, {
   fontWeight: "400",
   borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
   cursor: "pointer",
+  transition: playerStyle.backgroundTransition
 });
 
 css(`.${cls.subtrack}:hover`, {

@@ -1,14 +1,14 @@
 import { cls, colors, css, cssClass, zIndexes } from "../infra";
 
 export const playerHeight = 70;
-
+export const backgroundTransition = 'background-color 200ms ease-out'
 cssClass(cls.player, {
   height: playerHeight + "px",
   backgroundColor: colors.menu,
   zIndex: zIndexes.player,
 });
 
-css(`.${cls.page} .${cls.itemBeingPlayed}`, {
+css(`.${cls.page} .${cls.gallery} .${cls.itemBeingPlayed}`, {
   backgroundColor: colors.cardBeingPlayedBackground,
 });
 

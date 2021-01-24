@@ -8,6 +8,6 @@ export const scrollBar = "rgba(63, 63, 97, 0.8)";
 
 export const selectedRow = `rgba(255,255,255,0.14)`;
 
-const primary = "#007ac1";
+const primary = "#1565C0";
 
 export const cardBeingPlayedBackground = primary;
