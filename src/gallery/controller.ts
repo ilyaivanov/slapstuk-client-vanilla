@@ -14,15 +14,15 @@ export const renderItems = (newItems: Item[]) => {
     //extract this to a crossfade animation
     const from: Keyframe = {
       opacity: 1,
-      transform: "translateX(0px)",
+      transform: "translate3d(0, 0, 0)",
     };
     const toHide: Keyframe = {
       opacity: 0,
-      transform: "translateX(-20px)",
+      transform: "translate3d(-20px, 0, 0)",
     };
     const toAppear: Keyframe = {
       opacity: 0,
-      transform: "translateX(20px)",
+      transform: "translate3d(20px, 0, 0)",
     };
 
     const animation = gallery.animate([from, toHide], {

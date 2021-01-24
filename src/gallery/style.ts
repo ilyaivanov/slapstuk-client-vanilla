@@ -12,7 +12,7 @@ cssClass(cls.gallery, {
   flexWrap: "wrap",
   alignContent: "flex-start",
   overflowY: "hidden",
-  overflowX: "overlay",
+  overflowX: "overlay"
 });
 
 cssText(styles.cssTextForScrollBar(cls.gallery, { height: 12 }));
