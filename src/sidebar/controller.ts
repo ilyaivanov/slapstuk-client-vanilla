@@ -99,6 +99,7 @@ const removeItemChildren = (itemId: string) => {
   );
 };
 
+let focusLevel = 0;
 //Focus management
 export const onCirclePressed = (item: Item) => {
   const row = view.findRowById(item.id);
@@ -113,9 +114,10 @@ const focusOnItem = (item: Item) => {
 
   const row = view.findRowById(item.id);
 
+  focusLevel = view.parseLevelFromRow(row)
   //I'm not changing model here, thus I would be able to close item back again when unfocus
   if (!item.isOpenFromSidebar)
-    showItemChildren(item, view.parseLevelFromRow(row));
+    showItemChildren(item, focusLevel);
 
   dom.addClassToElement(
     cls.sidebarFocusContainer,
@@ -133,6 +135,7 @@ const focusOnItem = (item: Item) => {
 
 const unfocus = () => {
   dom.removeClassFromElement(cls.sidebarFocusContainerFocused);
+  focusLevel = 0;
   dom.findAllByClass(cls.sidebarRowFocused).forEach((row) => {
     row.classList.remove(cls.sidebarRowFocused);
     const itemId = view.itemIdFromRow(row);
@@ -241,7 +244,8 @@ const onMouseMoveDuringDrag = (
       dragDestination.style.top = rect.top - 2 + "px";
     }
     const iconsWidth = 20;
-    const elementLeft = parseInt(rowUnder.style.paddingLeft) + iconsWidth;
+    const focusShift = focusLevel * style.rowMarginPerLevel;
+    const elementLeft = parseInt(rowUnder.style.paddingLeft) + iconsWidth - focusShift;
     const isInside = e.clientX > elementLeft + 14 && isOnTheSecondHalf;
     const left = isInside ? elementLeft + 14 : elementLeft;
     if (isInside) destinationType = "inside";
