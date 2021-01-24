@@ -1,5 +1,9 @@
 import { ClassName } from "./keys";
 
+export type EventsDefinition = {
+  [key in string]: (e: MouseEvent) => void;
+};
+
 export type DivDefinition = {
   id?: string;
   className?: ClassName | (ClassName | undefined)[];
@@ -7,11 +11,9 @@ export type DivDefinition = {
   style?: Partial<CSSStyleDeclaration>;
 
   attributes?: any;
-  on?: {
-    [key in string]: (e: MouseEvent) => void;
-  };
+  on?: EventsDefinition;
 
-  type?: "button" | "div" | "svg" | "path" | "img";
+  type?: "button" | "div" | "svg" | "path" | "img" | "span";
   onClick?: (e: Event) => void;
 };
 
@@ -70,10 +72,16 @@ export const div = (divDefinition: DivDefinition): HTMLElement => {
   return elem as HTMLElement;
 };
 
-export const findFirstByClass = (
+export const fragment = (nodes: DivDefinition[]) => {
+  const fragment = document.createDocumentFragment();
+  nodes.forEach((node) => fragment.appendChild(div(node)));
+  return fragment;
+};
+
+export const findFirstByClass = <T extends HTMLElement>(
   className: ClassName,
   container: HTMLElement = document.body
-): HTMLElement => {
+): T => {
   const elem = container.getElementsByClassName(className);
   if (elem.length === 0) {
     if (process.env.NODE_ENV == "test") {
@@ -81,15 +89,15 @@ export const findFirstByClass = (
     }
     throw new Error(`Couldn't find any element with a class ${className}`);
   }
-  return elem.item(0) as HTMLElement;
+  return elem.item(0) as T;
 };
 
 export const maybeFindFirstByClass = (
   className: ClassName,
   container: HTMLElement = document.body
-): Element | null => {
+): HTMLElement | null => {
   const elem = container.getElementsByClassName(className);
-  return elem.item(0);
+  return elem.item(0) as HTMLElement;
 };
 
 export const findAllByClass = (
@@ -111,6 +119,11 @@ export const findById = (id: string): HTMLElement => {
   if (!elem) throw new Error(`Couldn't find any element with a id ${id}`);
   return elem;
 };
+
+export const maybefindById = (id: string): HTMLElement | null => {
+  return document.getElementById(id);
+};
+
 export const query = (selector: string): Element => {
   const elem = document.querySelector(selector);
   if (!elem)
@@ -118,8 +131,43 @@ export const query = (selector: string): Element => {
   return elem;
 };
 
-export const fragment = (nodes: Element[]) => {
-  const fragment = document.createDocumentFragment();
-  nodes.forEach((node) => fragment.appendChild(node));
-  return fragment;
+export const isEmpty = (node: HTMLElement) => node.childNodes.length === 0;
+
+//removes elementClass if classToRemove is not set
+export const removeClassFromElement = (
+  elementClass: ClassName,
+  classToRemove?: ClassName
+): Element | null => {
+  const element = maybeFindFirstByClass(elementClass);
+  if (element) {
+    const clsToRemove = classToRemove || elementClass;
+    element.classList.remove(clsToRemove);
+  }
+  return element;
 };
+
+export const addClassToElement = (
+  elementClass: ClassName,
+  classToAdd: ClassName
+): Element | null => {
+  const element = maybeFindFirstByClass(elementClass);
+  if (element) {
+    element.classList.add(classToAdd);
+  }
+  return element;
+};
+
+export const addClassToElementById = (id: string, classToAdd: ClassName) => {
+  const elem = maybefindById(id);
+  if (elem) elem.classList.add(classToAdd);
+};
+
+export const removeClassFromElementById = (
+  id: string,
+  classToRemove: ClassName
+) => {
+  const elem = maybefindById(id);
+  if (elem) elem.classList.remove(classToRemove);
+};
+
+// export const setChildren = (node: HTMLElement, )
