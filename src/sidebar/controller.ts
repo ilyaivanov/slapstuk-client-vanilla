@@ -243,11 +243,11 @@ const onMouseMoveDuringDrag = (
       destinationType = "before";
       dragDestination.style.top = rect.top - 2 + "px";
     }
-    const iconsWidth = 20;
+    const iconsWidth = 16;
     const focusShift = focusLevel * style.rowMarginPerLevel;
     const elementLeft = parseInt(rowUnder.style.paddingLeft) + iconsWidth - focusShift;
-    const isInside = e.clientX > elementLeft + 14 && isOnTheSecondHalf;
-    const left = isInside ? elementLeft + 14 : elementLeft;
+    const isInside = e.clientX > elementLeft + style.rowMarginPerLevel && isOnTheSecondHalf;
+    const left = isInside ? elementLeft + style.rowMarginPerLevel : elementLeft;
     if (isInside) destinationType = "inside";
     dragDestination.style.left = left + "px";
 
