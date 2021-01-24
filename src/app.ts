@@ -56,7 +56,7 @@ export const initApp = (userId: string) => {
     sidebarController.init(dom.findFirstByClass(cls.sidebar));
     playerController.init();
     galleryController.renderItems(
-      sidebarController.items["HOME"].children.map(
+      sidebarController.items[sidebarController.selectedItemId].children.map(
         (id) => sidebarController.items[id]
       )
     );
