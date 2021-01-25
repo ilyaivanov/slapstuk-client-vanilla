@@ -3,6 +3,7 @@ export const ids = {
   sidebarRowChildren: (itemId: string) => "row-children-" + itemId,
   card: (itemId: string) => "card-" + itemId,
   subtrack: (itemId: string) => "subtrack-" + itemId,
+  searchInput: 'search-input'
 } as const;
 
 export const cls = {

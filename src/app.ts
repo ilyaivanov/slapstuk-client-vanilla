@@ -1,6 +1,7 @@
-import { cls, dom } from "./infra";
+import { cls, dom, ids } from "./infra";
 import * as sidebarController from "./sidebar/controller";
 import * as galleryController from "./gallery/controller";
+import * as searchController from "./search/controller";
 import * as player from "./player/controller";
 import * as login from "./login/controller";
 import "./app.style";
@@ -29,9 +30,8 @@ export const initLogin = () => login.init();
 export const initApp = (userId: string) => {
   loadUserSettings(userId).then((data) => {
     const selectedItemId = data.nodeFocused;
-    items.setItems(JSON.parse(data.itemsSerialized));
+    items.setItems(JSON.parse(data.itemsSerialized || 'HOME'));
     items.setSelectedItem(selectedItemId);
-
     const root = dom.findById("root");
     root.innerHTML = "";
     root.appendChild(
@@ -57,6 +57,18 @@ export const initApp = (userId: string) => {
                 children: "toggle player",
               },
               {
+                type: "input",
+                id: ids.searchInput,
+                attributes: {
+                  placeholder: "Search for anything",
+                },
+              },
+              {
+                type: "button",
+                on: { click: searchController.search },
+                children: "go",
+              },
+              {
                 type: "button",
                 style: {
                   marginLeft: "800px",
@@ -75,7 +87,8 @@ export const initApp = (userId: string) => {
 
     sidebarController.init(dom.findFirstByClass(cls.sidebar));
     player.init();
-    galleryController.renderItems(items.getChildren(selectedItemId));
+    
+    galleryController.renderItems(items.getChildren(items.selectedItemId));
   });
 };
 

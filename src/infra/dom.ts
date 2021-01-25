@@ -13,7 +13,7 @@ export type DivDefinition = {
   attributes?: any;
   on?: EventsDefinition;
 
-  type?: "button" | "div" | "svg" | "path" | "img" | "span";
+  type?: "button" | "div" | "svg" | "path" | "img" | "span" | 'input';
   onClick?: (e: Event) => void;
 };
 

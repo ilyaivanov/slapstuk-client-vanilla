@@ -1,16 +1,28 @@
-let allItems: Items = {
+let defaultItems = {
   HOME: {
     id: "HOME",
     itemType: "folder",
     children: [],
     title: "Home",
   },
+  SEARCH: {
+    id: "SEARCH",
+    itemType: "folder",
+    children: [],
+    title: "SEARCH",
+  },
 };
+
+let allItems: Items = { ...defaultItems };
 
 export let selectedItemId = "HOME";
 export let focusedItemId = "HOME";
 
-export const setItems = (newItesm: Items) => (allItems = newItesm);
+export const setItems = (newItesm: Items) =>
+  (allItems = {
+    ...defaultItems,
+    ...newItesm,
+  });
 export const setSelectedItem = (itemId: string) => (selectedItemId = itemId);
 export const setFocusedItem = (itemId: string) => (focusedItemId = itemId);
 
@@ -31,6 +43,13 @@ export const getNextItem = (itemId: string): Item | undefined => {
     }
   }
   return undefined;
+};
+
+export const setSearchItems = (items: Item[]) => {
+  allItems.SEARCH.children = items.map((i) => i.id);
+  items.forEach((item) => {
+    allItems[item.id] = item;
+  });
 };
 
 export const findParentItem = (itemId: string): Item | undefined =>
