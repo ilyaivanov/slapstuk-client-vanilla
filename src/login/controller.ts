@@ -1,9 +1,16 @@
 import { cls, dom } from "../infra";
 import { authorize, firebaseAuth } from "./loginService";
 import "./style";
-
 export const init = () => {
   console.log("Init login");
+  firebaseAuth
+    .signInWithEmailAndPassword("test@sample.com", "123456")
+    .then((user: any) => {
+      console.log("Good", user);
+    })
+    .catch((erro: any) => {
+      console.log("error", erro);
+    });
   const loginPage = dom.div({
     className: cls.loginContainer,
     children: {
@@ -79,6 +86,8 @@ export const onLoginClick = () => {
 };
 
 firebaseAuth.onAuthStateChanged(function (user: any) {
+  // console.log('token', firebaseAuth.currentUser.getIdToken())
+
   if (user) notifyListeners("login", user.uid);
   //   actions.setUserState({
   //     state: "userLoggedIn",
