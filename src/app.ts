@@ -29,9 +29,11 @@ export const initLogin = () => login.init();
 
 export const initApp = (userId: string) => {
   loadUserSettings(userId).then((data) => {
-    const selectedItemId = data.nodeFocused;
-    items.setItems(JSON.parse(data.itemsSerialized || 'HOME'));
-    items.setSelectedItem(selectedItemId);
+    if (data) {
+      const selectedItemId = data.nodeFocused;
+      items.setItems(JSON.parse(data.itemsSerialized));
+      items.setSelectedItem(selectedItemId || "HOME");
+    }
     const root = dom.findById("root");
     root.innerHTML = "";
     root.appendChild(
@@ -87,7 +89,7 @@ export const initApp = (userId: string) => {
 
     sidebarController.init(dom.findFirstByClass(cls.sidebar));
     player.init();
-    
+
     galleryController.renderItems(items.getChildren(items.selectedItemId));
   });
 };
