@@ -82,18 +82,16 @@ export const removeItem = (item: Item) => {
 
   const parent = items.findParentItem(item.id);
   if (parent) {
-    parent.children = parent.children.filter((id) => id != item.id);
+    removeFromParent(item.id);
     const cont = view.findItemChildrenContainer(item.id);
     const row = view.findRowById(item.id);
     cont.classList.add(cls.deleted);
     row.classList.add(cls.deleted);
-    view.updateItemChevron(parent);
     currentRemoveTimeouts[item.id] = setTimeout(() => {
       anim.collapseElementHeight(row, style.focusTransitionTime, true);
       anim.collapseElementHeight(cont, style.focusTransitionTime, true);
       delete currentRemoveTimeouts[item.id];
     }, style.fadeOutTime);
-    
   }
 };
 
@@ -330,7 +328,6 @@ const onMouseUp = () => {
     originalRow.classList.remove(cls.transparent);
     dom.findFirstByClass(cls.dragAvatar).remove();
     dom.findById("drag-destination").remove();
-    view.updateItemChevron(items.getItem(targetItemId))
   }
   dragAvatar = undefined;
   dragDestination = undefined;
@@ -342,7 +339,18 @@ const onMouseUp = () => {
 
 const removeFromParent = (itemId: string) => {
   const parent = items.findParentItem(itemId);
-  if (parent) parent.children = parent.children.filter((id) => id != itemId);
+  if (parent) {
+    setChildren(
+      parent,
+      parent.children.filter((id) => id != itemId)
+    );
+  }
+};
+
+//update functions
+const setChildren = (item: Item, children: string[]) => {
+  item.children = children;
+  if (item.id !== "HOME") view.updateItemChevron(item);
 };
 
 const insertItemToLocation = (
@@ -356,7 +364,7 @@ const insertItemToLocation = (
   const targetItemLevel = view.parseLevelFromRow(targetItemRow);
 
   if (placement == "inside") {
-    targetItem.children = [itemBeingDraggedId].concat(targetItem.children);
+    setChildren(targetItem, [itemBeingDraggedId].concat(targetItem.children));
 
     if (targetItem.isOpenFromSidebar) {
       const childNodes = view
