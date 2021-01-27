@@ -7,10 +7,11 @@ export const search = () => {
   const input = dom.findById(ids.searchInput) as HTMLInputElement;
   if (input.value) {
     api.findYoutubeVideos(input.value).then((data) => {
+      console.log(data.items)
       const itemsMapped = data.items.map((i: any) => ({
         ...i,
         //TODO: map items properly here
-        videoId: i.type == "video" ? i.itemId : undefined,
+        videoId: i.itemType == "video" ? i.itemId : undefined,
         title: i.name,
         children: [],
       }));
