@@ -3,6 +3,7 @@ import * as firebase from "./loginService";
 
 export const init = () => {
   if (isIsolated) {
+    console.log("Initiating an isolated mode");
     setTimeout(() => {
       onAuthStateChanged({ uid: "SAMPLE_USER_ID" });
     });

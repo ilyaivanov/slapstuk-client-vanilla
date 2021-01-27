@@ -15,7 +15,7 @@ var firebaseConfig = {
   appId: "1:38999431091:web:b8fd2629dfeabc96b39dc6",
   measurementId: "G-C3RB7NB0ZD",
 };
-export let firebaseAuth: ReturnType<typeof firebase.auth>;
+let firebaseAuth: ReturnType<typeof firebase.auth>;
 export const initFirebase = (onAuthChanged: any) => {
   firebase.initializeApp(firebaseConfig);
   firebaseAuth = firebase.auth();
