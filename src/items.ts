@@ -52,5 +52,10 @@ export const setSearchItems = (items: Item[]) => {
   });
 };
 
+export const appendChildTo = (parentId: string, item: Item) => {
+  allItems[parentId].children = [item.id].concat(allItems[parentId].children);
+  allItems[item.id] = item;
+};
+
 export const findParentItem = (itemId: string): Item | undefined =>
   Object.values(allItems).find((v) => v.children.indexOf(itemId) >= 0);

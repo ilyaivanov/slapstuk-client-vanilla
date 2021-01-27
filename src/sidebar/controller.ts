@@ -8,16 +8,39 @@ export const init = (sidebarParent: HTMLElement) => {
   const itemsToRender = items
     .getHomeItems()
     .map((item) => view.viewRow(item, 0));
-  sidebarParent.appendChild(
+  const focusContainer = dom.div({
+    className: cls.sidebarFocusContainer,
+    children: itemsToRender.flat(),
+  });
+  sidebarParent.appendChild(focusContainer);
+  focusContainer.appendChild(
     dom.div({
-      className: cls.sidebarFocusContainer,
-      children: itemsToRender.flat(),
+      children: view.plus2(cls.sidebarPlusIcon),
+      on: {
+        click: addNewItem,
+      },
     })
   );
   //Add removeEventListener when I will have multiple pages (Login included)
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("mouseup", onMouseUp);
 };
+
+const addNewItem = () => {
+  const newItem: Item = {
+    children: [],
+    id: Math.random() + "",
+    title: "New Item",
+    itemType: "folder",
+  };
+  items.appendChildTo("HOME", newItem);
+  const plus = dom.findFirstByClass(cls.sidebarPlusIcon);
+  const newNodes = view.viewRow(newItem, 0).map(dom.div);
+  plus.insertAdjacentElement("beforebegin", newNodes[0]);
+  plus.insertAdjacentElement("beforebegin", newNodes[1]);
+  animateExpandForRowAndChildContainer(newNodes[0], newNodes[1]);
+};
+
 var currentRemoveTimeouts: { [itemId: string]: NodeJS.Timeout } = {};
 export const removeItem = (item: Item) => {
   if (currentRemoveTimeouts[item.id]) return;
@@ -302,10 +325,10 @@ const insertItemToLocation = (
         .viewRow(itemBeingDragged, targetItemLevel + 1)
         .map(dom.div);
       const container = view.findItemChildrenContainer(targetItemId);
-      container.insertAdjacentElement("beforebegin", childNodes[1]);
-      container.insertAdjacentElement("beforebegin", childNodes[0]);
+      container.insertAdjacentElement("afterbegin", childNodes[1]);
+      container.insertAdjacentElement("afterbegin", childNodes[0]);
       animateExpandForRowAndChildContainer(childNodes[0], childNodes[1]);
-    }
+    } else removeClassHidingChevrons();
   } else if (placement == "before") {
     const parent = items.findParentItem(targetItemId);
 
@@ -354,19 +377,20 @@ const animateExpandForRowAndChildContainer = (
   row: HTMLElement,
   childContainer: HTMLElement
 ) => {
-  //TODO: onAnimationsDone is triggered twice. need to think about race conditions here 
-  const onAnimationsDone = () =>
-    dom.removeClassFromElement(cls.sidebar, cls.sidebarHideChevrons);
+  //TODO: onAnimationsDone is triggered twice. need to think about race conditions here
   anim.expandElementHeight(
     row,
     style.expandCollapseTransitionTime,
     row.clientHeight,
-    onAnimationsDone
+    removeClassHidingChevrons
   );
   anim.expandElementHeight(
     childContainer,
     style.expandCollapseTransitionTime,
     childContainer.scrollHeight,
-    onAnimationsDone
+    removeClassHidingChevrons
   );
 };
+
+const removeClassHidingChevrons = () =>
+  dom.removeClassFromElement(cls.sidebar, cls.sidebarHideChevrons);

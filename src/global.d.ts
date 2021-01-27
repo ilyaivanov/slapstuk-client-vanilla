@@ -5,7 +5,7 @@ type Item = {
   title: string;
   image?: string;
   videoId?: string;
-  itemType?: string;
+  itemType: string;
   children: string[];
   isOpenFromSidebar?: boolean;
   isOpenInGallery?: boolean;

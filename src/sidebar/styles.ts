@@ -244,3 +244,16 @@ cssClass(cls.transparent, {
   opacity: "0",
   pointerEvents: "none",
 });
+
+//Plus icon
+cssClass(cls.sidebarPlusIcon, {
+  color: "rgb(184, 184, 184)",
+  marginLeft: "18px",
+  marginTop: "2px",
+  width: "18px",
+  height: "18px",
+  cursor: "pointer",
+});
+cssClassOnHover(cls.sidebarPlusIcon, {
+  color: "white",
+});

@@ -28,7 +28,7 @@ export const cls = {
   sidebarRowExpandButtonContainer: "sidebar-row-expand-button-container",
   sidebarRemoveItemButton: "remove-item-button",
   sidebarHideChevrons: "sidebar-hide-chevrons",
-
+  sidebarPlusIcon :'sidebar-plus-icon',
   dragAvatar: "drag-avatar",
 
   //gallery
