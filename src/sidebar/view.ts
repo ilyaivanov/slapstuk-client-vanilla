@@ -23,14 +23,17 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
       },
       children: [
         {
-          className: cls.sidebarRowExpandButtonContainer,
+          className: [
+            cls.sidebarRowExpandButtonContainer,
+            item.children.length == 0 ? cls.hidden : cls.none,
+          ],
           children: chevron([
             cls.sidebarRowExpandButton,
             item.isOpenFromSidebar ? cls.rotated : cls.none,
-            item.children.length == 0 ? cls.hidden : cls.none,
           ]),
           on: {
             click: (e) => {
+              console.log("chevron clicked", item.title);
               e.stopPropagation();
               controller.toggleSidebarVisibilityForItem(item);
             },
@@ -93,6 +96,16 @@ export const findToggleButton = (itemId: string) => {
 
 export const findFocusButton = (row: HTMLElement) => {
   return dom.findFirstByClass(cls.sidebarRowCircle, row);
+};
+
+export const updateItemChevron = (item: Item) => {
+  const row = findRowById(item.id);
+  const chevronContainer = dom.findFirstByClass(
+    cls.sidebarRowExpandButtonContainer,
+    row
+  );
+  if (item.children.length > 0) chevronContainer.classList.remove(cls.hidden);
+  else chevronContainer.classList.add(cls.hidden);
 };
 
 export const findFocusButtonForItem = (itemId: string) => {

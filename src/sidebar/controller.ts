@@ -87,11 +87,13 @@ export const removeItem = (item: Item) => {
     const row = view.findRowById(item.id);
     cont.classList.add(cls.deleted);
     row.classList.add(cls.deleted);
+    view.updateItemChevron(parent);
     currentRemoveTimeouts[item.id] = setTimeout(() => {
       anim.collapseElementHeight(row, style.focusTransitionTime, true);
       anim.collapseElementHeight(cont, style.focusTransitionTime, true);
       delete currentRemoveTimeouts[item.id];
     }, style.fadeOutTime);
+    
   }
 };
 
@@ -328,6 +330,7 @@ const onMouseUp = () => {
     originalRow.classList.remove(cls.transparent);
     dom.findFirstByClass(cls.dragAvatar).remove();
     dom.findById("drag-destination").remove();
+    view.updateItemChevron(items.getItem(targetItemId))
   }
   dragAvatar = undefined;
   dragDestination = undefined;
