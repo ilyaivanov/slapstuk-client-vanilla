@@ -34,7 +34,6 @@ cssText(styles.cssTextForScrollBar(cls.sidebar, { width: 8 }));
 
 cssClass(cls.sidebarRow, {
   height: "27px",
-  marginLeft: "2px",
   color: "white",
   display: "flex",
   flexDirection: "row",
