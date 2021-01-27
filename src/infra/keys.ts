@@ -3,7 +3,7 @@ export const ids = {
   sidebarRowChildren: (itemId: string) => "row-children-" + itemId,
   card: (itemId: string) => "card-" + itemId,
   subtrack: (itemId: string) => "subtrack-" + itemId,
-  searchInput: 'search-input'
+  searchInput: "search-input",
 } as const;
 
 export const cls = {
@@ -24,11 +24,13 @@ export const cls = {
   sidebarRowCircle: "sidebar-row-circle",
   circlePlaying: "sidebar-row-circle-playing",
   sidebarRowText: "sidebar-row-text",
+  sidebarRowInputField: "sidebar-row-text-input",
   sidebarRowExpandButton: "sidebar-row-expand-button",
   sidebarRowExpandButtonContainer: "sidebar-row-expand-button-container",
-  sidebarRemoveItemButton: "remove-item-button",
+  sidebarRemoveItemButton: "remove-item",
+  sidebarEditItemButton: "edit-item",
   sidebarHideChevrons: "sidebar-hide-chevrons",
-  sidebarPlusIcon :'sidebar-plus-icon',
+  sidebarPlusIcon: "sidebar-plus-icon",
   dragAvatar: "drag-avatar",
 
   //gallery

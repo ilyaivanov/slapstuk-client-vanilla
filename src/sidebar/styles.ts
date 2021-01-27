@@ -48,10 +48,10 @@ cssClass(cls.sidebarRow, {
 
 cssClass(cls.sidebarRemoveItemButton, {
   position: "absolute",
-  right: "0",
+  right: "10px",
   top: "0",
   bottom: "0",
-  width: "30px",
+  width: "10px",
   color: "black",
   opacity: "0",
 });
@@ -59,10 +59,31 @@ cssClass(cls.sidebarRemoveItemButton, {
 cssClassOnHover(cls.sidebarRemoveItemButton, {
   color: "#f44336",
 });
-
-css(`.${cls.sidebarRow}:hover .${cls.sidebarRemoveItemButton}`, {
-  opacity: "1",
+cssClass(cls.sidebarEditItemButton, {
+  position: "absolute",
+  right: "25px",
+  top: "0",
+  bottom: "0",
+  width: "10px",
+  color: "black",
+  opacity: "0",
 });
+
+cssClassOnHover(cls.sidebarRemoveItemButton, {
+  color: "#f44336",
+});
+cssClassOnHover(cls.sidebarEditItemButton, {
+  color: "white",
+});
+css(
+  [
+    `.${cls.sidebarRow}:hover .${cls.sidebarRemoveItemButton}`,
+    `.${cls.sidebarRow}:hover .${cls.sidebarEditItemButton}`,
+  ],
+  {
+    opacity: "1",
+  }
+);
 
 cssClassOnHover(cls.sidebarRow, {
   backgroundColor: "rgba(255,255,255, 0.08)",
@@ -91,10 +112,15 @@ css(
 cssClass(cls.sidebarRowText, {
   transition: `font-size ${focusTransition}`,
   whiteSpace: "nowrap",
+  flex: "1",
 });
 
 css(`.${cls.sidebarRowFocused} .${cls.sidebarRowText}`, {
   fontSize: "22px",
+});
+
+cssClass(cls.sidebarRowInputField, {
+  width: `calc(100% - 10px)`,
 });
 
 cssClass(cls.sidebarRowChildrenContainer, {

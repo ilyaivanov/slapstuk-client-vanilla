@@ -15,7 +15,8 @@ export const init = (sidebarParent: HTMLElement) => {
   sidebarParent.appendChild(focusContainer);
   focusContainer.appendChild(
     dom.div({
-      children: view.plus(cls.sidebarPlusIcon),
+      className: cls.sidebarPlusIcon,
+      children: view.plus(cls.none),
       on: {
         click: addNewItem,
       },
@@ -27,10 +28,11 @@ export const init = (sidebarParent: HTMLElement) => {
 };
 
 const addNewItem = () => {
+  console.log("addNewItem");
   const newItem: Item = {
     children: [],
     id: Math.random() + "",
-    title: "New Item",
+    title: "",
     itemType: "folder",
   };
   items.appendChildTo("HOME", newItem);
@@ -39,6 +41,39 @@ const addNewItem = () => {
   plus.insertAdjacentElement("beforebegin", newNodes[0]);
   plus.insertAdjacentElement("beforebegin", newNodes[1]);
   animateExpandForRowAndChildContainer(newNodes[0], newNodes[1]);
+  onEdit(newItem.id);
+};
+
+export const onEdit = (itemId: string) => {
+  const row = view.findRowById(itemId);
+  const text = dom.findFirstByClass(cls.sidebarRowText, row);
+  text.innerHTML = "";
+  const finishEdit = () => {
+    const newName = input.value || "New Item";
+    items.getItem(itemId).title = newName;
+    text.innerHTML = newName;
+  };
+  const input = dom.div({
+    type: "input",
+    className: cls.sidebarRowInputField,
+    attributes: {
+      value: items.getItem(itemId).title,
+      draggable: "false",
+      placeholder: "Enter folder name here...",
+    },
+    on: {
+      blur: finishEdit,
+      keyup: ((e: KeyboardEvent) => {
+        if (e.key === "Enter") {
+          input.blur();
+        }
+      }) as any,
+      click: (e) => e.stopPropagation(),
+      mousedown: (e) => e.stopPropagation(),
+    },
+  }) as HTMLInputElement;
+  text.appendChild(input);
+  input.focus();
 };
 
 var currentRemoveTimeouts: { [itemId: string]: NodeJS.Timeout } = {};

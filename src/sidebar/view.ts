@@ -47,6 +47,16 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
           children: item.title,
         },
         {
+          className: cls.sidebarEditItemButton,
+          children: "e",
+          on: {
+            click: (e) => {
+              e.stopPropagation();
+              controller.onEdit(item.id);
+            },
+          },
+        },
+        {
           className: cls.sidebarRemoveItemButton,
           children: "x",
           on: {
@@ -116,8 +126,6 @@ const chevron = (className?: ClassName | ClassName[]): DivDefinition =>
     "0 0 256 512",
     className
   );
-
-  
 
 export const arrow = (
   className?: ClassName | ClassName[],
