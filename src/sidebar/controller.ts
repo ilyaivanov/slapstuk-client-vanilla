@@ -15,7 +15,7 @@ export const init = (sidebarParent: HTMLElement) => {
   sidebarParent.appendChild(focusContainer);
   focusContainer.appendChild(
     dom.div({
-      children: view.plus2(cls.sidebarPlusIcon),
+      children: view.plus(cls.sidebarPlusIcon),
       on: {
         click: addNewItem,
       },
