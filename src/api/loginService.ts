@@ -1,9 +1,7 @@
 declare const firebase: any;
 
-if (process.env.NODE_ENV === "test")
-  throw new Error("Tried to initialize Firebase from tests");
-
-export const authorize = () => firebaseAuth.signInWithPopup(provider);
+export const authorize = () =>
+  firebaseAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
 
 export const logout = () => firebaseAuth.signOut();
 
@@ -17,10 +15,12 @@ var firebaseConfig = {
   appId: "1:38999431091:web:b8fd2629dfeabc96b39dc6",
   measurementId: "G-C3RB7NB0ZD",
 };
-
-firebase.initializeApp(firebaseConfig);
-export const firebaseAuth = firebase.auth();
-export const provider = new firebase.auth.GoogleAuthProvider();
+let firebaseAuth: ReturnType<typeof firebase.auth>;
+export const initFirebase = (onAuthChanged: any) => {
+  firebase.initializeApp(firebaseConfig);
+  firebaseAuth = firebase.auth();
+  firebaseAuth.onAuthStateChanged(onAuthChanged);
+};
 
 export const saveUserSettings = (
   userSettings: PersistedState,
