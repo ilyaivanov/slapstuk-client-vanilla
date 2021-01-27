@@ -16,4 +16,7 @@ import * as dom from "./dom";
 //@ts-ignore
 global.dom = dom;
 
+declare const ISOLATED: boolean;
+
 export const isProd = process.env.NODE_ENV === "production";
+export const isIsolated = ISOLATED;

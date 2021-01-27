@@ -61,6 +61,8 @@ export const cls = {
   hidden: "hidden",
   deleted: "deleted",
   transparent: "transparent",
+  loadGrid: "load-grid",
+  loadGridContainer: "load-grid-container",
   none: "",
 } as const;
 
