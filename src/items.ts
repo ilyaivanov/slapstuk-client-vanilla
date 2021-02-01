@@ -59,3 +59,20 @@ export const appendChildTo = (parentId: string, item: Item) => {
 
 export const findParentItem = (itemId: string): Item | undefined =>
   Object.values(allItems).find((v) => v.children.indexOf(itemId) >= 0);
+
+//TODO: this is a legacy leftovers from my dumb decision regarding items structure
+//I can't fix it right now, since https://slapstuk.web.app/ already rely on it
+export const isFolder = (item: Item) => {
+  return item.itemType == "folder" && !item.image;
+};
+export const isPlaylist = (item: Item) => {
+  return item.itemType == "folder" && item.image;
+};
+
+export const isVideo = (item: Item) => {
+  return item.itemType == "video";
+};
+
+export const isChannel = (item: Item) => {
+  return item.itemType == "channel";
+};

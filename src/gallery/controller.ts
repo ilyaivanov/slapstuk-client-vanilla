@@ -1,4 +1,14 @@
-import { anim, cls, dom, ids, DivDefinition } from "../infra";
+import {
+  anim,
+  cls,
+  dom,
+  ids,
+  DivDefinition,
+  cssClass,
+  css,
+  styles,
+  ClassName,
+} from "../infra";
 import * as style from "./style";
 import * as player from "../player/controller";
 import * as items from "../items";
@@ -94,17 +104,7 @@ const viewCard = (item: Item): DivDefinition => ({
     {
       className: cls.cardImageWithTextContainer,
       children: [
-        {
-          type: "img",
-          className: [
-            cls.cardImage,
-            item.isOpenInGallery ? cls.cardImageHidden : cls.none,
-          ],
-          attributes: {
-            src: getImageSrc(item) || defaultSrc,
-            draggable: "false",
-          },
-        },
+        folderPreview(item),
         {
           className: [
             cls.cardText,
@@ -117,6 +117,33 @@ const viewCard = (item: Item): DivDefinition => ({
     {
       className: cls.subtracksContainer,
       children: item.isOpenInGallery ? viewSubtracks(item.id) : [],
+    },
+    {
+      className: cls.cardTypeBox,
+      children: [
+        {
+          className: [
+            cls.cardTypeBoxTriangle,
+            items.isFolder(item)
+              ? cls.cardTypeBoxTriangleFolder
+              : items.isChannel(item)
+              ? cls.cardTypeBoxTriangleChannel
+              : items.isPlaylist(item)
+              ? cls.cardTypeBoxTrianglePlaylist
+              : cls.none,
+          ],
+        },
+        {
+          className: cls.cardTypeBoxTextContainer,
+          children: items.isFolder(item)
+            ? "F"
+            : items.isPlaylist(item)
+            ? "P"
+            : items.isChannel(item)
+            ? "C"
+            : "",
+        },
+      ],
     },
   ],
 });
@@ -140,21 +167,107 @@ const viewSubtrack = (item: Item): DivDefinition => ({
     {
       type: "img",
       className: cls.subtrackImage,
-      attributes: { src: getImageSrc(item) },
+      attributes: { src: getFirstImage(item) },
     },
     { type: "span", children: item.title },
   ],
 });
 
-const defaultSrc = "https://i.ytimg.com/vi/84Xpdw92KFo/mqdefault.jpg";
+// CSS grid here
+const imageHeight = 180;
+const imageWidth = 320;
+cssClass(cls.cardImage, {
+  display: "block",
+  opacity: "1",
+  transition: `
+    margin-top ${style.cardExpandCollapseSpeed}ms linear, 
+    opacity ${style.cardExpandCollapseSpeed}ms ease-out`,
+  width: `${imageWidth}px`,
+  height: `${imageHeight}px`,
+  objectFit: "cover",
+});
+
+cssClass(cls.cardImageHidden, {
+  marginTop: `-${imageHeight}px`,
+  opacity: "0",
+});
+
+cssClass(cls.folderImages, {
+  display: "flex",
+  flexDirection: "row",
+});
+
+cssClass(cls.folderImagesSubContanier, {
+  flex: "1",
+});
+
+css(`.${cls.folderImages} img`, {
+  width: "100%",
+  height: "100%",
+  display: "block",
+  objectFit: "cover",
+});
+
+cssClass(cls.folderImagesEmpty, {
+  color: "gray",
+  fontSize: "40px",
+  ...styles.flexCenter,
+});
+
+const folderPreview = (item: Item): DivDefinition => {
+  const children = items.getChildren(item.id);
+
+  const containerClasses: ClassName[] = [
+    cls.cardImage,
+    item.isOpenInGallery ? cls.cardImageHidden : cls.none,
+  ];
+
+  if (!items.isFolder(item) || children.length == 1) {
+    let src = !items.isFolder(item)
+      ? getImageSrc(item)
+      : getPreviewImages(item);
+    return {
+      type: "img",
+      className: containerClasses,
+      attributes: { src, draggable: "false" },
+    };
+  }
+  const previewImages = getPreviewImages(item);
+  if (previewImages.length === 0)
+    return {
+      className: containerClasses.concat([cls.folderImagesEmpty]),
+      children: "Empty",
+    };
+  return {
+    className: containerClasses.concat([cls.folderImages]),
+    children: previewImages.map((src) => ({
+      className: cls.folderImagesSubContanier,
+      children: {
+        type: "img",
+        attributes: { src },
+      },
+    })),
+  };
+};
+
+const getPreviewImages = (item: Item): string[] =>
+  items
+    .getChildren(item.id)
+    .map(getFirstImage)
+    .filter((x) => !!x)
+    .slice(0, 2) as string[];
+
+const getFirstImage = (item: Item): string | undefined => {
+  if (items.isFolder(item)) {
+    const children = items.getChildren(item.id);
+    return children.map(getFirstImage).filter((x) => !!x)[0] as string;
+  }
+  return getImageSrc(item) as string;
+};
+
 const getImageSrc = (item: Item): string | undefined => {
   if (item.image) return item.image;
   else if (item.videoId)
     return `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
   else return undefined;
-};
-
-const l = (e: any) => {
-  console.log(e);
-  return e;
 };

@@ -37,7 +37,18 @@ export const cls = {
   gallery: "gallery",
   card: "card",
   cardImage: "card-image",
+  folderImages: "card-image-for-folder",
+  folderImagesEmpty: "card-image-for-empty-folder",
+  folderImagesSubContanier: "card-image-for-folder-sub-continaer",
   cardImageWithTextContainer: "card-text-image",
+
+  cardTypeBox: "card-type-box",
+  cardTypeBoxTriangle: "card-type-box-triangle",
+  cardTypeBoxTrianglePlaylist: "card-type-box-triangle-playlist",
+  cardTypeBoxTriangleChannel: "card-type-box-triangle-channel",
+  cardTypeBoxTriangleFolder: "card-type-box-triangle-folder",
+  cardTypeBoxTextContainer: "card-type-box-text-container",
+
   cardImageHidden: "card-image-hidden",
   cardText: "card-text",
   cardTextForFolder: "card-text-folder",

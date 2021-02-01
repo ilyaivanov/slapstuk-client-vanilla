@@ -1,3 +1,6 @@
+import { isIsolated } from "../infra";
+import { sampleResponseWithChannelsAndPlaylists } from "./fakeYoutubeService";
+
 const API_HOST = "https://europe-west1-slapstuk.cloudfunctions.net";
 // const API_HOST = "http://localhost:5001/slapstuk/europe-west1";
 
@@ -5,6 +8,8 @@ export const findYoutubeVideos = (
   term: string,
   pageToken?: string
 ): Promise<any> => {
+  if (isIsolated)
+    return Promise.resolve(sampleResponseWithChannelsAndPlaylists);
   verifyNonTextEnvironment();
   let url = `${API_HOST}/getVideos?q=${term}`;
   if (pageToken) url += `&pageToken=${pageToken}`;

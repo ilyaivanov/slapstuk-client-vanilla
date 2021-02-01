@@ -14,7 +14,7 @@ cssClass(cls.gallery, {
   flexWrap: "wrap",
   alignContent: "flex-start",
   overflowY: "hidden",
-  overflowX: "overlay"
+  overflowX: "overlay",
 });
 
 cssText(styles.cssTextForScrollBar(cls.gallery, { height: 12 }));
@@ -37,7 +37,8 @@ cssClass(cls.card, {
   maxHeight: "calc(100% - 20px)",
   cursor: "pointer",
   overflow: "hidden",
-  transition: playerStyle.backgroundTransition
+  position: "relative",
+  transition: playerStyle.backgroundTransition,
 });
 
 css(`.${cls.card}:hover`, {
@@ -52,21 +53,45 @@ css(`.${cls.itemBeingPlayed} .${cls.cardImageWithTextContainer}`, {
   backgroundColor: "inherit",
 });
 
-cssClass(cls.cardImage, {
-  display: "block",
-  borderTopLeftRadius: "4px",
-  borderTopRightRadius: "4px",
-  opacity: "1",
-  transition: `margin-top ${cardExpandCollapseSpeed}ms linear, 
-  opacity ${cardExpandCollapseSpeed}ms ease-out`,
-  width: "320px",
-  height: "180px",
+const triangleWidth = 25;
+
+cssClass(cls.cardTypeBox, {
+  position: "absolute",
+  pointerEvents: "none",
+  top: "0",
+  right: "0",
+  width: `${triangleWidth}px`,
+  height: `${triangleWidth}px`,
 });
 
-cssClass(cls.cardImageHidden, {
-  marginTop: "-180px",
-  opacity: "0",
+cssClass(cls.cardTypeBoxTriangle, {
+  width: "0",
+  height: "0",
+  pointerEvents: "auto",
+  borderLeft: `${triangleWidth}px solid transparent`,
 });
+
+cssClass(cls.cardTypeBoxTrianglePlaylist, {
+  borderTop: `${triangleWidth}px solid rgba(30, 170, 0, 0.6)`,
+});
+
+cssClass(cls.cardTypeBoxTriangleChannel, {
+  borderTop: `${triangleWidth}px solid rgba(0, 112, 221, 0.6)`,
+});
+
+cssClass(cls.cardTypeBoxTriangleFolder, {
+  borderTop: `${triangleWidth}px solid rgba(0, 0, 0, 0.6)`,
+});
+
+cssClass(cls.cardTypeBoxTextContainer, {
+  position: "absolute",
+  top: "1px",
+  right: "4px",
+  fontSize: "12px",
+  fontWeight: "500",
+  color: "white",
+});
+
 
 cssClass(cls.cardText, {
   padding: "8px",
@@ -101,7 +126,7 @@ cssClass(cls.subtrack, {
   fontWeight: "400",
   borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
   cursor: "pointer",
-  transition: playerStyle.backgroundTransition
+  transition: playerStyle.backgroundTransition,
 });
 
 css(`.${cls.subtrack}:hover`, {

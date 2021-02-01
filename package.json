@@ -4,8 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "dev": "webpack serve --mode development --port 8081",
-    "dev:isolated": "webpack serve --mode development --env isolated",
+    "dev": "webpack serve --mode development",
+    "dev:isolated": "webpack serve --mode development --env isolated  --port 8081",
     "dev:build": "webpack --mode development",
     "build": "webpack --mode production",
     "deploy": "yarn build && firebase-deploy.sh"

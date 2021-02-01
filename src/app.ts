@@ -36,6 +36,8 @@ export const initLogin = () => login.init();
 export const initApp = (userId: string) => {
   api.loadUserSettings(userId).then((data) => {
     if (data) {
+      //@ts-ignore
+      global.allItems = JSON.parse(data.itemsSerialized);
       const selectedItemId = data.nodeFocused;
       items.setItems(JSON.parse(data.itemsSerialized));
       items.setSelectedItem(selectedItemId || "HOME");

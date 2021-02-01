@@ -273,7 +273,7 @@ cssClass(cls.transparent, {
 //Plus icon
 cssClass(cls.sidebarPlusIcon, {
   color: "rgb(184, 184, 184)",
-  marginLeft: "18px",
+  marginLeft: "16px",
   marginTop: "2px",
   width: "18px",
   height: "18px",

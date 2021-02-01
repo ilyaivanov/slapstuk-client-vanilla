@@ -1,5 +1,5 @@
 import { dom, ids } from "../infra";
-import * as api from "../youtubeRequest";
+import * as api from "../api/youtubeRequest";
 import * as gallery from "../gallery/controller";
 import * as items from "../items";
 
