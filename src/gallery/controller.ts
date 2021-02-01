@@ -12,6 +12,7 @@ import {
 import * as style from "./style";
 import * as player from "../player/controller";
 import * as items from "../items";
+import { fetchPlaylistVideos } from "../api/youtubeRequest";
 
 export const renderItems = (newItems: Item[]) => {
   const gallery = dom.findFirstByClass(cls.gallery);
@@ -58,6 +59,31 @@ const renderGallery = (views: Node) => {
 };
 
 const toggleCardExpandCollapse = (item: Item) => {
+  if (items.isPlaylistNeedToBeLoaded(item)) {
+    console.log("Loading YT playlist", item.title);
+    const mapItem = (backItem: any): Item => ({
+      title: backItem.name,
+      itemType: "video",
+      id: backItem.id,
+      children: [],
+      videoId: backItem.itemId,
+    });
+    if (item.playlistId) {
+      fetchPlaylistVideos(item.playlistId)
+        .then((response) => response.items.map(mapItem))
+        .then((newItems) => {
+          items.setChildren(item.id, newItems);
+          const card = dom.findById("card-" + item.id);
+          const cardSubtracksContainer = dom.findFirstByClass(
+            cls.subtracksContainer,
+            card
+          );
+          cardSubtracksContainer.innerHTML = "";
+          const subs = viewSubtracks(item.id);
+          cardSubtracksContainer.appendChild(dom.fragment(subs));
+        });
+    }
+  }
   const card = dom.findById("card-" + item.id);
   item.isOpenInGallery = !item.isOpenInGallery;
   const cardImage = dom.findFirstByClass(cls.cardImage, card);
@@ -65,12 +91,15 @@ const toggleCardExpandCollapse = (item: Item) => {
     cls.subtracksContainer,
     card
   );
+  const content = items.isPlaylistLoading(item)
+    ? viewSubtracksLoadingGrid()
+    : viewSubtracks(item.id);
   if (item.isOpenInGallery) {
     cardImage.classList.add(cls.cardImageHidden);
     const gallery = dom.findFirstByClass(cls.gallery);
     anim.openElementHeight(
       cardSubtracksContainer,
-      viewSubtracks(item.id),
+      content,
       style.cardExpandCollapseSpeed,
       () =>
         Math.min(
@@ -94,15 +123,15 @@ const viewCard = (item: Item): DivDefinition => ({
     cls.card,
     player.itemIdBeingPlayed == item.id ? cls.itemBeingPlayed : cls.none,
   ],
-  on: {
-    click: () => {
-      if (item.itemType == "video") player.playItem(item.id);
-      else toggleCardExpandCollapse(item);
-    },
-  },
   children: [
     {
       className: cls.cardImageWithTextContainer,
+      on: {
+        click: () => {
+          if (item.itemType == "video") player.playItem(item.id);
+          else toggleCardExpandCollapse(item);
+        },
+      },
       children: [
         folderPreview(item),
         {
@@ -249,6 +278,18 @@ const folderPreview = (item: Item): DivDefinition => {
     })),
   };
 };
+
+const viewSubtracksLoadingGrid = (): DivDefinition => ({
+  style: {
+    ...styles.flexCenter,
+    margin: "10px",
+  },
+  children: {
+    className: cls.loadGrid,
+
+    children: Array.from(new Array(9)).map(() => ({})),
+  },
+});
 
 const getPreviewImages = (item: Item): string[] =>
   items

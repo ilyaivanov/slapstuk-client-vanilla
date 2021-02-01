@@ -45,8 +45,10 @@ export const getNextItem = (itemId: string): Item | undefined => {
   return undefined;
 };
 
-export const setSearchItems = (items: Item[]) => {
-  allItems.SEARCH.children = items.map((i) => i.id);
+export const setSearchItems = (items: Item[]) => setChildren("SEARCH", items);
+
+export const setChildren = (parentId: string, items: Item[]) => {
+  allItems[parentId].children = items.map((i) => i.id);
   items.forEach((item) => {
     allItems[item.id] = item;
   });
@@ -67,6 +69,14 @@ export const isFolder = (item: Item) => {
 };
 export const isPlaylist = (item: Item) => {
   return item.itemType == "folder" && item.image;
+};
+
+export const isPlaylistNeedToBeLoaded = (item: Item) => {
+  return isPlaylist(item) && item.children.length == 0;
+};
+
+export const isPlaylistLoading = (item: Item) => {
+  return isPlaylist(item) && item.children.length == 0;
 };
 
 export const isVideo = (item: Item) => {
