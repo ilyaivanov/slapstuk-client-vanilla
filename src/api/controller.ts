@@ -35,19 +35,19 @@ export const loadUserSettings = (userId: string): Promise<any> => {
       HOME: {
         id: "HOME",
         title: "HOME",
-        itemType: "folder",
+        type: "folder",
         children: ["1", "2"],
       },
       1: {
         id: "1",
         title: "First Item",
-        itemType: "folder",
+        type: "folder",
         children: [],
       },
       2: {
         id: "2",
         title: "Second Item",
-        itemType: "folder",
+        type: "folder",
         children: [],
       },
     };

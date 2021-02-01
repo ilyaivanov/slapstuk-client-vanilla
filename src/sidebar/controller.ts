@@ -28,12 +28,11 @@ export const init = (sidebarParent: HTMLElement) => {
 };
 
 const addNewItem = () => {
-  console.log("addNewItem");
   const newItem: Item = {
     children: [],
     id: Math.random() + "",
     title: "",
-    itemType: "folder",
+    type: "folder",
   };
   items.appendChildTo("HOME", newItem);
   const plus = dom.findFirstByClass(cls.sidebarPlusIcon);
@@ -103,7 +102,7 @@ export const selectItem = (itemId: string) => {
 };
 
 //Items expand\collapse
-export const toggleSidebarVisibilityForItem = (item: Item) => {
+export const toggleSidebarVisibilityForItem = (item: ItemContainer) => {
   const level = view.parseLevelFromRow(view.findRowById(item.id));
 
   item.isOpenFromSidebar = !item.isOpenFromSidebar;
@@ -161,7 +160,7 @@ const focusOnItem = (item: Item) => {
 
   focusLevel = view.parseLevelFromRow(row);
   //I'm not changing model here, thus I would be able to close item back again when unfocus
-  if (!item.isOpenFromSidebar) showItemChildren(item, focusLevel);
+  if (!items.isOpenAtSidebar(item)) showItemChildren(item, focusLevel);
 
   dom.addClassToElement(
     cls.sidebarFocusContainer,
@@ -185,7 +184,7 @@ const unfocus = () => {
     const itemId = view.itemIdFromRow(row);
     const item = items.getItem(itemId);
     const isItemEmpty = dom.isEmpty(view.findItemChildrenContainer(itemId));
-    if (!item.isOpenFromSidebar && !isItemEmpty) {
+    if (!items.isOpenAtSidebar(item) && !isItemEmpty) {
       removeItemChildren(itemId);
     }
   });
@@ -339,16 +338,19 @@ const onMouseUp = () => {
 
 const removeFromParent = (itemId: string) => {
   const parent = items.findParentItem(itemId);
-  if (parent) {
+  if (parent && items.isContainer(parent)) {
     setChildren(
       parent,
-      parent.children.filter((id) => id != itemId)
+      items
+        .getChildren(parent.id)
+        .map((c) => c.id)
+        .filter((id) => id != itemId)
     );
   }
 };
 
 //update functions
-const setChildren = (item: Item, children: string[]) => {
+const setChildren = (item: ItemContainer, children: string[]) => {
   item.children = children;
   if (item.id !== "HOME") view.updateItemChevron(item);
 };
@@ -359,7 +361,7 @@ const insertItemToLocation = (
   placement: Destination
 ) => {
   const itemBeingDragged = items.getItem(itemBeingDraggedId);
-  const targetItem = items.getItem(targetItemId);
+  const targetItem = items.getItem(targetItemId) as ItemContainer;
   const targetItemRow = view.findRowById(targetItemId);
   const targetItemLevel = view.parseLevelFromRow(targetItemRow);
 

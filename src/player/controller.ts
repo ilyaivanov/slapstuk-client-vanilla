@@ -22,7 +22,7 @@ export const onVideoEnd = () => {
 
 export const playItem = (itemId: string) => {
   const item = items.getItem(itemId);
-  if (item && item.videoId) {
+  if (item && items.isVideo(item) && item.videoId) {
     if (itemIdBeingPlayed) removeItemBeingPlayedFromItem(itemIdBeingPlayed);
 
     addItemBeingPlayedToItem(itemId);

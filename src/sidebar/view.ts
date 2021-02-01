@@ -25,17 +25,17 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
         {
           className: [
             cls.sidebarRowExpandButtonContainer,
-            item.children.length == 0 ? cls.hidden : cls.none,
+            items.hasChildren(item) ? cls.none : cls.hidden,
           ],
           children: chevron([
             cls.sidebarRowExpandButton,
-            item.isOpenFromSidebar ? cls.rotated : cls.none,
+            items.isOpenAtSidebar(item) ? cls.rotated : cls.none,
           ]),
           on: {
             click: (e) => {
               console.log("chevron clicked", item.title);
               e.stopPropagation();
-              controller.toggleSidebarVisibilityForItem(item);
+              controller.toggleSidebarVisibilityForItem(item as ItemContainer);
             },
           },
         },
@@ -71,15 +71,15 @@ export const viewRow = (item: Item, level: number): DivDefinition[] => {
         },
       ],
     },
-    viewChildren(item.id, level + 1),
+    viewChildren(item, level + 1),
   ];
 };
 
-export const viewChildren = (itemId: string, level: number): DivDefinition => {
-  const children = items.getChildren(itemId);
+export const viewChildren = (item: Item, level: number): DivDefinition => {
+  const children = items.getChildren(item.id);
   return {
     className: cls.sidebarRowChildrenContainer,
-    children: items.getItem(itemId).isOpenFromSidebar
+    children: items.isOpenAtSidebar(item)
       ? children.map((row) => viewRow(row, level)).flat()
       : [],
   };
@@ -104,7 +104,7 @@ export const updateItemChevron = (item: Item) => {
     cls.sidebarRowExpandButtonContainer,
     row
   );
-  if (item.children.length > 0) chevronContainer.classList.remove(cls.hidden);
+  if (items.hasChildren(item)) chevronContainer.classList.remove(cls.hidden);
   else chevronContainer.classList.add(cls.hidden);
 };
 

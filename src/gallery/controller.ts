@@ -13,6 +13,7 @@ import * as style from "./style";
 import * as player from "../player/controller";
 import * as items from "../items";
 import { fetchPlaylistVideos } from "../api/youtubeRequest";
+import { mapReponseItem } from "../search/controller";
 
 export const renderItems = (newItems: Item[]) => {
   const gallery = dom.findFirstByClass(cls.gallery);
@@ -58,19 +59,11 @@ const renderGallery = (views: Node) => {
   gallery.appendChild(views);
 };
 
-const toggleCardExpandCollapse = (item: Item) => {
+const toggleCardExpandCollapse = (item: ItemContainer) => {
   if (items.isPlaylistNeedToBeLoaded(item)) {
-    console.log("Loading YT playlist", item.title);
-    const mapItem = (backItem: any): Item => ({
-      title: backItem.name,
-      itemType: "video",
-      id: backItem.id,
-      children: [],
-      videoId: backItem.itemId,
-    });
-    if (item.playlistId) {
+    if (item.type == "YTplaylist") {
       fetchPlaylistVideos(item.playlistId)
-        .then((response) => response.items.map(mapItem))
+        .then((response) => response.items.map(mapReponseItem))
         .then((newItems) => {
           items.setChildren(item.id, newItems);
           const card = dom.findById("card-" + item.id);
@@ -128,8 +121,8 @@ const viewCard = (item: Item): DivDefinition => ({
       className: cls.cardImageWithTextContainer,
       on: {
         click: () => {
-          if (item.itemType == "video") player.playItem(item.id);
-          else toggleCardExpandCollapse(item);
+          if (items.isContainer(item)) toggleCardExpandCollapse(item);
+          else player.playItem(item.id);
         },
       },
       children: [
@@ -137,7 +130,9 @@ const viewCard = (item: Item): DivDefinition => ({
         {
           className: [
             cls.cardText,
-            item.children.length > 0 ? cls.cardTextForFolder : cls.none,
+            items.isContainer(item) && item.children.length > 0
+              ? cls.cardTextForFolder
+              : cls.none,
           ],
           children: item.title,
         },
@@ -145,7 +140,10 @@ const viewCard = (item: Item): DivDefinition => ({
     },
     {
       className: cls.subtracksContainer,
-      children: item.isOpenInGallery ? viewSubtracks(item.id) : [],
+      children:
+        items.isContainer(item) && item.isOpenInGallery
+          ? viewSubtracks(item.id)
+          : [],
     },
     {
       className: cls.cardTypeBox,
@@ -189,7 +187,7 @@ const viewSubtrack = (item: Item): DivDefinition => ({
   on: {
     click: (e) => {
       e.stopPropagation();
-      if (item.videoId) player.playItem(item.id);
+      if (items.isVideo(item)) player.playItem(item.id);
     },
   },
   children: [
@@ -248,7 +246,9 @@ const folderPreview = (item: Item): DivDefinition => {
 
   const containerClasses: ClassName[] = [
     cls.cardImage,
-    item.isOpenInGallery ? cls.cardImageHidden : cls.none,
+    items.isContainer(item) && item.isOpenInGallery
+      ? cls.cardImageHidden
+      : cls.none,
   ];
 
   if (!items.isFolder(item) || children.length == 1) {
@@ -307,8 +307,8 @@ const getFirstImage = (item: Item): string | undefined => {
 };
 
 const getImageSrc = (item: Item): string | undefined => {
-  if (item.image) return item.image;
-  else if (item.videoId)
+  if (items.isVideo(item))
     return `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
+  else if (items.isPlaylist(item) || items.isChannel(item)) return item.image;
   else return undefined;
 };
