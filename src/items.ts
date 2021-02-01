@@ -13,7 +13,7 @@ let defaultItems: Items = {
   },
 };
 
-let allItems: Items = { ...defaultItems };
+export let allItems: Items = { ...defaultItems };
 
 export let selectedItemId = "HOME";
 export let focusedItemId = "HOME";

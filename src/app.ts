@@ -38,9 +38,9 @@ export const initApp = (userId: string) => {
     if (data) {
       //@ts-ignore
       global.allItems = JSON.parse(data.itemsSerialized);
-      const selectedItemId = data.nodeFocused;
       items.setItems(JSON.parse(data.itemsSerialized));
-      items.setSelectedItem(selectedItemId || "HOME");
+      items.setSelectedItem(data.selectedItemId);
+      items.setFocusedItem(data.focusedItemId);
     }
     const root = dom.findById("root");
     root.innerHTML = "";
@@ -77,6 +77,19 @@ export const initApp = (userId: string) => {
                 type: "button",
                 on: { click: searchController.search },
                 children: "go",
+              },
+              {
+                type: "button",
+                on: {
+                  click: () => {
+                    api.saveUserSettings(userId, {
+                      itemsSerialized: JSON.stringify(items.allItems),
+                      selectedItemId: items.selectedItemId,
+                      focusedItemId: items.focusedItemId,
+                    });
+                  },
+                },
+                children: "save",
               },
               {
                 type: "button",

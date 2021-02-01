@@ -29,7 +29,9 @@ export const logout = () => {
   }
 };
 
-export const loadUserSettings = (userId: string): Promise<any> => {
+export const loadUserSettings = (
+  userId: string
+): Promise<firebase.PersistedState> => {
   if (isIsolated) {
     const items: Items = {
       HOME: {
@@ -53,10 +55,20 @@ export const loadUserSettings = (userId: string): Promise<any> => {
     };
     return Promise.resolve({
       itemsSerialized: JSON.stringify(items),
+      focusedItemId: "HOME",
+      selectedItemId: "HOME",
     });
   } else {
     return firebase.loadUserSettings(userId);
   }
+};
+
+export const saveUserSettings = (
+  userId: string,
+  state: firebase.PersistedState
+): Promise<any> => {
+  if (isIsolated) return Promise.resolve();
+  return firebase.saveUserSettings(state, userId);
 };
 
 const onAuthStateChanged = (user: any) => {

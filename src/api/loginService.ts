@@ -25,7 +25,7 @@ export const initFirebase = (onAuthChanged: any) => {
 export const saveUserSettings = (
   userSettings: PersistedState,
   userId: string
-) => {
+): Promise<any> =>
   firebase
     .firestore()
     .collection("users")
@@ -37,10 +37,10 @@ export const saveUserSettings = (
     .catch((e: any) => {
       console.error("Error while saving user settings");
     });
-};
 
 export type PersistedState = {
-  nodeFocused: string;
+  selectedItemId: string;
+  focusedItemId: string;
   itemsSerialized: string;
 };
 
