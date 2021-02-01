@@ -12,7 +12,7 @@ import {
 import * as style from "./style";
 import * as player from "../player/controller";
 import * as items from "../items";
-import { fetchPlaylistVideos } from "../api/youtubeRequest";
+import * as api from "../api/youtubeRequest";
 import { mapReponseItem } from "../search/controller";
 
 export const renderItems = (newItems: Item[]) => {
@@ -60,21 +60,49 @@ const renderGallery = (views: Node) => {
 };
 
 const toggleCardExpandCollapse = (item: ItemContainer) => {
-  if (items.isPlaylistNeedToBeLoaded(item)) {
+  if (items.isNeedsToBeLoaded(item)) {
+    const doneLoading = (newItems: Item[]) => {
+      if (item.type == "YTplaylist") {
+        item.isLoading = false;
+      } else if (item.type == "YTchannel") {
+        item.isLoading = false;
+      }
+      items.setChildren(item.id, newItems);
+      const card = dom.findById("card-" + item.id);
+      const cardSubtracksContainer = dom.findFirstByClass(
+        cls.subtracksContainer,
+        card
+      );
+      cardSubtracksContainer.innerHTML = "";
+      const subs = viewSubtracks(item.id);
+      cardSubtracksContainer.appendChild(dom.fragment(subs));
+    };
     if (item.type == "YTplaylist") {
-      fetchPlaylistVideos(item.playlistId)
+      item.isLoading = true;
+      api
+        .fetchPlaylistVideos(item.playlistId)
         .then((response) => response.items.map(mapReponseItem))
-        .then((newItems) => {
-          items.setChildren(item.id, newItems);
-          const card = dom.findById("card-" + item.id);
-          const cardSubtracksContainer = dom.findFirstByClass(
-            cls.subtracksContainer,
-            card
-          );
-          cardSubtracksContainer.innerHTML = "";
-          const subs = viewSubtracks(item.id);
-          cardSubtracksContainer.appendChild(dom.fragment(subs));
-        });
+        .then((newItems) => doneLoading(newItems));
+    }
+    if (item.type == "YTchannel") {
+      item.isLoading = true;
+      Promise.all([
+        api.getChannelPlaylists(item.channelId),
+        api.getChannelUploadsPlaylistId(item.channelId),
+      ])
+        .then(([channelPlaylists, uploadsPlaylistId]) =>
+          [
+            {
+              type: "YTplaylist",
+              children: [],
+              id: Math.random() + "",
+              image: item.image,
+              playlistId: uploadsPlaylistId,
+              title: item.title + " - Uploads",
+            } as Item,
+          ].concat(channelPlaylists.items.map(mapReponseItem))
+        )
+        .then((newItems) => doneLoading(newItems));
     }
   }
   const card = dom.findById("card-" + item.id);
@@ -84,7 +112,7 @@ const toggleCardExpandCollapse = (item: ItemContainer) => {
     cls.subtracksContainer,
     card
   );
-  const content = items.isPlaylistLoading(item)
+  const content = items.isLoading(item)
     ? viewSubtracksLoadingGrid()
     : viewSubtracks(item.id);
   if (item.isOpenInGallery) {

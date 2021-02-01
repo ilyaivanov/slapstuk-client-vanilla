@@ -93,12 +93,18 @@ export const isPlaylist = (item: Item): item is YoutubePlaylist => {
   return item.type == "YTplaylist";
 };
 
-export const isPlaylistNeedToBeLoaded = (item: Item): boolean => {
-  return isPlaylist(item) && item.children.length == 0;
+export const isNeedsToBeLoaded = (item: Item): boolean => {
+  return (
+    (isPlaylist(item) && item.children.length == 0 && !item.isLoading) ||
+    (isChannel(item) && item.children.length == 0 && !item.isLoading)
+  );
 };
 
-export const isPlaylistLoading = (item: Item): boolean => {
-  return isPlaylist(item) && item.children.length == 0;
+export const isLoading = (item: Item): boolean => {
+  return (
+    (isPlaylist(item) && !!item.isLoading) ||
+    (isChannel(item) && !!item.isLoading)
+  );
 };
 
 export const isVideo = (item: Item): item is YoutubeVideo => {

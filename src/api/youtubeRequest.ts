@@ -34,7 +34,16 @@ export const fetchPlaylistVideos = (
   return fetch(url).then((res) => res.json());
 };
 
-export const getChannelPlaylists = (channelId: string, pageToken?: string) => {
+export const getChannelPlaylists = (
+  channelId: string,
+  pageToken?: string
+): Promise<YoutubeChannelPlaylistsResponse> => {
+  if (isIsolated)
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(fakeAPI.sampleChannelPlaylists);
+      }, 2000);
+    });
   verifyNonTextEnvironment();
   let url = `${API_HOST}/getChannelPlaylists?part=snippet&channelId=${channelId}`;
   if (pageToken) url += `&pageToken=${pageToken}`;
@@ -44,12 +53,19 @@ export const getChannelPlaylists = (channelId: string, pageToken?: string) => {
 export const getChannelUploadsPlaylistId = (
   channelId: string
 ): Promise<string> => {
+  if (isIsolated)
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(fakeAPI.sampleChannelUploadPlaylistResponse.playlistId);
+      }, 2000);
+    });
   verifyNonTextEnvironment();
   let url = `${API_HOST}/getChannelVideos?channelId=${channelId}`;
   return fetch(url)
-    .then((res) => res.json())
+    .then(
+      (res) => (res.json() as unknown) as YoutubeChannelUploadPlaylistResponse
+    )
     .then((res) => {
-      console.log(res);
       return res.playlistId;
     });
 };
@@ -76,6 +92,14 @@ export type YoutubeSearchResponse = {
 
 export type YoutubePlaylistDetailsResponse = {
   items: ResponseItem[];
+};
+
+export type YoutubeChannelPlaylistsResponse = {
+  items: ResponseItem[];
+};
+
+export type YoutubeChannelUploadPlaylistResponse = {
+  playlistId: string;
 };
 
 export type ResponseItem =

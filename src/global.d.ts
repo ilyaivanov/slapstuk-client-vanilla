@@ -39,6 +39,7 @@ type Folder = {
 type YoutubePlaylist = {
   type: "YTplaylist";
   playlistId: string;
+  isLoading?: boolean;
   image: string;
 } & CommonItemProperties &
   CommonContainerProperties;
@@ -46,6 +47,7 @@ type YoutubePlaylist = {
 type YoutubeChannel = {
   type: "YTchannel";
   channelId: string;
+  isLoading?: boolean;
   image: string;
 } & CommonItemProperties &
   CommonContainerProperties;

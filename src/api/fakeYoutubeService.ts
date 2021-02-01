@@ -37,6 +37,28 @@ export const samplePlaylistDetailsWithChannelsAndPlaylists = {
     sampleBackendItem(),
   ],
 };
+export const sampleChannelPlaylists = {
+  items: [
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+    sampleBackendPlaylist(),
+  ],
+};
+
+export const sampleChannelUploadPlaylistResponse = {
+  playlistId: "UUL_f53ZEJxp8TtlOkHwMV9Q",
+};
 
 function sampleBackendItem() {
   return {
