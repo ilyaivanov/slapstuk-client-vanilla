@@ -9,12 +9,12 @@ body{
 
 cssClass(cls.page, {
   display: "grid",
-  gridTemplateColumns: "auto 1fr",
+  gridTemplateColumns: "auto 1fr auto",
   gridTemplateRows: "auto 1fr auto",
   gridTemplateAreas: `
-    "header header"
-    "sidebar gallery"
-    "player player"`,
+    "header header header"
+    "sidebar gallery rightSidebar"
+    "player player player"`,
   backgroundColor: colors.gallery,
   height: "100vh",
 });
@@ -31,14 +31,31 @@ cssClass(cls.sidebar, {
   gridArea: "sidebar",
   overflowY: "overlay",
   backgroundColor: colors.menu,
-  boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
+  // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.leftSidebarMenu,
+  width: `${defaultSidebarWidth}px`,
+  transition: "margin 200ms ease-out",
+});
+
+cssClass(cls.rightSidebar, {
+  position: "relative",
+  gridArea: "rightSidebar",
+  overflowY: "overlay",
+  backgroundColor: colors.menu,
+  // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
+  zIndex: zIndexes.rightSidebarMenu,
   width: `${defaultSidebarWidth}px`,
   transition: "margin 200ms ease-out",
 });
 
 cssClass(cls.sidebarHidden, {
   marginLeft: -defaultSidebarWidth + "px",
+  boxShadow: "none",
+});
+
+cssClass(cls.rightSidebarHidden, {
+  marginRight: -defaultSidebarWidth + "px",
+  boxShadow: "none",
 });
 
 cssClass(cls.gallery, {

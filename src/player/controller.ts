@@ -45,6 +45,7 @@ const removeItemBeingPlayedFromItem = (itemId: string) => {
     );
     parent = items.findParentItem(parent.id);
   }
+  console.log(itemId);
   dom.removeClassFromElementById(ids.card(itemId), cls.itemBeingPlayed);
   dom.removeClassFromElementById(ids.subtrack(itemId), cls.itemBeingPlayed);
 };

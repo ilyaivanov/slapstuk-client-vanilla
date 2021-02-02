@@ -1,7 +1,7 @@
 import { cls, dom, anim, styles, zIndexes } from "../infra";
 import * as view from "./view";
 import * as style from "./styles";
-import * as galleryController from "../gallery/controller";
+import * as galleryController from "../gallery1/gallery";
 import * as items from "../items";
 
 export const init = (sidebarParent: HTMLElement) => {
@@ -141,6 +141,12 @@ const removeItemChildren = (itemId: string) => {
 
 export const toggleVisibility = () => {
   dom.findFirstByClass(cls.sidebar).classList.toggle(cls.sidebarHidden);
+};
+
+export const togleRightSidebar = () => {
+  dom
+    .findFirstByClass(cls.rightSidebar)
+    .classList.toggle(cls.rightSidebarHidden);
 };
 
 let focusLevel = 0;

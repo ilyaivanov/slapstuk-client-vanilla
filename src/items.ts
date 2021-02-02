@@ -122,3 +122,24 @@ export function isContainer(item: Item): item is ItemContainer {
     item.type == "YTplaylist"
   );
 }
+
+export const getPreviewImages = (item: Item, count: number): string[] =>
+  getChildren(item.id)
+    .map(getFirstImage)
+    .filter((x) => !!x)
+    .slice(0, count) as string[];
+
+export const getFirstImage = (item: Item): string | undefined => {
+  if (isFolder(item)) {
+    const children = getChildren(item.id);
+    return children.map(getFirstImage).filter((x) => !!x)[0] as string;
+  }
+  return getImageSrc(item) as string;
+};
+
+export const getImageSrc = (item: Item): string | undefined => {
+  if (isVideo(item))
+    return `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
+  else if (isPlaylist(item) || isChannel(item)) return item.image;
+  else return undefined;
+};

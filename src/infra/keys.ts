@@ -9,6 +9,8 @@ export const ids = {
 export const cls = {
   page: "page",
   sidebar: "sidebar",
+  rightSidebar: "sidebar-right",
+  rightSidebarHidden: "sidebar-right-hidden",
   sidebarHidden: "sidebar-hidden",
   grabbing: "page-grabbing",
   header: "header",
@@ -35,6 +37,7 @@ export const cls = {
 
   //gallery
   gallery: "gallery",
+  scrolly: "scrolly",
   card: "card",
   cardImage: "card-image",
   folderImages: "card-image-for-folder",
@@ -62,6 +65,10 @@ export const cls = {
   playerHidden: "player-hidden",
   itemBeingPlayed: "item-being-played",
 
+  //gallery1
+  card1: "card1",
+  cardText1: "card-text1",
+  column1: "column1",
   //login
   loginContainer: "login-container",
   loginForm: "login-form",
@@ -79,6 +86,7 @@ export const cls = {
 
 export const zIndexes = {
   leftSidebarMenu: "200",
+  rightSidebarMenu: "200",
   dragAvatar: "400",
   dragDestinationIndicator: "350",
   topMenu: "300",
