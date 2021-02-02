@@ -1,4 +1,5 @@
-import { cls, colors, cssClass, cssText, dom, styles } from "../infra";
+import { cls, colors, cssClass, cssText, dom, ids, styles } from "../infra";
+import * as items from "../items";
 import * as card from "./card";
 const gap = 20;
 
@@ -27,8 +28,7 @@ export const rerenderIfColumnsChanged = () => {
     });
 
     animation.addEventListener("finish", () => {
-      gallery.innerHTML = "";
-      gallery.appendChild(nextGallery);
+      appendGallery(nextGallery);
       gallery.animate([transparent, opaque], {
         fill: "forwards",
         duration: 100,
@@ -51,8 +51,25 @@ const getColsCountFor = () =>
   Math.round((gallery.clientWidth - gap) / (320 + gap));
 
 const renderForColumns = () => {
+  appendGallery(viewGallery());
+};
+
+const appendGallery = (galleryContent: HTMLElement) => {
   gallery.innerHTML = "";
-  gallery.appendChild(viewGallery());
+  gallery.appendChild(galleryContent);
+
+  currentItems.forEach((i) => {
+    if (items.isContainer(i)) {
+      const cardView = dom.findById(ids.card(i.id));
+      const subtrackContainer = dom.findFirstByClass(
+        cls.subtracksContainer,
+        cardView
+      );
+      subtrackContainer.style.maxHeight = card.getMaxHeightForSubitemsInCssCalc(
+        i
+      );
+    }
+  });
 };
 
 const viewGallery = () =>

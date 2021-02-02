@@ -1,18 +1,12 @@
-import {
-  anim,
-  cls,
-  dom,
-  ids,
-  DivDefinition,
-  styles,
-  ClassName,
-  colors,
-} from "../infra";
+import { anim, cls, dom, ids, DivDefinition, styles } from "../infra";
 import * as style from "./style";
 import * as player from "../player/controller";
 import * as items from "../items";
 import * as api from "../api/youtubeRequest";
 import { mapReponseItem } from "../search/controller";
+import { headerHeight } from "../sidebar/styles";
+import { playerHeight } from "../player/styles";
+import { gap } from "./style";
 
 //VIEW
 export const viewCard = (item: Item): DivDefinition => ({
@@ -26,8 +20,29 @@ export const viewCard = (item: Item): DivDefinition => ({
       className: cls.cardImageWithTextContainer,
       on: {
         click: () => {
-          if (items.isContainer(item)) toggleCardExpandCollapse(item);
-          else player.playItem(item.id);
+          if (items.isContainer(item)) {
+            const card = dom.findById(ids.card(item.id));
+            const imageContainer = dom.findFirstByClass(
+              "item-preview-container" as any,
+              card
+            );
+            console.log(item.isOpenInGallery);
+            item.isOpenInGallery = !items.isOpenAtGallery(item);
+            animateItemImageHeight(imageContainer, item);
+            const subtracksContainer = dom.findFirstByClass(
+              cls.subtracksContainer,
+              card
+            );
+            animateSubtracksContainer(subtracksContainer, item);
+
+            // const subtracks =viewSubtracks(item.id);
+            // const frag = dom.fragment(subtracks);
+
+            // console.log(frag.)
+          }
+
+          // if (items.isContainer(item)) toggleCardExpandCollapse(item);
+          // else player.playItem(item.id);
         },
       },
       children: [
@@ -43,10 +58,7 @@ export const viewCard = (item: Item): DivDefinition => ({
     },
     {
       className: cls.subtracksContainer,
-      children:
-        items.isContainer(item) && item.isOpenInGallery
-          ? viewSubtracks(item.id)
-          : [],
+      children: items.isOpenAtGallery(item) ? viewSubtracks(item.id) : [],
     },
     {
       className: cls.cardTypeBox,
@@ -103,14 +115,20 @@ const viewSubtrack = (item: Item): DivDefinition => ({
   ],
 });
 
-//create css grid here with container of fixed proportions
+const initialPadding = 56.25; //aspect ratio of a 320 x 180 image
+const initialPaddingPercent = initialPadding + "%";
 
-//so that preview of folders and channels would be of equal height
+//I need to convert relative percents to absolute points before animations
+//aftert animation end I will place percents back, so that card would remain fluid
+const getExpandedHeight = (box: HTMLElement) =>
+  box.clientWidth * (initialPadding / 100);
 
 const itemPreview = (item: Item): DivDefinition => {
   return {
+    className: "item-preview-container" as any,
     style: {
-      paddingBottom: "56.25%",
+      overflow: "hidden",
+      paddingBottom: items.isOpenAtGallery(item) ? "0" : initialPaddingPercent,
       position: "relative",
     },
     children: getPreviewImage(item),
@@ -127,6 +145,8 @@ const getPreviewImage = (item: Item): DivDefinition => {
         height: "100%",
         display: "block",
         objectFit: "cover",
+        //this makes animation better for non-channel items
+        objectPosition: items.isChannel(item) ? undefined : "top",
       },
       attributes: { src: items.getImageSrc(item) },
     };
@@ -167,44 +187,6 @@ const folderPreviewGrid = (item: Folder): DivDefinition => {
     })),
   };
 };
-
-// const folderPreview = (item: Item): DivDefinition => {
-//   const children = items.getChildren(item.id);
-
-//   const containerClasses: ClassName[] = [
-//     cls.cardImage,
-//     items.isContainer(item) && item.isOpenInGallery
-//       ? cls.cardImageHidden
-//       : cls.none,
-//   ];
-
-//   if (!items.isFolder(item) || children.length == 1) {
-//     let src = !items.isFolder(item)
-//       ? items.getImageSrc(item)
-//       : items.getPreviewImages(item);
-//     return {
-//       type: "img",
-//       className: containerClasses,
-//       attributes: { src, draggable: "false" },
-//     };
-//   }
-//   const previewImages = items.getPreviewImages(item);
-//   if (previewImages.length === 0)
-//     return {
-//       className: containerClasses.concat([cls.folderImagesEmpty]),
-//       children: "Empty",
-//     };
-//   return {
-//     className: containerClasses.concat([cls.folderImages]),
-//     children: previewImages.map((src) => ({
-//       className: cls.folderImagesSubContanier,
-//       children: {
-//         type: "img",
-//         attributes: { src },
-//       },
-//     })),
-//   };
-// };
 
 const toggleCardExpandCollapse = (item: ItemContainer) => {
   if (items.isNeedsToBeLoaded(item)) {
@@ -295,3 +277,92 @@ const viewSubtracksLoadingGrid = (): DivDefinition => ({
     children: Array.from(new Array(9)).map(() => ({})),
   },
 });
+
+const boxAnimationSpeed = 1200; //pixels per second
+
+const animateItemImageHeight = (elem: HTMLElement, item: ItemContainer) => {
+  const expandBox = () => animateHeight(elem, 0, getExpandedHeight(elem));
+  const collapseBox = () => animateHeight(elem, getExpandedHeight(elem), 0);
+
+  elem.style.paddingBottom = "0";
+  const currentAnimation = elem.getAnimations();
+
+  const onAnimationDone = () => {
+    if (!items.isOpenAtGallery(item))
+      elem.style.paddingBottom = initialPaddingPercent;
+  };
+
+  if (currentAnimation.length > 0) {
+    currentAnimation[0].reverse();
+  } else {
+    const animation = !items.isOpenAtGallery(item)
+      ? expandBox()
+      : collapseBox();
+    animation.addEventListener("finish", onAnimationDone);
+  }
+};
+
+const animateSubtracksContainer = (
+  subtracksContainer: HTMLElement,
+  item: ItemContainer
+) => {
+  const animations = subtracksContainer.getAnimations();
+  if (animations.length > 0) animations.forEach((a) => a.reverse());
+  else {
+    let animation: Animation;
+    if (items.isOpenAtGallery(item)) {
+      const subitems = viewSubtracks(item.id);
+      subtracksContainer.appendChild(dom.fragment(subitems));
+      const maxHeight = getMaxHeightForSubitemsInPixels(item);
+      const targetHeight = Math.min(maxHeight, subtracksContainer.scrollHeight);
+      animation = animateHeight(subtracksContainer, 0, targetHeight);
+    } else {
+      animation = animateHeight(
+        subtracksContainer,
+        subtracksContainer.clientHeight,
+        0
+      );
+    }
+    animation.addEventListener("finish", () => {
+      if (!items.isOpenAtGallery(item)) subtracksContainer.innerHTML = "";
+    });
+  }
+};
+
+const getMaxHeightForSubitemsInPixels = (item: Item): number => {
+  const row = dom.findById(ids.card(item.id));
+  const text = dom.findFirstByClass(cls.cardText, row);
+  return window.innerHeight - getMaxHeightModifiers() - text.clientHeight;
+};
+
+export const getMaxHeightForSubitemsInCssCalc = (item: Item): string => {
+  const row = dom.findById(ids.card(item.id));
+  const text = dom.findFirstByClass(cls.cardText, row);
+  return `calc(100vh - ${getMaxHeightModifiers() + text.clientHeight}px)`;
+};
+
+//TODO: check if player is visible or not
+const getMaxHeightModifiers = () => headerHeight + playerHeight + gap * 2;
+
+const animateHeight = (
+  elem: HTMLElement,
+  from: number,
+  to: number
+): Animation => {
+  const targetOpacity = from > to ? 0 : 1;
+  const sourceOpacity = from <= to ? 0 : 1;
+  return elem.animate(
+    [
+      { height: from + "px", opacity: sourceOpacity },
+      { height: to + "px", opacity: targetOpacity },
+    ],
+    {
+      duration: getDuration(from, to),
+    }
+  );
+};
+
+const getDuration = (from: number, to: number) => {
+  const distance = Math.abs(to - from);
+  return (distance / boxAnimationSpeed) * 1000;
+};

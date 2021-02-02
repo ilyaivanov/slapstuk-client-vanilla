@@ -52,6 +52,14 @@ const getItems = (count: number): Item[] =>
 
 const itemsToRender: Item[] = [
   {
+    id: "folderBig1",
+    title:
+      "Long and open folder with a big a long title (three rows indeed and for sure, just to make sure)",
+    type: "folder",
+    isOpenInGallery: true,
+    children: [],
+  },
+  {
     id: "pClvXOmD",
     title: "Deep House Mix 2020 Vol.1 | Mixed By TSG",
     videoId: "cnVPm1dGQJc",
@@ -96,6 +104,13 @@ const itemsToRender: Item[] = [
     children: [],
   },
   {
+    id: "folderBig2",
+    title: "Long and open",
+    type: "folder",
+    isOpenInGallery: true,
+    children: [],
+  },
+  {
     id: "BiHZ8AU1",
     title:
       "Deep Feelings Mix | Deep House, Vocal House, Nu Disco, Chillout #23",
@@ -107,6 +122,7 @@ const itemsToRender: Item[] = [
     title: "Vsauce",
     type: "YTchannel",
     channelId: "UC6nSFpj9HTCZ5t-N3Rm3-HA",
+    isOpenInGallery: false,
     image:
       "https://yt3.ggpht.com/ytc/AAUvwnhZ3RdTd90CWLjszcugYGMU4I72zJAVkphAfSflTQ=s240-c-k-c0xffffffff-no-rj-mo",
     children: [],
@@ -446,6 +462,18 @@ items.setChildren("folder1", getItems(1));
 items.setChildren("folder2", getItems(2));
 items.setChildren("folder3", getItems(3));
 items.setChildren("folder4", getItems(4));
+items.setChildren(
+  "folderBig1",
+  Array.from(new Array(12))
+    .map(() => getItems(4))
+    .flat()
+);
+items.setChildren(
+  "folderBig2",
+  Array.from(new Array(12))
+    .map(() => getItems(4))
+    .flat()
+);
 const root = dom.findById("root");
 root.appendChild(
   dom.div({

@@ -67,7 +67,6 @@ export const cls = {
 
   //gallery1
   card1: "card1",
-  cardText1: "card-text1",
   column1: "column1",
   //login
   loginContainer: "login-container",

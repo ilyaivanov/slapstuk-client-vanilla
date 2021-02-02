@@ -1,5 +1,6 @@
 import { cls, css, colors, cssText, styles, cssClass } from "../infra";
 import * as playerStyle from "../player/styles";
+import { headerHeight } from "../sidebar/styles";
 
 export const gap = 20;
 export const galleryFadeSpeed = 150;
@@ -14,7 +15,6 @@ cssClass(cls.card, {
   borderRadius: "4px",
   border: "1px solid rgba(255, 255, 255, 0.1)",
   boxShadow: "1px 2px 5px 0px rgba(0, 0, 0, 0.53)",
-  maxHeight: "calc(100% - 20px)",
   cursor: "pointer",
   overflow: "hidden",
   position: "relative",
@@ -90,7 +90,11 @@ cssClass(cls.cardTextForFolder, {
 cssClass(cls.subtracksContainer, {
   transition: `height ${cardExpandCollapseSpeed}ms linear`,
   overflowY: "overlay",
-  maxHeight: `calc(100% - ${cardHeaderHeight}px)`,
+  // maxHeight: `800px`,
+  //window.innerHeight and blah-blah for inline animations
+  // maxHeight: `calc(100vh - ${
+  //   gap * 2 + headerHeight + playerStyle.playerHeight + 73
+  // }px)`,
 });
 
 cssText(styles.cssTextForScrollBar(cls.subtracksContainer, { width: 8 }));

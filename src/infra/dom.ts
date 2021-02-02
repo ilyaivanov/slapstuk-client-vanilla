@@ -13,7 +13,7 @@ export type DivDefinition = {
   attributes?: any;
   on?: EventsDefinition;
 
-  type?: "button" | "div" | "svg" | "path" | "img" | "span" | 'input';
+  type?: "button" | "div" | "svg" | "path" | "img" | "span" | "input";
   onClick?: (e: Event) => void;
 };
 
@@ -26,6 +26,7 @@ export const div = (divDefinition: DivDefinition): HTMLElement => {
       type
     ) as unknown) as HTMLElement;
   else elem = document.createElement(type);
+
   const { className } = divDefinition;
   if (className) {
     if (typeof className == "string") {
