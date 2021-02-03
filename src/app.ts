@@ -109,13 +109,12 @@ export const initApp = (userId: string) => {
           { className: cls.sidebar },
           { className: [cls.rightSidebar, cls.rightSidebarHidden] },
           { className: cls.gallery },
-          { className: cls.player },
+          { className: [cls.player, cls.playerHidden] },
         ],
       })
     );
 
     sidebarController.init(dom.findFirstByClass(cls.sidebar));
-    player.init();
 
     gallery.renderItems(items.getChildren(items.selectedItemId));
   });

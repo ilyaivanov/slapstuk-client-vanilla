@@ -30,6 +30,7 @@ export const mapReponseItem = (resItem: ResponseItem): Item => {
       title: resItem.name,
       channelId: resItem.itemId,
       image: resItem.image,
+      isCollapsedInGallery: true,
       children: [],
     };
   else
@@ -39,6 +40,7 @@ export const mapReponseItem = (resItem: ResponseItem): Item => {
       title: resItem.name,
       playlistId: resItem.itemId,
       image: resItem.image,
+      isCollapsedInGallery: true,
       children: [],
     };
 };

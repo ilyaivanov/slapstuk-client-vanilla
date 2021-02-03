@@ -1,6 +1,7 @@
-import { cls, css, colors, cssText, styles, cssClass } from "../infra";
+import { cls, css, colors, cssText, styles, cssClass, utils } from "../infra";
 import * as playerStyle from "../player/styles";
 import { headerHeight } from "../sidebar/styles";
+import * as items from "../items";
 
 export const gap = 20;
 export const galleryFadeSpeed = 150;
@@ -66,18 +67,36 @@ cssClass(cls.cardTypeBoxTriangle, {
   pointerEvents: "auto",
   borderLeft: `${triangleWidth}px solid transparent`,
 });
+const folderColor = "#000000";
+const playlistColor = "#1eaa00";
+const channelColor = "#0070dd";
+const videoColor = "#FF0000"; // not used right now
+const triangleAlpha = 0.6;
+
+const triangleBorder = (hex: string) =>
+  `${triangleWidth}px solid ${utils.hexToRGB(hex, triangleAlpha)}`;
 
 cssClass(cls.cardTypeBoxTrianglePlaylist, {
-  borderTop: `${triangleWidth}px solid rgba(30, 170, 0, 0.6)`,
+  borderTop: triangleBorder(playlistColor),
 });
 
 cssClass(cls.cardTypeBoxTriangleChannel, {
-  borderTop: `${triangleWidth}px solid rgba(0, 112, 221, 0.6)`,
+  borderTop: triangleBorder(channelColor),
 });
 
 cssClass(cls.cardTypeBoxTriangleFolder, {
-  borderTop: `${triangleWidth}px solid rgba(0, 0, 0, 0.6)`,
+  borderTop: triangleBorder(folderColor),
 });
+
+export const getItemColor = (item: Item) => {
+  if (items.isFolder(item)) return folderColor;
+  if (items.isChannel(item)) return channelColor;
+  if (items.isPlaylist(item)) return playlistColor;
+  if (items.isVideo(item)) return videoColor;
+  //@ts-expect-error
+  console.error(`Unknown item type for ${item.type}. Using white`);
+  return "white";
+};
 
 cssClass(cls.cardTypeBoxTextContainer, {
   position: "absolute",

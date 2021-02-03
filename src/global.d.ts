@@ -14,9 +14,11 @@ type CommonItemProperties = {
 };
 
 type CommonContainerProperties = {
+  //these common properties consume Firebase storage
+  //consider maybe reducing their name length
   children: string[];
   isOpenFromSidebar?: boolean;
-  isOpenInGallery?: boolean;
+  isCollapsedInGallery?: boolean;
 };
 
 type Folder = {

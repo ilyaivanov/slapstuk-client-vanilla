@@ -5,11 +5,7 @@ import * as sidebarView from "../sidebar/view";
 import * as style from "./styles";
 
 export let itemIdBeingPlayed = "";
-export const init = () => {
-  dom
-    .findFirstByClass(cls.player)
-    .appendChild(dom.fragment([{ id: "youtubePlayer" }]));
-};
+const hasPlayer = false;
 
 export const playNext = () => {
   const nextItem = items.getNextItem(itemIdBeingPlayed);
@@ -21,6 +17,11 @@ export const onVideoEnd = () => {
 };
 
 export const playItem = (itemId: string) => {
+  if (!hasPlayer) {
+    dom
+      .findFirstByClass(cls.player)
+      .appendChild(dom.fragment([{ id: "youtubePlayer" }]));
+  }
   const item = items.getItem(itemId);
   if (item && items.isVideo(item) && item.videoId) {
     if (itemIdBeingPlayed) removeItemBeingPlayedFromItem(itemIdBeingPlayed);

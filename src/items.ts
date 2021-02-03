@@ -69,18 +69,14 @@ export const isOpenAtSidebar = (item: Item) =>
     ? item.isOpenFromSidebar
     : false);
 
-export const isOpenAtGallery = (item: Item) => {
-  if (isPlaylist(item) || isChannel(item)) {
-    return (
-      isContainer(item) &&
-      (typeof item.isOpenInGallery != "undefined" ? item.isOpenInGallery : true)
-    );
-    //TODO: probably need to add additional flags to loading status for Youtube playlist and channel
+export const isOpenAtGallery = (item: Item) =>
+  isContainer(item) && !item.isCollapsedInGallery;
+
+export const toggleIsCollapsedInGallery = (item: ItemContainer) => {
+  if (!item.isCollapsedInGallery) {
+    item.isCollapsedInGallery = true;
   } else {
-    return (
-      isContainer(item) &&
-      (typeof item.isOpenInGallery != "undefined" ? item.isOpenInGallery : true)
-    );
+    delete item.isCollapsedInGallery;
   }
 };
 
@@ -133,6 +129,11 @@ export function isContainer(item: Item): item is ItemContainer {
     item.type == "YTplaylist"
   );
 }
+
+export const isContainerNeedToFetch = (item: ItemContainer) => {
+  //TODO: probably need to add additional flags to loading status for Youtube playlist and channel
+  return item.children.length == 0;
+};
 
 export const getPreviewImages = (item: Item, count: number): string[] =>
   getChildren(item.id)

@@ -63,7 +63,6 @@ const itemsToRender: Item[] = [
     title:
       "Long and open folder with a big a long title (three rows indeed and for sure, just to make sure)",
     type: "folder",
-    isOpenInGallery: true,
     children: [],
   },
   {
@@ -114,7 +113,6 @@ const itemsToRender: Item[] = [
     id: "folderBig2",
     title: "Long and open",
     type: "folder",
-    isOpenInGallery: true,
     children: [],
   },
   {
@@ -129,7 +127,6 @@ const itemsToRender: Item[] = [
     title: "Vsauce",
     type: "YTchannel",
     channelId: "UC6nSFpj9HTCZ5t-N3Rm3-HA",
-    isOpenInGallery: false,
     image:
       "https://yt3.ggpht.com/ytc/AAUvwnhZ3RdTd90CWLjszcugYGMU4I72zJAVkphAfSflTQ=s240-c-k-c0xffffffff-no-rj-mo",
     children: [],

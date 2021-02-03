@@ -24,8 +24,7 @@ export const viewCard = (item: Item): DivDefinition => ({
               cls.cardPreviewContainer,
               card
             );
-            console.log(item.isOpenInGallery);
-            item.isOpenInGallery = !items.isOpenAtGallery(item);
+            items.toggleIsCollapsedInGallery(item);
             animateItemImageHeight(imageContainer, item);
             const subtracksContainer = dom.findFirstByClass(
               cls.subtracksContainer,
@@ -80,7 +79,7 @@ export const viewCard = (item: Item): DivDefinition => ({
   ],
 });
 
-const viewSubtracks = (itemId: string) =>
+const viewSubtracks = (itemId: string): DivDefinition[] =>
   items.getChildren(itemId).map(viewSubtrack);
 
 const viewSubtrack = (item: Item): DivDefinition => ({
@@ -105,93 +104,98 @@ const viewSubtrack = (item: Item): DivDefinition => ({
   ],
 });
 
-const toggleCardExpandCollapse = (item: ItemContainer) => {
-  if (items.isNeedsToBeLoaded(item)) {
-    const doneLoading = (newItems: Item[]) => {
-      if (item.type == "YTplaylist") {
-        item.isLoading = false;
-      } else if (item.type == "YTchannel") {
-        item.isLoading = false;
-      }
-      items.setChildren(item.id, newItems);
-      const card = dom.findById("card-" + item.id);
-      const cardSubtracksContainer = dom.findFirstByClass(
-        cls.subtracksContainer,
-        card
-      );
-      cardSubtracksContainer.innerHTML = "";
-      const subs = viewSubtracks(item.id);
-      cardSubtracksContainer.appendChild(dom.fragment(subs));
-    };
-    if (item.type == "YTplaylist") {
-      item.isLoading = true;
-      api
-        .fetchPlaylistVideos(item.playlistId)
-        .then((response) => response.items.map(mapReponseItem))
-        .then((newItems) => doneLoading(newItems));
-    }
-    if (item.type == "YTchannel") {
-      item.isLoading = true;
-      Promise.all([
-        api.getChannelPlaylists(item.channelId),
-        api.getChannelUploadsPlaylistId(item.channelId),
-      ])
-        .then(([channelPlaylists, uploadsPlaylistId]) =>
-          [
-            {
-              type: "YTplaylist",
-              children: [],
-              id: Math.random() + "",
-              image: item.image,
-              playlistId: uploadsPlaylistId,
-              title: item.title + " - Uploads",
-            } as Item,
-          ].concat(channelPlaylists.items.map(mapReponseItem))
-        )
-        .then((newItems) => doneLoading(newItems));
-    }
-  }
-  const card = dom.findById("card-" + item.id);
-  item.isOpenInGallery = !item.isOpenInGallery;
-  const cardImage = dom.findFirstByClass(cls.cardImage, card);
-  const cardSubtracksContainer = dom.findFirstByClass(
-    cls.subtracksContainer,
-    card
-  );
-  const content = items.isLoading(item)
-    ? viewSubtracksLoadingGrid()
-    : viewSubtracks(item.id);
-  if (item.isOpenInGallery) {
-    cardImage.classList.add(cls.cardImageHidden);
-    const gallery = dom.findFirstByClass(cls.gallery);
-    anim.openElementHeight(
-      cardSubtracksContainer,
-      content,
-      style.cardExpandCollapseSpeed,
-      () =>
-        Math.min(
-          gallery.clientHeight - style.gap * 2,
-          cardSubtracksContainer.scrollHeight
-        )
-    );
-  } else {
-    cardImage.classList.remove(cls.cardImageHidden);
-    anim.collapseElementHeight(
-      cardSubtracksContainer,
-      style.cardExpandCollapseSpeed
-    );
-  }
-};
+// const toggleCardExpandCollapse = (item: ItemContainer) => {
+//   if (items.isNeedsToBeLoaded(item)) {
+//     const doneLoading = (newItems: Item[]) => {
+//       if (item.type == "YTplaylist") {
+//         item.isLoading = false;
+//       } else if (item.type == "YTchannel") {
+//         item.isLoading = false;
+//       }
+//       items.setChildren(item.id, newItems);
+//       const card = dom.findById("card-" + item.id);
+//       const cardSubtracksContainer = dom.findFirstByClass(
+//         cls.subtracksContainer,
+//         card
+//       );
+//       cardSubtracksContainer.innerHTML = "";
+//       const subs = viewSubtracks(item.id);
+//       cardSubtracksContainer.appendChild(dom.fragment(subs));
+//     };
+//     if (item.type == "YTplaylist") {
+//       item.isLoading = true;
+//       api
+//         .fetchPlaylistVideos(item.playlistId)
+//         .then((response) => response.items.map(mapReponseItem))
+//         .then((newItems) => doneLoading(newItems));
+//     }
+//     if (item.type == "YTchannel") {
+//       item.isLoading = true;
+//       Promise.all([
+//         api.getChannelPlaylists(item.channelId),
+//         api.getChannelUploadsPlaylistId(item.channelId),
+//       ])
+//         .then(([channelPlaylists, uploadsPlaylistId]) =>
+//           [
+//             {
+//               type: "YTplaylist",
+//               children: [],
+//               id: Math.random() + "",
+//               image: item.image,
+//               playlistId: uploadsPlaylistId,
+//               title: item.title + " - Uploads",
+//             } as Item,
+//           ].concat(channelPlaylists.items.map(mapReponseItem))
+//         )
+//         .then((newItems) => doneLoading(newItems));
+//     }
+//   }
+//   const card = dom.findById("card-" + item.id);
+//   item.isOpenInGallery = !item.isOpenInGallery;
+//   const cardImage = dom.findFirstByClass(cls.cardImage, card);
+//   const cardSubtracksContainer = dom.findFirstByClass(
+//     cls.subtracksContainer,
+//     card
+//   );
+//   const content = items.isLoading(item)
+//     ? viewSubtracksLoadingGrid()
+//     : viewSubtracks(item.id);
+//   if (item.isOpenInGallery) {
+//     cardImage.classList.add(cls.cardImageHidden);
+//     const gallery = dom.findFirstByClass(cls.gallery);
+//     anim.openElementHeight(
+//       cardSubtracksContainer,
+//       content,
+//       style.cardExpandCollapseSpeed,
+//       () =>
+//         Math.min(
+//           gallery.clientHeight - style.gap * 2,
+//           cardSubtracksContainer.scrollHeight
+//         )
+//     );
+//   } else {
+//     cardImage.classList.remove(cls.cardImageHidden);
+//     anim.collapseElementHeight(
+//       cardSubtracksContainer,
+//       style.cardExpandCollapseSpeed
+//     );
+//   }
+// };
 
-const viewSubtracksLoadingGrid = (): DivDefinition => ({
+const viewSubtracksLoadingGrid = (color: string): DivDefinition => ({
   style: {
     ...styles.flexCenter,
     margin: "10px",
+    marginTop: "0",
   },
   children: {
     className: cls.loadGrid,
 
-    children: Array.from(new Array(9)).map(() => ({})),
+    children: Array.from(new Array(9)).map(() => ({
+      style: {
+        backgroundColor: color,
+      },
+    })),
   },
 });
 
@@ -229,8 +233,10 @@ const animateSubtracksContainer = (
   else {
     let animation: Animation;
     if (items.isOpenAtGallery(item)) {
-      const subitems = viewSubtracks(item.id);
-      subtracksContainer.appendChild(dom.fragment(subitems));
+      const subitems = items.isContainerNeedToFetch(item)
+        ? dom.div(viewSubtracksLoadingGrid(style.getItemColor(item)))
+        : dom.fragment(viewSubtracks(item.id));
+      subtracksContainer.appendChild(subitems);
       const maxHeight = style.getMaxHeightForSubitemsInPixels();
       const targetHeight = Math.min(maxHeight, subtracksContainer.scrollHeight);
       animation = animateHeight(subtracksContainer, 0, targetHeight);
