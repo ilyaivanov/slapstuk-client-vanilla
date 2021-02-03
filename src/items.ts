@@ -69,9 +69,20 @@ export const isOpenAtSidebar = (item: Item) =>
     ? item.isOpenFromSidebar
     : false);
 
-export const isOpenAtGallery = (item: Item) =>
-  isContainer(item) &&
-  (typeof item.isOpenInGallery != "undefined" ? item.isOpenInGallery : true);
+export const isOpenAtGallery = (item: Item) => {
+  if (isPlaylist(item) || isChannel(item)) {
+    return (
+      isContainer(item) &&
+      (typeof item.isOpenInGallery != "undefined" ? item.isOpenInGallery : true)
+    );
+    //TODO: probably need to add additional flags to loading status for Youtube playlist and channel
+  } else {
+    return (
+      isContainer(item) &&
+      (typeof item.isOpenInGallery != "undefined" ? item.isOpenInGallery : true)
+    );
+  }
+};
 
 export const appendChildTo = (parentId: string, item: Item) => {
   const parent = allItems[parentId];

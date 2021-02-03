@@ -1,7 +1,7 @@
 import { cls, dom, ids, isIsolated } from "./infra";
 import * as sidebarController from "./sidebar/controller";
-// import * as galleryController from "./gallery/controller";
-// import * as searchController from "./search/controller";
+import * as gallery from "./gallery1/gallery";
+import * as searchController from "./search/controller";
 import * as player from "./player/controller";
 import * as login from "./login/controller";
 import "./app.style";
@@ -80,7 +80,7 @@ export const initApp = (userId: string) => {
               },
               {
                 type: "button",
-                // on: { click: searchController.search },
+                on: { click: searchController.search },
                 children: "go",
               },
               {
@@ -117,6 +117,6 @@ export const initApp = (userId: string) => {
     sidebarController.init(dom.findFirstByClass(cls.sidebar));
     player.init();
 
-    // galleryController.renderItems(items.getChildren(items.selectedItemId));
+    gallery.renderItems(items.getChildren(items.selectedItemId));
   });
 };

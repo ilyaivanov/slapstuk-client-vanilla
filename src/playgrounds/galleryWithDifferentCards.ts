@@ -1,6 +1,5 @@
 import * as gallery from "../gallery1/gallery";
 import { cls, dom } from "../infra";
-import "./app.style";
 import { toggleVisibility, togleRightSidebar } from "../sidebar/controller";
 import * as player from "../player/controller";
 import * as items from "../items";
