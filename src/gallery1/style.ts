@@ -8,6 +8,27 @@ export const galleryFadeSpeed = 150;
 export const cardExpandCollapseSpeed = 200;
 export const cardHeaderHeight = 35;
 
+//Gallery
+cssClass(cls.gallery, {
+  backgroundColor: colors.gallery,
+  position: "relative",
+  overflowY: "overlay" as any,
+});
+
+cssClass(cls.scrolly, {
+  paddingTop: gap,
+  paddingRight: gap,
+  display: "flex",
+  flexDirection: "row",
+});
+
+cssText(styles.cssTextForScrollBar(cls.gallery, { width: 8 }));
+
+cssClass(cls.column1, {
+  flex: 1,
+  marginLeft: gap,
+});
+
 //CARDS
 const getMaxHeightModifiers = () => headerHeight + gap * 2;
 export const getMaxHeightForSubitemsInPixels = (): number => {
@@ -25,8 +46,8 @@ export const getExpandedHeight = (box: HTMLElement) =>
 cssClass(cls.card, {
   color: "white",
   backgroundColor: colors.card,
-  marginBottom: `${gap}px`,
-  borderRadius: "4px",
+  marginBottom: gap,
+  borderRadius: 4,
   border: "1px solid rgba(255, 255, 255, 0.1)",
   boxShadow: "1px 2px 5px 0px rgba(0, 0, 0, 0.53)",
   cursor: "pointer",
@@ -55,15 +76,15 @@ const triangleWidth = 25;
 cssClass(cls.cardTypeBox, {
   position: "absolute",
   pointerEvents: "none",
-  top: "0",
-  right: "0",
-  width: `${triangleWidth}px`,
-  height: `${triangleWidth}px`,
+  top: 0,
+  right: 0,
+  width: triangleWidth,
+  height: triangleWidth,
 });
 
 cssClass(cls.cardTypeBoxTriangle, {
-  width: "0",
-  height: "0",
+  width: 0,
+  height: 0,
   pointerEvents: "auto",
   borderLeft: `${triangleWidth}px solid transparent`,
 });
@@ -100,31 +121,31 @@ export const getItemColor = (item: Item) => {
 
 cssClass(cls.cardTypeBoxTextContainer, {
   position: "absolute",
-  top: "1px",
-  right: "4px",
-  fontSize: "12px",
-  fontWeight: "500",
+  top: 1,
+  right: 4,
+  fontSize: 12,
+  fontWeight: "bolder",
   color: "white",
 });
 
 cssClass(cls.cardText, {
-  padding: "8px",
-  fontSize: "14px",
+  padding: 8,
+  fontSize: 14,
   color: "rgb(220, 220, 220)",
-  fontWeight: "400",
+  fontWeight: "normal",
 });
 
 cssClass(cls.cardTextForFolder, {
-  fontSize: "16px",
+  fontSize: 16,
   color: "white",
-  fontWeight: "500",
+  fontWeight: "bolder",
 });
 
 //CARD'S SUBSTRACKS
 
 cssClass(cls.subtracksContainer, {
   transition: `height ${cardExpandCollapseSpeed}ms linear`,
-  overflowY: "overlay",
+  overflowY: "overlay" as any,
   // maxHeight: `800px`,
   //window.innerHeight and blah-blah for inline animations
   // maxHeight: `calc(100vh - ${
@@ -139,9 +160,9 @@ cssClass(cls.subtrack, {
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-start",
-  fontSize: "14px",
+  fontSize: 14,
   color: "rgb(220, 220, 220)",
-  fontWeight: "400",
+  fontWeight: "normal",
   borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
   cursor: "pointer",
   transition: playerStyle.backgroundTransition,
@@ -152,11 +173,11 @@ css(`.${cls.subtrack}:hover`, {
 });
 
 cssClass(cls.subtrackImage, {
-  width: "32px",
-  height: "32px",
+  width: 32,
+  height: 32,
   objectFit: "cover",
-  borderRadius: "4px",
-  marginRight: "8px",
+  borderRadius: 4,
+  marginRight: 8,
 });
 
 const imageHeight = 180;
@@ -168,14 +189,12 @@ cssClass(cls.cardImage, {
     height ${cardExpandCollapseSpeed}ms linear, 
     opacity ${cardExpandCollapseSpeed}ms ease-out`,
   width: `100%`,
-  // height: "100%",
-  // maxHeight: "50%",
   objectFit: "cover",
 });
 
 cssClass(cls.cardImageHidden, {
   marginTop: `-${imageHeight}px`,
-  opacity: "0",
+  opacity: 0,
 });
 
 cssClass(cls.folderImages, {
@@ -184,7 +203,7 @@ cssClass(cls.folderImages, {
 });
 
 cssClass(cls.folderImagesSubContanier, {
-  flex: "1",
+  flex: 1,
 });
 
 css(`.${cls.folderImages} img`, {
@@ -196,6 +215,6 @@ css(`.${cls.folderImages} img`, {
 
 cssClass(cls.folderImagesEmpty, {
   color: "gray",
-  fontSize: "40px",
+  fontSize: 40,
   ...styles.flexCenter,
 });

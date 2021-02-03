@@ -1,4 +1,5 @@
 import { ClassName } from "./keys";
+import { Styles, convertNumericStylesToPixels } from "./style";
 
 export type EventsDefinition = {
   [key in string]: (e: MouseEvent) => void;
@@ -8,7 +9,7 @@ export type DivDefinition = {
   id?: string;
   className?: ClassName | (ClassName | undefined)[];
   children?: DivDefinition | DivDefinition[] | string;
-  style?: Partial<CSSStyleDeclaration>;
+  style?: Styles;
 
   attributes?: any;
   on?: EventsDefinition;
@@ -52,7 +53,11 @@ export const div = (divDefinition: DivDefinition): HTMLElement => {
   }
 
   if (divDefinition.id) elem.id = divDefinition.id;
-  if (divDefinition.style) Object.assign(elem.style, divDefinition.style);
+  if (divDefinition.style)
+    Object.assign(
+      elem.style,
+      convertNumericStylesToPixels(divDefinition.style)
+    );
   if (divDefinition.onClick)
     elem.addEventListener("click", divDefinition.onClick);
 
@@ -174,9 +179,13 @@ export const root = findById("root");
 
 export const set = (
   node: HTMLElement,
-  children: DivDefinition | DivDefinition[]
+  children: DivDefinition | DivDefinition[] | HTMLElement
 ) => {
   node.innerHTML = ``;
-  if (Array.isArray(children)) node.appendChild(fragment(children));
+  if (isHtmlElement(children)) node.appendChild(children);
+  else if (Array.isArray(children)) node.appendChild(fragment(children));
   else node.appendChild(div(children));
 };
+
+const isHtmlElement = (item: any): item is HTMLElement =>
+  item && typeof item.animate == "function";

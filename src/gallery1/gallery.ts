@@ -1,4 +1,4 @@
-import { cls, colors, cssClass, cssText, dom, styles, utils } from "../infra";
+import { cls, dom, utils } from "../infra";
 import * as card from "./card";
 const gap = 20;
 
@@ -27,7 +27,7 @@ export const rerenderIfColumnsChanged = () => {
     });
 
     animation.addEventListener("finish", () => {
-      renderGallery(nextGallery);
+      dom.set(gallery, nextGallery);
       gallery.animate([transparent, opaque], {
         fill: "forwards",
         duration: 100,
@@ -44,15 +44,10 @@ export const renderItems = (itemsToRender: Item[]) => {
   currentItems = itemsToRender;
   currentCols = getColsCountFor();
 
-  renderGallery(viewGallery());
+  dom.set(gallery, viewGallery());
 };
 const getColsCountFor = () =>
   Math.round((gallery.clientWidth - gap) / (320 + gap));
-
-const renderGallery = (galleryContent: HTMLElement) => {
-  gallery.innerHTML = "";
-  gallery.appendChild(galleryContent);
-};
 
 const viewGallery = () =>
   dom.div({
@@ -64,24 +59,3 @@ const viewGallery = () =>
         .map(card.viewCard),
     })),
   });
-
-//Gallery
-cssClass(cls.gallery, {
-  backgroundColor: colors.gallery,
-  position: "relative",
-  overflowY: "overlay",
-});
-
-cssClass(cls.scrolly, {
-  paddingTop: gap + "px",
-  paddingRight: gap + "px",
-  display: "flex",
-  flexDirection: "row",
-});
-
-cssText(styles.cssTextForScrollBar(cls.gallery, { width: 8 }));
-
-cssClass(cls.column1, {
-  flex: "1",
-  marginLeft: gap + "px",
-});

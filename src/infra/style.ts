@@ -1,77 +1,71 @@
 import { colors } from ".";
 import { ClassName } from "./keys";
 import * as dom from "./dom";
+import * as CSS from "csstype";
+export type Styles = CSS.Properties<string | number>;
 
 const s = document.createElement("style");
 document.head.appendChild(s);
 
-export const cssClass = (
-  clas: ClassName,
-  styles: Partial<CSSStyleDeclaration>
-) => {
+export const cssClass = (clas: ClassName, styles: Styles) => {
   const text = cssToString("." + clas, styles);
   s.innerHTML += text;
 };
-export const cssClassOnHover = (
-  clas: ClassName,
-  styles: Partial<CSSStyleDeclaration>
-) => {
+
+export const cssClassOnHover = (clas: ClassName, styles: Styles) => {
   const text = cssToString("." + clas + ":hover", styles);
   s.innerHTML += text;
 };
 
-export const css = (
-  selector: string | string[],
-  styles: Partial<CSSStyleDeclaration>
-) => {
+export const css = (selector: string | string[], styles: Styles) => {
   const res = Array.isArray(selector) ? selector.join(", ") : selector;
   const text = cssToString(res, styles);
-  s.innerHTML += text;
-};
-const cssToString = (selector: string, props: Partial<CSSStyleDeclaration>) => {
-  const div = document.createElement("div");
-  Object.assign(div.style, props);
-  return formatStyle(selector, div.style.cssText);
-};
-
-export const cssText = (text: string) => {
   s.innerHTML += text;
 };
 
 export const cssTag = (
   elementName: keyof HTMLElementTagNameMap,
-  props: Partial<CSSStyleDeclaration>
+  props: Styles
 ) => (s.innerHTML += cssToString(elementName, props));
 
-const formatStyle = (selector: string, body: string) =>
-  `${selector}{
-  ${body}
-}
-`;
+export const cssText = (text: string) => {
+  s.innerHTML += text;
+};
+
+const cssToString = (selector: string, props: Styles) => {
+  const div = document.createElement("div");
+  Object.assign(div.style, convertNumericStylesToPixels(props));
+  return `${selector} {
+    ${div.style.cssText}
+  }
+  `;
+};
 
 export const styles = {
   flexCenter: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-  },
+  } as const,
   overlay: {
     position: "absolute",
     top: "0",
     left: "0",
     right: "0",
     bottom: "0",
-  },
-  absoluteTopRight: (top: number, right: number) => ({
-    position: "absolute",
-    top: top + "px",
-    right: right + "px",
-  }),
-  absoluteTopLeft: (top: number, left: number) => ({
-    position: "absolute",
-    top: top + "px",
-    left: left + "px",
-  }),
+  } as const,
+  absoluteTopRight: (top: number, right: number) =>
+    ({
+      position: "absolute",
+      top: top + "px",
+      right: right + "px",
+    } as const),
+  absoluteTopLeft: (top: number, left: number) =>
+    ({
+      position: "absolute",
+      top: top + "px",
+      left: left + "px",
+    } as const),
   rotate: (deg: number) => ({
     transform: `rotateZ(${deg}deg)`,
   }),
@@ -100,4 +94,30 @@ export const styles = {
 
   cancelAllCurrentAnimations: (elem: HTMLElement) =>
     elem.getAnimations().forEach((a) => a.cancel()),
+};
+
+//I'm using whitelist approach
+//in other words I add px to every number values expect 'opacity', 'flex' and other
+//and I'm leaving zeros for any value as string without px postfix
+const whitelist: Styles = {
+  zIndex: 1,
+  opacity: 1,
+  flex: 1,
+  fontWeight: 1,
+};
+export const convertNumericStylesToPixels = (
+  s: Styles
+): Partial<CSSStyleDeclaration> => {
+  let res: any = {};
+  const sCo = s as any;
+  Object.keys(s).forEach((key) => {
+    if (
+      typeof sCo[key] == "string" ||
+      !!(whitelist as any)[key] ||
+      sCo[key] === 0
+    )
+      res[key] = sCo[key] + "";
+    else res[key] = sCo[key] + "px";
+  });
+  return res;
 };

@@ -29,7 +29,7 @@ cssClass(cls.header, {
 cssClass(cls.sidebar, {
   position: "relative",
   gridArea: "sidebar",
-  overflowY: "overlay",
+  overflowY: "overlay" as any,
   backgroundColor: colors.menu,
   // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.leftSidebarMenu,
@@ -40,7 +40,7 @@ cssClass(cls.sidebar, {
 cssClass(cls.rightSidebar, {
   position: "relative",
   gridArea: "rightSidebar",
-  overflowY: "overlay",
+  overflowY: "overlay" as any,
   backgroundColor: colors.menu,
   // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.rightSidebarMenu,
