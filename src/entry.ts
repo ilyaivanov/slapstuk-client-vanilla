@@ -5,8 +5,10 @@ import "./app.style";
 
 import * as app from "./app";
 import * as api from "./api/controller";
+import * as dnd from "./dnd/dnd";
 
 api.addEventListener("login", app.initApp);
 api.addEventListener("logout", app.initLogin);
+dnd.init();
 api.init();
 app.init();

@@ -2,6 +2,7 @@ import { cls, dom, ClassName, DivDefinition, EventsDefinition } from "../infra";
 import * as controller from "./controller";
 import * as style from "./styles";
 import * as items from "../items";
+import * as dnd from "../dnd/dnd";
 
 export const viewItemChildren = (itemId: string, initialLevel = 0) =>
   items
@@ -28,7 +29,7 @@ const viewRow = (item: Item, level: number): DivDefinition => ({
     ["data-level"]: level + "",
   },
   on: {
-    mousedown: () => controller.onItemMouseDown(item.id),
+    mousedown: () => dnd.onItemMouseDown(item.id),
     click: () => controller.selectItem(item.id),
   },
   children: [
