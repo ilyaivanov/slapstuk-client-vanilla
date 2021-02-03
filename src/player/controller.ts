@@ -1,8 +1,8 @@
-import { cls, dom, ids } from "../infra";
+import { cls, dom, ids, styles } from "../infra";
 import { play } from "./youtubePlayer";
 import * as items from "../items";
 import * as sidebarView from "../sidebar/view";
-import "./styles";
+import * as style from "./styles";
 
 export let itemIdBeingPlayed = "";
 export const init = () => {
@@ -33,7 +33,16 @@ export const playItem = (itemId: string) => {
 };
 
 export const toggleVisibility = () => {
-  dom.findFirstByClass(cls.player).classList.toggle(cls.playerHidden);
+  //TODO: this won't work properly if I'm saving player visibility config
+  //it assumes player is always hidden initialliy
+  const player = dom.findFirstByClass(cls.player);
+  if (player.classList.contains(cls.playerHidden)) {
+    styles.setPlayerHeightRootVariable(style.playerHeight);
+    player.classList.remove(cls.playerHidden);
+  } else {
+    styles.setPlayerHeightRootVariable(0);
+    player.classList.add(cls.playerHidden);
+  }
 };
 
 const removeItemBeingPlayedFromItem = (itemId: string) => {

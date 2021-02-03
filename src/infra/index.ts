@@ -11,6 +11,7 @@ export {
 export * as dom from "./dom";
 export * as anim from "./animations";
 export * as colors from "./colors";
+export * as utils from "./utils";
 import * as dom from "./dom";
 import * as anim from "./animations";
 

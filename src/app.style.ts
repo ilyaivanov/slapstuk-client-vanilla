@@ -1,11 +1,11 @@
-import { cls, colors, cssText, css, cssClass, zIndexes } from "./infra";
+import { cls, colors, cssText, css, cssClass, zIndexes, dom } from "./infra";
+import { cssTag, styles } from "./infra/style";
 import * as sidebarStyle from "./sidebar/styles";
 
 const defaultSidebarWidth = 300;
-cssText(`
-body{
-  overflow: hidden;
-}`);
+cssTag("body", {
+  overflow: "hidden",
+});
 
 cssClass(cls.page, {
   display: "grid",

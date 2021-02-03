@@ -4,9 +4,7 @@ import * as player from "../player/controller";
 import * as items from "../items";
 import * as api from "../api/youtubeRequest";
 import { mapReponseItem } from "../search/controller";
-import { headerHeight } from "../sidebar/styles";
-import { playerHeight } from "../player/styles";
-import { gap } from "./style";
+import { itemPreview } from "./cardPreviewImage";
 
 //VIEW
 export const viewCard = (item: Item): DivDefinition => ({
@@ -23,7 +21,7 @@ export const viewCard = (item: Item): DivDefinition => ({
           if (items.isContainer(item)) {
             const card = dom.findById(ids.card(item.id));
             const imageContainer = dom.findFirstByClass(
-              "item-preview-container" as any,
+              cls.cardPreviewContainer,
               card
             );
             console.log(item.isOpenInGallery);
@@ -34,15 +32,7 @@ export const viewCard = (item: Item): DivDefinition => ({
               card
             );
             animateSubtracksContainer(subtracksContainer, item);
-
-            // const subtracks =viewSubtracks(item.id);
-            // const frag = dom.fragment(subtracks);
-
-            // console.log(frag.)
-          }
-
-          // if (items.isContainer(item)) toggleCardExpandCollapse(item);
-          // else player.playItem(item.id);
+          } else player.playItem(item.id);
         },
       },
       children: [
@@ -114,79 +104,6 @@ const viewSubtrack = (item: Item): DivDefinition => ({
     { type: "span", children: item.title },
   ],
 });
-
-const initialPadding = 56.25; //aspect ratio of a 320 x 180 image
-const initialPaddingPercent = initialPadding + "%";
-
-//I need to convert relative percents to absolute points before animations
-//aftert animation end I will place percents back, so that card would remain fluid
-const getExpandedHeight = (box: HTMLElement) =>
-  box.clientWidth * (initialPadding / 100);
-
-const itemPreview = (item: Item): DivDefinition => {
-  return {
-    className: "item-preview-container" as any,
-    style: {
-      overflow: "hidden",
-      paddingBottom: items.isOpenAtGallery(item) ? "0" : initialPaddingPercent,
-      position: "relative",
-    },
-    children: getPreviewImage(item),
-  };
-};
-
-const getPreviewImage = (item: Item): DivDefinition => {
-  if (!items.isFolder(item))
-    return {
-      type: "img",
-      style: {
-        ...styles.overlay,
-        width: "100%",
-        height: "100%",
-        display: "block",
-        objectFit: "cover",
-        //this makes animation better for non-channel items
-        objectPosition: items.isChannel(item) ? undefined : "top",
-      },
-      attributes: { src: items.getImageSrc(item) },
-    };
-  else {
-    return folderPreviewGrid(item);
-  }
-};
-
-const folderPreviewGrid = (item: Folder): DivDefinition => {
-  const previewImages = items.getPreviewImages(item, 4);
-  if (previewImages.length == 0)
-    return {
-      style: {
-        ...styles.flexCenter,
-        ...styles.overlay,
-        color: "gray",
-        fontSize: "40px",
-      },
-      children: "Empty",
-    };
-  return {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gridTemplateRows: "1fr 1fr",
-      gridGap: "2px",
-      ...styles.overlay,
-    },
-    children: items.getPreviewImages(item, 4).map((src) => ({
-      type: "img",
-      style: {
-        width: "100%",
-        height: "100%",
-        display: "block",
-        objectFit: "cover",
-      },
-      attributes: { src },
-    })),
-  };
-};
 
 const toggleCardExpandCollapse = (item: ItemContainer) => {
   if (items.isNeedsToBeLoaded(item)) {
@@ -281,15 +198,16 @@ const viewSubtracksLoadingGrid = (): DivDefinition => ({
 const boxAnimationSpeed = 1200; //pixels per second
 
 const animateItemImageHeight = (elem: HTMLElement, item: ItemContainer) => {
-  const expandBox = () => animateHeight(elem, 0, getExpandedHeight(elem));
-  const collapseBox = () => animateHeight(elem, getExpandedHeight(elem), 0);
+  const expandBox = () => animateHeight(elem, 0, style.getExpandedHeight(elem));
+  const collapseBox = () =>
+    animateHeight(elem, style.getExpandedHeight(elem), 0);
 
   elem.style.paddingBottom = "0";
   const currentAnimation = elem.getAnimations();
 
   const onAnimationDone = () => {
     if (!items.isOpenAtGallery(item))
-      elem.style.paddingBottom = initialPaddingPercent;
+      elem.style.paddingBottom = style.initialPaddingPercent;
   };
 
   if (currentAnimation.length > 0) {
@@ -313,7 +231,7 @@ const animateSubtracksContainer = (
     if (items.isOpenAtGallery(item)) {
       const subitems = viewSubtracks(item.id);
       subtracksContainer.appendChild(dom.fragment(subitems));
-      const maxHeight = getMaxHeightForSubitemsInPixels(item);
+      const maxHeight = style.getMaxHeightForSubitemsInPixels();
       const targetHeight = Math.min(maxHeight, subtracksContainer.scrollHeight);
       animation = animateHeight(subtracksContainer, 0, targetHeight);
     } else {
@@ -329,21 +247,6 @@ const animateSubtracksContainer = (
   }
 };
 
-const getMaxHeightForSubitemsInPixels = (item: Item): number => {
-  const row = dom.findById(ids.card(item.id));
-  const text = dom.findFirstByClass(cls.cardText, row);
-  return window.innerHeight - getMaxHeightModifiers() - text.clientHeight;
-};
-
-export const getMaxHeightForSubitemsInCssCalc = (item: Item): string => {
-  const row = dom.findById(ids.card(item.id));
-  const text = dom.findFirstByClass(cls.cardText, row);
-  return `calc(100vh - ${getMaxHeightModifiers() + text.clientHeight}px)`;
-};
-
-//TODO: check if player is visible or not
-const getMaxHeightModifiers = () => headerHeight + playerHeight + gap * 2;
-
 const animateHeight = (
   elem: HTMLElement,
   from: number,
@@ -358,6 +261,7 @@ const animateHeight = (
     ],
     {
       duration: getDuration(from, to),
+      easing: "ease-out",
     }
   );
 };

@@ -8,6 +8,19 @@ export const cardExpandCollapseSpeed = 200;
 export const cardHeaderHeight = 35;
 
 //CARDS
+const getMaxHeightModifiers = () => headerHeight + gap * 2;
+export const getMaxHeightForSubitemsInPixels = (): number => {
+  return window.innerHeight - getMaxHeightModifiers();
+};
+
+export const initialPadding = 56.25; //aspect ratio of a 320 x 180 image
+export const initialPaddingPercent = initialPadding + "%";
+
+//I need to convert relative percents to absolute points before animations
+//aftert animation end I will place percents back, so that card would remain fluid
+export const getExpandedHeight = (box: HTMLElement) =>
+  box.clientWidth * (initialPadding / 100);
+
 cssClass(cls.card, {
   color: "white",
   backgroundColor: colors.card,
@@ -19,6 +32,9 @@ cssClass(cls.card, {
   overflow: "hidden",
   position: "relative",
   transition: playerStyle.backgroundTransition,
+  maxHeight: `calc(100vh - ${getMaxHeightModifiers()}px - var(--player-height))`,
+  display: "flex",
+  flexDirection: "column",
 });
 
 css(`.${cls.card}:hover`, {

@@ -1,5 +1,4 @@
-import { cls, colors, cssClass, cssText, dom, ids, styles } from "../infra";
-import * as items from "../items";
+import { cls, colors, cssClass, cssText, dom, styles, utils } from "../infra";
 import * as card from "./card";
 const gap = 20;
 
@@ -28,7 +27,7 @@ export const rerenderIfColumnsChanged = () => {
     });
 
     animation.addEventListener("finish", () => {
-      appendGallery(nextGallery);
+      renderGallery(nextGallery);
       gallery.animate([transparent, opaque], {
         fill: "forwards",
         duration: 100,
@@ -45,37 +44,20 @@ export const renderItems = (itemsToRender: Item[]) => {
   currentItems = itemsToRender;
   currentCols = getColsCountFor();
 
-  renderForColumns();
+  renderGallery(viewGallery());
 };
 const getColsCountFor = () =>
   Math.round((gallery.clientWidth - gap) / (320 + gap));
 
-const renderForColumns = () => {
-  appendGallery(viewGallery());
-};
-
-const appendGallery = (galleryContent: HTMLElement) => {
+const renderGallery = (galleryContent: HTMLElement) => {
   gallery.innerHTML = "";
   gallery.appendChild(galleryContent);
-
-  currentItems.forEach((i) => {
-    if (items.isContainer(i)) {
-      const cardView = dom.findById(ids.card(i.id));
-      const subtrackContainer = dom.findFirstByClass(
-        cls.subtracksContainer,
-        cardView
-      );
-      subtrackContainer.style.maxHeight = card.getMaxHeightForSubitemsInCssCalc(
-        i
-      );
-    }
-  });
 };
 
 const viewGallery = () =>
   dom.div({
     className: cls.scrolly,
-    children: numbers(currentCols).map((rowNumber) => ({
+    children: utils.generateNumbers(currentCols).map((rowNumber) => ({
       className: cls.column1,
       children: currentItems
         .filter((_, index) => index % currentCols == rowNumber)
@@ -87,7 +69,6 @@ const viewGallery = () =>
 cssClass(cls.gallery, {
   backgroundColor: colors.gallery,
   position: "relative",
-  // paddingTop: `${gap}px`,
   overflowY: "overlay",
 });
 
@@ -104,7 +85,3 @@ cssClass(cls.column1, {
   flex: "1",
   marginLeft: gap + "px",
 });
-
-//[0 .. to] inclusive
-const numbers = (to: number) =>
-  Array.from(new Array(to)).map((_, index) => index);

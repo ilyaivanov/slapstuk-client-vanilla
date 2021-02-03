@@ -170,5 +170,5 @@ export const removeClassFromElementById = (
   const elem = maybefindById(id);
   if (elem) elem.classList.remove(classToRemove);
 };
-
+export const root = findById("root");
 // export const setChildren = (node: HTMLElement, )

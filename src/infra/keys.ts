@@ -52,6 +52,7 @@ export const cls = {
   cardTypeBoxTriangleFolder: "card-type-box-triangle-folder",
   cardTypeBoxTextContainer: "card-type-box-text-container",
 
+  cardPreviewContainer: "card-preview-container",
   cardImageHidden: "card-image-hidden",
   cardText: "card-text",
   cardTextForFolder: "card-text-folder",

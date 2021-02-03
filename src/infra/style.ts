@@ -1,5 +1,6 @@
 import { colors } from ".";
 import { ClassName } from "./keys";
+import * as dom from "./dom";
 
 const s = document.createElement("style");
 document.head.appendChild(s);
@@ -7,33 +8,40 @@ document.head.appendChild(s);
 export const cssClass = (
   clas: ClassName,
   styles: Partial<CSSStyleDeclaration>
-) => appensTextToStyle(formatStyleDeclarations("." + clas, styles));
-
+) => {
+  const text = cssToString("." + clas, styles);
+  s.innerHTML += text;
+};
 export const cssClassOnHover = (
   clas: ClassName,
   styles: Partial<CSSStyleDeclaration>
-) => appensTextToStyle(formatStyleDeclarations("." + clas + ":hover", styles));
+) => {
+  const text = cssToString("." + clas + ":hover", styles);
+  s.innerHTML += text;
+};
 
 export const css = (
   selector: string | string[],
   styles: Partial<CSSStyleDeclaration>
 ) => {
   const res = Array.isArray(selector) ? selector.join(", ") : selector;
-  appensTextToStyle(formatStyleDeclarations(res, styles));
+  const text = cssToString(res, styles);
+  s.innerHTML += text;
 };
-
-export const cssText = (text: string) => appensTextToStyle(text);
-
-const appensTextToStyle = (text: string) => (s.innerHTML += text);
-
-const formatStyleDeclarations = (
-  selector: string,
-  props: Partial<CSSStyleDeclaration>
-) => {
+const cssToString = (selector: string, props: Partial<CSSStyleDeclaration>) => {
   const div = document.createElement("div");
   Object.assign(div.style, props);
   return formatStyle(selector, div.style.cssText);
 };
+
+export const cssText = (text: string) => {
+  s.innerHTML += text;
+};
+
+export const cssTag = (
+  elementName: keyof HTMLElementTagNameMap,
+  props: Partial<CSSStyleDeclaration>
+) => (s.innerHTML += cssToString(elementName, props));
 
 const formatStyle = (selector: string, body: string) =>
   `${selector}{
@@ -86,4 +94,7 @@ export const styles = {
     ${width ? "width: " + width + "px" : ""}
     ${height ? "height: " + height + "px" : ""}
   }`,
+  //this variable is used to set maxHeight for cards
+  setPlayerHeightRootVariable: (height: number) =>
+    dom.root.style.setProperty("--player-height", `${height}px`),
 };
