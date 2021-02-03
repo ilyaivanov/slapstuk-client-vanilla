@@ -1,6 +1,6 @@
 import * as gallery from "../gallery1/gallery";
 import { cls, dom } from "../infra";
-import { toggleVisibility, togleRightSidebar } from "../sidebar/controller";
+import { toggleLeftSidebar, togleRightSidebar } from "../sidebar/controller";
 import * as player from "../player/controller";
 import * as items from "../items";
 import { initSampleSearchResults } from "./initSampleSearchResults";
@@ -16,26 +16,12 @@ root.appendChild(
         children: [
           {
             type: "button",
-            on: {
-              click: () => {
-                toggleVisibility();
-                setTimeout(() => {
-                  gallery.rerenderIfColumnsChanged();
-                }, 200);
-              },
-            },
+            on: { click: toggleLeftSidebar },
             children: "left",
           },
           {
             type: "button",
-            on: {
-              click: () => {
-                togleRightSidebar();
-                setTimeout(() => {
-                  gallery.rerenderIfColumnsChanged();
-                }, 200);
-              },
-            },
+            on: { click: togleRightSidebar },
             children: "right",
           },
           {

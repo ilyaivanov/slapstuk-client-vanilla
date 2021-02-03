@@ -1,7 +1,7 @@
 import { cls, dom, anim, styles, zIndexes } from "../infra";
 import * as view from "./view";
 import * as style from "./styles";
-import * as galleryController from "../gallery1/gallery";
+import * as gallery from "../gallery1/gallery";
 import * as items from "../items";
 
 export const init = (sidebarParent: HTMLElement) => {
@@ -98,7 +98,7 @@ export const selectItem = (itemId: string) => {
   items.setSelectedItem(itemId);
   dom.removeClassFromElement(cls.sidebarRowSelected);
   view.findRowById(itemId).classList.add(cls.sidebarRowSelected);
-  galleryController.renderItems(items.getChildren(itemId));
+  gallery.renderItems(items.getChildren(itemId));
 };
 
 //Items expand\collapse
@@ -139,11 +139,13 @@ const removeItemChildren = (itemId: string) => {
   );
 };
 
-export const toggleVisibility = () => {
+export const toggleLeftSidebar = () => {
+  setTimeout(gallery.rerenderIfColumnsChanged, style.sidebarCollapseTime);
   dom.findFirstByClass(cls.sidebar).classList.toggle(cls.sidebarHidden);
 };
 
 export const togleRightSidebar = () => {
+  setTimeout(gallery.rerenderIfColumnsChanged, style.sidebarCollapseTime);
   dom
     .findFirstByClass(cls.rightSidebar)
     .classList.toggle(cls.rightSidebarHidden);

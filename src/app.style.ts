@@ -34,7 +34,7 @@ cssClass(cls.sidebar, {
   // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.leftSidebarMenu,
   width: `${defaultSidebarWidth}px`,
-  transition: "margin 200ms ease-out",
+  transition: `margin ${sidebarStyle.sidebarCollapseTime}ms ease-out`,
 });
 
 cssClass(cls.rightSidebar, {
@@ -45,7 +45,7 @@ cssClass(cls.rightSidebar, {
   // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.rightSidebarMenu,
   width: `${defaultSidebarWidth}px`,
-  transition: "margin 200ms ease-out",
+  transition: `margin ${sidebarStyle.sidebarCollapseTime}ms ease-out`,
 });
 
 cssClass(cls.sidebarHidden, {

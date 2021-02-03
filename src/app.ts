@@ -58,7 +58,7 @@ export const initApp = (userId: string) => {
               },
               {
                 type: "button",
-                on: { click: sidebarController.toggleVisibility },
+                on: { click: sidebarController.toggleLeftSidebar },
                 children: "left sidebar",
               },
               {
