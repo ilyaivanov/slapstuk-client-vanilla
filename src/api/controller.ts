@@ -1,4 +1,5 @@
 import { isIsolated } from "../infra";
+import { getSampleItems } from "../playgrounds/initSampleSearchResults";
 import * as firebase from "./loginService";
 
 export const init = () => {
@@ -33,28 +34,8 @@ export const loadUserSettings = (
   userId: string
 ): Promise<firebase.PersistedState> => {
   if (isIsolated) {
-    const items: Items = {
-      HOME: {
-        id: "HOME",
-        title: "HOME",
-        type: "folder",
-        children: ["1", "2"],
-      },
-      1: {
-        id: "1",
-        title: "First Item",
-        type: "folder",
-        children: [],
-      },
-      2: {
-        id: "2",
-        title: "Second Item",
-        type: "folder",
-        children: [],
-      },
-    };
     return Promise.resolve({
-      itemsSerialized: JSON.stringify(items),
+      itemsSerialized: JSON.stringify(getSampleItems()),
       focusedItemId: "HOME",
       selectedItemId: "HOME",
     });

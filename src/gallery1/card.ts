@@ -177,13 +177,7 @@ const loadSubitemsIfNeeded = (
   }
 };
 
-const boxAnimationSpeed = 1200; //pixels per second
-
 const animateItemImageHeight = (elem: HTMLElement, item: ItemContainer) => {
-  const expandBox = () => animateHeight(elem, 0, style.getExpandedHeight(elem));
-  const collapseBox = () =>
-    animateHeight(elem, style.getExpandedHeight(elem), 0);
-
   elem.style.paddingBottom = "0";
   const currentAnimation = elem.getAnimations();
 
@@ -196,8 +190,8 @@ const animateItemImageHeight = (elem: HTMLElement, item: ItemContainer) => {
     currentAnimation[0].reverse();
   } else {
     const animation = !items.isOpenAtGallery(item)
-      ? expandBox()
-      : collapseBox();
+      ? anim.animateHeight(elem, 0, style.getExpandedHeight(elem))
+      : anim.animateHeight(elem, style.getExpandedHeight(elem), 0);
     animation.addEventListener("finish", onAnimationDone);
   }
 };
@@ -210,20 +204,19 @@ const animateSubtracksContainer = (
   const animations = subtracksContainer.getAnimations();
   if (animations.length > 0) animations.forEach((a) => a.reverse());
   else {
-    console.log("starting new animation");
     let animation: Animation;
     if (items.isOpenAtGallery(item)) {
       const subitems = dom.fragment(viewSubtracksContent(item));
       subtracksContainer.appendChild(subitems);
       const maxHeight = style.getMaxHeightForSubitemsInPixels();
       const targetHeight = Math.min(maxHeight, subtracksContainer.scrollHeight);
-      animation = animateHeight(
+      animation = anim.animateHeight(
         subtracksContainer,
         initialHeightDuringExpand,
         targetHeight
       );
     } else {
-      animation = animateHeight(
+      animation = anim.animateHeight(
         subtracksContainer,
         subtracksContainer.clientHeight,
         0
@@ -233,28 +226,4 @@ const animateSubtracksContainer = (
       if (!items.isOpenAtGallery(item)) subtracksContainer.innerHTML = "";
     });
   }
-};
-
-const animateHeight = (
-  elem: HTMLElement,
-  from: number,
-  to: number
-): Animation => {
-  const targetOpacity = from > to ? 0 : 1;
-  const sourceOpacity = from <= to ? 0 : 1;
-  return elem.animate(
-    [
-      { height: from + "px", opacity: sourceOpacity },
-      { height: to + "px", opacity: targetOpacity },
-    ],
-    {
-      duration: getDuration(from, to),
-      easing: "ease-out",
-    }
-  );
-};
-
-const getDuration = (from: number, to: number) => {
-  const distance = Math.abs(to - from);
-  return (distance / boxAnimationSpeed) * 1000;
 };

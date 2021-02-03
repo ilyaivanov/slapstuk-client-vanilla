@@ -5,7 +5,7 @@ import * as player from "../player/controller";
 import * as items from "../items";
 import { initSampleSearchResults } from "./initSampleSearchResults";
 
-initSampleSearchResults();
+initSampleSearchResults("HOME");
 const root = dom.findById("root");
 root.appendChild(
   dom.div({
@@ -39,4 +39,4 @@ root.appendChild(
   })
 );
 
-gallery.renderItems(items.getChildren("SEARCH"));
+gallery.renderItems(items.getChildren("HOME"));

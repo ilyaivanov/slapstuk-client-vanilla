@@ -1,4 +1,4 @@
-let defaultItems: Items = {
+export let defaultItems: Items = {
   HOME: {
     id: "HOME",
     type: "folder",

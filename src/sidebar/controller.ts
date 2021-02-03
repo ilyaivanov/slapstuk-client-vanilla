@@ -1,13 +1,11 @@
-import { cls, dom, anim, styles, zIndexes } from "../infra";
+import { cls, dom, styles, anim, zIndexes } from "../infra";
 import * as view from "./view";
 import * as style from "./styles";
 import * as gallery from "../gallery1/gallery";
 import * as items from "../items";
 
 export const init = (sidebarParent: HTMLElement) => {
-  const itemsToRender = items
-    .getHomeItems()
-    .map((item) => view.viewRow(item, 0));
+  const itemsToRender = view.viewItemChildren("HOME");
   const focusContainer = dom.div({
     className: cls.sidebarFocusContainer,
     children: itemsToRender.flat(),
@@ -36,10 +34,10 @@ const addNewItem = () => {
   };
   items.appendChildTo("HOME", newItem);
   const plus = dom.findFirstByClass(cls.sidebarPlusIcon);
-  const newNodes = view.viewRow(newItem, 0).map(dom.div);
+  const newNodes = view.viewRowAndItsChildren(newItem, 0).map(dom.div);
   plus.insertAdjacentElement("beforebegin", newNodes[0]);
   plus.insertAdjacentElement("beforebegin", newNodes[1]);
-  animateExpandForRowAndChildContainer(newNodes[0], newNodes[1]);
+  expandRowAndChildContainer(newNodes[0], newNodes[1]);
   onEdit(newItem.id);
 };
 
@@ -87,8 +85,12 @@ export const removeItem = (item: Item) => {
     cont.classList.add(cls.deleted);
     row.classList.add(cls.deleted);
     currentRemoveTimeouts[item.id] = setTimeout(() => {
-      anim.collapseElementHeight(row, style.focusTransitionTime, true);
-      anim.collapseElementHeight(cont, style.focusTransitionTime, true);
+      collapseRowAndChildContainer(row, cont, {
+        doNotFadeOut: true,
+      }).addEventListener("finish", () => {
+        row.remove();
+        cont.remove();
+      });
       delete currentRemoveTimeouts[item.id];
     }, style.fadeOutTime);
   }
@@ -111,32 +113,43 @@ export const toggleSidebarVisibilityForItem = (item: ItemContainer) => {
 
   if (item.isOpenFromSidebar) {
     button.classList.add(cls.rotated);
-    showItemChildren(item, level);
+    showItemChildren(item, level + 1);
   } else {
     button.classList.remove(cls.rotated);
-    removeItemChildren(item.id);
+    hideItemChildren(item);
   }
+};
+
+const revertAllAnimations = (el: HTMLElement): boolean => {
+  const currentAnimations = el.getAnimations();
+  if (currentAnimations.length > 0) {
+    currentAnimations.forEach((a) => a.reverse());
+    return true;
+  } else return false;
+};
+
+const onChildrenAnimationDone = (item: Item, container: HTMLElement) => {
+  if (!items.isOpenAtSidebar(item) && items.focusedItemId != item.id)
+    container.innerHTML = "";
 };
 
 const showItemChildren = (item: Item, level: number) => {
   const childrenElement = view.findItemChildrenContainer(item.id);
-  const children = items
-    .getChildren(item.id)
-    .map((item) => view.viewRow(item, level + 1))
-    .flat();
-  anim.openElementHeight(
-    childrenElement,
-    children,
-    style.expandCollapseTransitionTime
-  );
+  if (!revertAllAnimations(childrenElement)) {
+    dom.set(childrenElement, view.viewItemChildren(item.id, level + 1));
+    expandChildContainer(childrenElement).addEventListener("finish", () =>
+      onChildrenAnimationDone(item, childrenElement)
+    );
+  }
 };
 
-const removeItemChildren = (itemId: string) => {
-  const childrenElement = view.findItemChildrenContainer(itemId);
-  anim.collapseElementHeight(
-    childrenElement,
-    style.expandCollapseTransitionTime
-  );
+const hideItemChildren = (item: Item) => {
+  const childrenElement = view.findItemChildrenContainer(item.id);
+  if (!revertAllAnimations(childrenElement)) {
+    collapseChildContainer(childrenElement).addEventListener("finish", () =>
+      onChildrenAnimationDone(item, childrenElement)
+    );
+  }
 };
 
 export const toggleLeftSidebar = () => {
@@ -164,6 +177,7 @@ const focusOnItem = (item: Item) => {
   // because I'm traversing and closing all non-closed items on unfocus
   dom.removeClassFromElement(cls.sidebarRowChildrenContainerFocused);
 
+  items.setFocusedItem(item.id);
   const row = view.findRowById(item.id);
 
   focusLevel = view.parseLevelFromRow(row);
@@ -185,6 +199,7 @@ const focusOnItem = (item: Item) => {
 };
 
 const unfocus = () => {
+  items.setFocusedItem("HOME");
   dom.removeClassFromElement(cls.sidebarFocusContainerFocused);
   focusLevel = 0;
   dom.findAllByClass(cls.sidebarRowFocused).forEach((row) => {
@@ -193,7 +208,7 @@ const unfocus = () => {
     const item = items.getItem(itemId);
     const isItemEmpty = dom.isEmpty(view.findItemChildrenContainer(itemId));
     if (!items.isOpenAtSidebar(item) && !isItemEmpty) {
-      removeItemChildren(itemId);
+      hideItemChildren(item);
     }
   });
 
@@ -313,15 +328,14 @@ const onMouseMoveDuringDrag = (
 const onMouseUp = () => {
   if (itemIdMouseDownOn && isDragging) {
     if (targetItemId && destinationType) {
-      anim.collapseElementHeight(
-        view.findRowById(itemIdMouseDownOn),
-        style.expandCollapseTransitionTime,
-        true
-      );
-      anim.collapseElementHeight(
-        view.findItemChildrenContainer(itemIdMouseDownOn),
-        style.expandCollapseTransitionTime,
-        true
+      const row = view.findRowById(itemIdMouseDownOn);
+      const childContainer = view.findItemChildrenContainer(itemIdMouseDownOn);
+      collapseRowAndChildContainer(row, childContainer).addEventListener(
+        "finish",
+        () => {
+          row.remove();
+          childContainer.remove();
+        }
       );
       removeFromParent(itemIdMouseDownOn);
       insertItemToLocation(itemIdMouseDownOn, targetItemId, destinationType);
@@ -378,12 +392,12 @@ const insertItemToLocation = (
 
     if (targetItem.isOpenFromSidebar) {
       const childNodes = view
-        .viewRow(itemBeingDragged, targetItemLevel + 1)
+        .viewRowAndItsChildren(itemBeingDragged, targetItemLevel + 1)
         .map(dom.div);
       const container = view.findItemChildrenContainer(targetItemId);
       container.insertAdjacentElement("afterbegin", childNodes[1]);
       container.insertAdjacentElement("afterbegin", childNodes[0]);
-      animateExpandForRowAndChildContainer(childNodes[0], childNodes[1]);
+      expandRowAndChildContainer(childNodes[0], childNodes[1]);
     } else removeClassHidingChevrons();
   } else if (placement == "before") {
     const parent = items.findParentItem(targetItemId);
@@ -398,12 +412,12 @@ const insertItemToLocation = (
       );
     }
     const childNodes = view
-      .viewRow(itemBeingDragged, targetItemLevel)
+      .viewRowAndItsChildren(itemBeingDragged, targetItemLevel)
       .map(dom.div);
     childNodes.forEach((n) => {
       targetItemRow.insertAdjacentElement("beforebegin", n);
     });
-    animateExpandForRowAndChildContainer(childNodes[0], childNodes[1]);
+    expandRowAndChildContainer(childNodes[0], childNodes[1]);
   } else if (placement == "after") {
     const parent = items.findParentItem(targetItemId);
     if (parent) {
@@ -416,7 +430,7 @@ const insertItemToLocation = (
       );
     }
     const childNodes = view
-      .viewRow(itemBeingDragged, targetItemLevel)
+      .viewRowAndItsChildren(itemBeingDragged, targetItemLevel)
       .reverse()
       .map(dom.div);
     const targetItemChildContainer = view.findItemChildrenContainer(
@@ -425,28 +439,61 @@ const insertItemToLocation = (
     childNodes.forEach((n) =>
       targetItemChildContainer.insertAdjacentElement("afterend", n)
     );
-    animateExpandForRowAndChildContainer(childNodes[0], childNodes[1]);
+    expandRowAndChildContainer(childNodes[1], childNodes[0]);
   }
 };
 
-const animateExpandForRowAndChildContainer = (
+const collapseRowAndChildContainer = (
+  row: HTMLElement,
+  childContainer: HTMLElement,
+  options?: anim.Options
+) => {
+  anim.animateHeight(row, row.clientHeight, 0, {
+    duration: 60,
+    fill: "forwards",
+    ...options,
+  });
+  return anim.animateHeight(childContainer, childContainer.scrollHeight, 0, {
+    duration: style.expandCollapseTransitionTime,
+    fill: "forwards",
+    ...options,
+  });
+};
+
+const expandRowAndChildContainer = (
   row: HTMLElement,
   childContainer: HTMLElement
 ) => {
-  //TODO: onAnimationsDone is triggered twice. need to think about race conditions here
-  anim.expandElementHeight(
-    row,
-    style.expandCollapseTransitionTime,
-    row.clientHeight,
-    removeClassHidingChevrons
-  );
-  anim.expandElementHeight(
-    childContainer,
-    style.expandCollapseTransitionTime,
-    childContainer.scrollHeight,
-    removeClassHidingChevrons
-  );
+  console.log("expandRowAndChildContainer", row, childContainer);
+  anim
+    .animateHeight(row, 0, row.clientHeight, {
+      duration: 60,
+    })
+    .addEventListener("finish", removeClassHidingChevrons);
+  expandChildContainer(childContainer, {
+    delay: 40,
+    fill: "backwards",
+  });
 };
 
-const removeClassHidingChevrons = () =>
+const expandChildContainer = (
+  childContainer: HTMLElement,
+  options?: anim.Options
+) =>
+  anim.animateHeight(childContainer, 0, childContainer.scrollHeight, {
+    duration: style.expandCollapseTransitionTime,
+    ...options,
+  });
+
+const collapseChildContainer = (
+  childContainer: HTMLElement,
+  options?: anim.Options
+) =>
+  anim.animateHeight(childContainer, childContainer.scrollHeight, 0, {
+    duration: style.expandCollapseTransitionTime,
+    ...options,
+  });
+
+const removeClassHidingChevrons = () => {
   dom.removeClassFromElement(cls.sidebar, cls.sidebarHideChevrons);
+};

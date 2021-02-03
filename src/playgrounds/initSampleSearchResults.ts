@@ -1,7 +1,8 @@
 import * as items from "../items";
 
-export const initSampleSearchResults = () => {
-  items.setSearchItems(itemsToRender);
+export const initSampleSearchResults = (targetNodeId: string) => {
+  items.setChildren(targetNodeId, itemsToRender);
+
   items.setChildren("folder1", getItems(1));
   items.setChildren("folder2", getItems(2));
   items.setChildren("folder3", getItems(3));
@@ -18,6 +19,37 @@ export const initSampleSearchResults = () => {
       .map(() => getItems(4))
       .flat()
   );
+};
+
+export const getSampleItems = (): Items => {
+  const prevItems = items.allItems;
+  items.setItems(items.defaultItems);
+
+  items.setChildren(
+    "HOME",
+    itemsToRender.filter((i) => i.type !== "YTvideo")
+  );
+
+  items.setChildren("folder1", getItems(1));
+  items.setChildren("folder2", getItems(2));
+  items.setChildren("folder3", getItems(3));
+  items.setChildren("folder4", getItems(4));
+  items.setChildren(
+    "folderBig1",
+    Array.from(new Array(12))
+      .map(() => getItems(4))
+      .flat()
+  );
+  items.setChildren(
+    "folderBig2",
+    Array.from(new Array(12))
+      .map(() => getItems(4))
+      .flat()
+  );
+
+  const res = items.allItems;
+  items.setItems(prevItems);
+  return res;
 };
 
 const getItems = (count: number): Item[] =>

@@ -171,4 +171,12 @@ export const removeClassFromElementById = (
   if (elem) elem.classList.remove(classToRemove);
 };
 export const root = findById("root");
-// export const setChildren = (node: HTMLElement, )
+
+export const set = (
+  node: HTMLElement,
+  children: DivDefinition | DivDefinition[]
+) => {
+  node.innerHTML = ``;
+  if (Array.isArray(children)) node.appendChild(fragment(children));
+  else node.appendChild(div(children));
+};
