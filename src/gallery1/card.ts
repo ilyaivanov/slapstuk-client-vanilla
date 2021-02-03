@@ -30,6 +30,8 @@ export const viewCard = (item: Item): DivDefinition => ({
               cls.subtracksContainer,
               card
             );
+
+            loadSubitemsIfNeeded(item, subtracksContainer);
             animateSubtracksContainer(subtracksContainer, item);
           } else player.playItem(item.id);
         },
@@ -47,7 +49,7 @@ export const viewCard = (item: Item): DivDefinition => ({
     },
     {
       className: cls.subtracksContainer,
-      children: items.isOpenAtGallery(item) ? viewSubtracks(item.id) : [],
+      children: viewSubtracksContent(item),
     },
     {
       className: cls.cardTypeBox,
@@ -79,6 +81,13 @@ export const viewCard = (item: Item): DivDefinition => ({
   ],
 });
 
+const viewSubtracksContent = (item: Item): DivDefinition[] =>
+  items.isOpenAtGallery(item)
+    ? items.isLoading(item)
+      ? [viewSubtracksLoadingGrid(item)]
+      : viewSubtracks(item.id)
+    : [];
+
 const viewSubtracks = (itemId: string): DivDefinition[] =>
   items.getChildren(itemId).map(viewSubtrack);
 
@@ -104,85 +113,7 @@ const viewSubtrack = (item: Item): DivDefinition => ({
   ],
 });
 
-// const toggleCardExpandCollapse = (item: ItemContainer) => {
-//   if (items.isNeedsToBeLoaded(item)) {
-//     const doneLoading = (newItems: Item[]) => {
-//       if (item.type == "YTplaylist") {
-//         item.isLoading = false;
-//       } else if (item.type == "YTchannel") {
-//         item.isLoading = false;
-//       }
-//       items.setChildren(item.id, newItems);
-//       const card = dom.findById("card-" + item.id);
-//       const cardSubtracksContainer = dom.findFirstByClass(
-//         cls.subtracksContainer,
-//         card
-//       );
-//       cardSubtracksContainer.innerHTML = "";
-//       const subs = viewSubtracks(item.id);
-//       cardSubtracksContainer.appendChild(dom.fragment(subs));
-//     };
-//     if (item.type == "YTplaylist") {
-//       item.isLoading = true;
-//       api
-//         .fetchPlaylistVideos(item.playlistId)
-//         .then((response) => response.items.map(mapReponseItem))
-//         .then((newItems) => doneLoading(newItems));
-//     }
-//     if (item.type == "YTchannel") {
-//       item.isLoading = true;
-//       Promise.all([
-//         api.getChannelPlaylists(item.channelId),
-//         api.getChannelUploadsPlaylistId(item.channelId),
-//       ])
-//         .then(([channelPlaylists, uploadsPlaylistId]) =>
-//           [
-//             {
-//               type: "YTplaylist",
-//               children: [],
-//               id: Math.random() + "",
-//               image: item.image,
-//               playlistId: uploadsPlaylistId,
-//               title: item.title + " - Uploads",
-//             } as Item,
-//           ].concat(channelPlaylists.items.map(mapReponseItem))
-//         )
-//         .then((newItems) => doneLoading(newItems));
-//     }
-//   }
-//   const card = dom.findById("card-" + item.id);
-//   item.isOpenInGallery = !item.isOpenInGallery;
-//   const cardImage = dom.findFirstByClass(cls.cardImage, card);
-//   const cardSubtracksContainer = dom.findFirstByClass(
-//     cls.subtracksContainer,
-//     card
-//   );
-//   const content = items.isLoading(item)
-//     ? viewSubtracksLoadingGrid()
-//     : viewSubtracks(item.id);
-//   if (item.isOpenInGallery) {
-//     cardImage.classList.add(cls.cardImageHidden);
-//     const gallery = dom.findFirstByClass(cls.gallery);
-//     anim.openElementHeight(
-//       cardSubtracksContainer,
-//       content,
-//       style.cardExpandCollapseSpeed,
-//       () =>
-//         Math.min(
-//           gallery.clientHeight - style.gap * 2,
-//           cardSubtracksContainer.scrollHeight
-//         )
-//     );
-//   } else {
-//     cardImage.classList.remove(cls.cardImageHidden);
-//     anim.collapseElementHeight(
-//       cardSubtracksContainer,
-//       style.cardExpandCollapseSpeed
-//     );
-//   }
-// };
-
-const viewSubtracksLoadingGrid = (color: string): DivDefinition => ({
+const viewSubtracksLoadingGrid = (item: Item): DivDefinition => ({
   style: {
     ...styles.flexCenter,
     margin: "10px",
@@ -193,11 +124,58 @@ const viewSubtracksLoadingGrid = (color: string): DivDefinition => ({
 
     children: Array.from(new Array(9)).map(() => ({
       style: {
-        backgroundColor: color,
+        backgroundColor: style.getItemColor(item),
       },
     })),
   },
 });
+
+const loadSubitemsIfNeeded = (
+  item: ItemContainer,
+  subtracksContainer: HTMLElement
+) => {
+  const doneLoading = (newItems: Item[]) => {
+    items.stopLoading(item);
+    items.setChildren(item.id, newItems);
+    const initialHeight = subtracksContainer.clientHeight;
+    subtracksContainer.innerHTML = ``;
+    //this is tricky. If items will be fetched during current animation, I do not need to revert animations (as if during click)
+    styles.cancelAllCurrentAnimations(subtracksContainer);
+
+    animateSubtracksContainer(subtracksContainer, item, initialHeight);
+  };
+
+  if (items.isOpenAtGallery(item) && items.isContainerNeedToFetch(item)) {
+    items.startLoading(item);
+    if (item.type == "YTplaylist") {
+      item.isLoading = true;
+      api
+        .fetchPlaylistVideos(item.playlistId)
+        .then((response) => response.items.map(mapReponseItem))
+        .then((newItems) => doneLoading(newItems));
+    }
+    if (item.type == "YTchannel") {
+      item.isLoading = true;
+      Promise.all([
+        api.getChannelPlaylists(item.channelId),
+        api.getChannelUploadsPlaylistId(item.channelId),
+      ])
+        .then(([channelPlaylists, uploadsPlaylistId]) =>
+          [
+            {
+              type: "YTplaylist",
+              children: [],
+              id: Math.random() + "",
+              image: item.image,
+              playlistId: uploadsPlaylistId,
+              title: item.title + " - Uploads",
+            } as Item,
+          ].concat(channelPlaylists.items.map(mapReponseItem))
+        )
+        .then((newItems) => doneLoading(newItems));
+    }
+  }
+};
 
 const boxAnimationSpeed = 1200; //pixels per second
 
@@ -226,20 +204,24 @@ const animateItemImageHeight = (elem: HTMLElement, item: ItemContainer) => {
 
 const animateSubtracksContainer = (
   subtracksContainer: HTMLElement,
-  item: ItemContainer
+  item: ItemContainer,
+  initialHeightDuringExpand = 0
 ) => {
   const animations = subtracksContainer.getAnimations();
   if (animations.length > 0) animations.forEach((a) => a.reverse());
   else {
+    console.log("starting new animation");
     let animation: Animation;
     if (items.isOpenAtGallery(item)) {
-      const subitems = items.isContainerNeedToFetch(item)
-        ? dom.div(viewSubtracksLoadingGrid(style.getItemColor(item)))
-        : dom.fragment(viewSubtracks(item.id));
+      const subitems = dom.fragment(viewSubtracksContent(item));
       subtracksContainer.appendChild(subitems);
       const maxHeight = style.getMaxHeightForSubitemsInPixels();
       const targetHeight = Math.min(maxHeight, subtracksContainer.scrollHeight);
-      animation = animateHeight(subtracksContainer, 0, targetHeight);
+      animation = animateHeight(
+        subtracksContainer,
+        initialHeightDuringExpand,
+        targetHeight
+      );
     } else {
       animation = animateHeight(
         subtracksContainer,

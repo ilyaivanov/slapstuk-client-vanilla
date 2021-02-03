@@ -97,4 +97,7 @@ export const styles = {
   //this variable is used to set maxHeight for cards
   setPlayerHeightRootVariable: (height: number) =>
     dom.root.style.setProperty("--player-height", `${height}px`),
+
+  cancelAllCurrentAnimations: (elem: HTMLElement) =>
+    elem.getAnimations().forEach((a) => a.cancel()),
 };

@@ -107,6 +107,15 @@ export const isNeedsToBeLoaded = (item: Item): boolean => {
   );
 };
 
+export const startLoading = (item: Item) => {
+  if (isPlaylist(item)) item.isLoading = true;
+  else if (isChannel(item)) item.isLoading = true;
+};
+
+export const stopLoading = (item: ItemContainer) => {
+  if (isPlaylist(item)) delete item.isLoading;
+  else if (isChannel(item)) delete item.isLoading;
+};
 export const isLoading = (item: Item): boolean => {
   return (
     (isPlaylist(item) && !!item.isLoading) ||
@@ -132,7 +141,7 @@ export function isContainer(item: Item): item is ItemContainer {
 
 export const isContainerNeedToFetch = (item: ItemContainer) => {
   //TODO: probably need to add additional flags to loading status for Youtube playlist and channel
-  return item.children.length == 0;
+  return item.children.length == 0 && !isLoading(item);
 };
 
 export const getPreviewImages = (item: Item, count: number): string[] =>

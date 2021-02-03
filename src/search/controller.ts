@@ -1,4 +1,4 @@
-import { dom, ids } from "../infra";
+import { dom, ids, isIsolated } from "../infra";
 import * as api from "../api/youtubeRequest";
 import * as gallery from "../gallery1/gallery";
 import * as items from "../items";
@@ -6,7 +6,7 @@ import { ResponseItem } from "../api/youtubeRequest";
 
 export const search = () => {
   const input = dom.findById(ids.searchInput) as HTMLInputElement;
-  if (input.value) {
+  if (input.value || isIsolated) {
     api.findYoutubeVideos(input.value).then((data) => {
       const itemsMapped = data.items.map(mapReponseItem);
       items.setSearchItems(itemsMapped);
