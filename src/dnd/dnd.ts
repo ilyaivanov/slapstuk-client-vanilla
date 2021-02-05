@@ -125,6 +125,7 @@ const onMouseMoveDuringDrag = (
     dragDestination.style.width = rect.width - left + "px";
   } else {
     dragDestination.style.width = "0px";
+    destinationType = undefined;
   }
   document.elementsFromPoint;
 };
@@ -132,6 +133,7 @@ const onMouseMoveDuringDrag = (
 function onMouseUp() {
   if (itemIdMouseDownOn && isDragging) {
     if (targetItemId && destinationType) {
+      console.log(targetItemId, destinationType);
       const row = dom.maybefindById(ids.sidebarRow(itemIdMouseDownOn));
       if (row) {
         const childContainer = view.findItemChildrenContainer(
