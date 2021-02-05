@@ -9,7 +9,7 @@ export const findYoutubeVideos = (
   pageToken?: string
 ): Promise<YoutubeSearchResponse> => {
   if (isIsolated)
-    return Promise.resolve(fakeAPI.sampleResponseWithChannelsAndPlaylists);
+    return Promise.resolve(fakeAPI.sampleResponseWithChannelsAndPlaylists());
   verifyNonTextEnvironment();
   let url = `${API_HOST}/getVideos?q=${term}`;
   if (pageToken) url += `&pageToken=${pageToken}`;
@@ -23,7 +23,7 @@ export const fetchPlaylistVideos = (
   if (isIsolated)
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(fakeAPI.samplePlaylistDetailsWithChannelsAndPlaylists);
+        resolve(fakeAPI.samplePlaylistDetailsWithChannelsAndPlaylists());
       }, 2000);
     });
 
@@ -41,7 +41,7 @@ export const getChannelPlaylists = (
   if (isIsolated)
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(fakeAPI.sampleChannelPlaylists);
+        resolve(fakeAPI.sampleChannelPlaylists());
       }, 2000);
     });
   verifyNonTextEnvironment();
@@ -56,7 +56,7 @@ export const getChannelUploadsPlaylistId = (
   if (isIsolated)
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(fakeAPI.sampleChannelUploadPlaylistResponse.playlistId);
+        resolve(fakeAPI.sampleChannelUploadPlaylistResponse().playlistId);
       }, 2000);
     });
   verifyNonTextEnvironment();

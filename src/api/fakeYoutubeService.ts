@@ -1,4 +1,4 @@
-export const sampleResponseWithChannelsAndPlaylists = {
+export const sampleResponseWithChannelsAndPlaylists = () => ({
   items: [
     sampleBackendItem(),
     sampleBackendItem(),
@@ -17,9 +17,9 @@ export const sampleResponseWithChannelsAndPlaylists = {
     sampleBackendItem(),
     sampleBackendItem(),
   ],
-};
+});
 
-export const samplePlaylistDetailsWithChannelsAndPlaylists = {
+export const samplePlaylistDetailsWithChannelsAndPlaylists = () => ({
   items: [
     sampleBackendItem(),
     sampleBackendItem(),
@@ -36,8 +36,8 @@ export const samplePlaylistDetailsWithChannelsAndPlaylists = {
     sampleBackendItem(),
     sampleBackendItem(),
   ],
-};
-export const sampleChannelPlaylists = {
+});
+export const sampleChannelPlaylists = () => ({
   items: [
     sampleBackendPlaylist(),
     sampleBackendPlaylist(),
@@ -54,11 +54,11 @@ export const sampleChannelPlaylists = {
     sampleBackendPlaylist(),
     sampleBackendPlaylist(),
   ],
-};
+});
 
-export const sampleChannelUploadPlaylistResponse = {
+export const sampleChannelUploadPlaylistResponse = () => ({
   playlistId: "UUL_f53ZEJxp8TtlOkHwMV9Q",
-};
+});
 
 function sampleBackendItem() {
   return {
