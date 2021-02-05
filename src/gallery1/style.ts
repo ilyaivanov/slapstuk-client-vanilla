@@ -6,8 +6,7 @@ import * as items from "../items";
 export const gap = 20;
 export const galleryFadeSpeed = 150;
 export const cardExpandCollapseSpeed = 200;
-export const cardHeaderHeight = 35;
-
+const cardPadding = 11;
 //Gallery
 cssClass(cls.gallery, {
   backgroundColor: colors.gallery,
@@ -49,7 +48,6 @@ cssClass(cls.card, {
   marginBottom: gap,
   borderRadius: 4,
   border: "1px solid rgba(255, 255, 255, 0.1)",
-  boxShadow: "1px 2px 5px 0px rgba(0, 0, 0, 0.53)",
   cursor: "pointer",
   overflow: "hidden",
   position: "relative",
@@ -57,6 +55,9 @@ cssClass(cls.card, {
   maxHeight: `calc(100vh - ${getMaxHeightModifiers()}px - var(--player-height))`,
   display: "flex",
   flexDirection: "column",
+});
+css(`.${cls.page}.${cls.grabbing} .${cls.card}`, {
+  cursor: "grabbing",
 });
 
 css(`.${cls.card}:hover`, {
@@ -129,7 +130,7 @@ cssClass(cls.cardTypeBoxTextContainer, {
 });
 
 cssClass(cls.cardText, {
-  padding: 8,
+  padding: cardPadding,
   fontSize: 14,
   color: "rgb(220, 220, 220)",
   fontWeight: "normal",
@@ -156,16 +157,19 @@ cssClass(cls.subtracksContainer, {
 cssText(styles.cssTextForScrollBar(cls.subtracksContainer, { width: 8 }));
 
 cssClass(cls.subtrack, {
-  padding: "5px 8px",
+  padding: `5px ${cardPadding}px`,
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-start",
-  fontSize: 14,
+  fontSize: 13,
   color: "rgb(220, 220, 220)",
   fontWeight: "normal",
   borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
   cursor: "pointer",
   transition: playerStyle.backgroundTransition,
+});
+css(`.${cls.page}.${cls.grabbing} .${cls.subtrack}`, {
+  cursor: "grabbing",
 });
 
 css(`.${cls.subtrack}:hover`, {

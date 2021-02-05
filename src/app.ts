@@ -7,6 +7,7 @@ import * as login from "./login/controller";
 import "./app.style";
 import * as api from "./api/controller";
 import * as items from "./items";
+import * as dnd from "./dnd/dnd";
 
 export const init = () => {
   dom.findById("root").appendChild(
@@ -106,9 +107,13 @@ export const initApp = (userId: string) => {
               },
             ],
           },
-          { className: cls.sidebar },
+          {
+            className: cls.sidebar,
+          },
           { className: [cls.rightSidebar, cls.rightSidebarHidden] },
-          { className: cls.gallery },
+          {
+            className: cls.gallery,
+          },
           { className: [cls.player, cls.playerHidden] },
         ],
       })

@@ -1,9 +1,10 @@
-import { cls, dom, styles, zIndexes } from "../infra";
+import { cls, dom, ids, styles, zIndexes } from "../infra";
 import * as view from "../sidebar/view";
-import * as style from "../sidebar/styles";
+import * as sidebarStyles from "../sidebar/styles";
 import * as sidebar from "../sidebar/controller";
 import * as sidebarAnimations from "../sidebar/sidebarAnimations";
 import * as items from "../items";
+import { getPreviewImage } from "../gallery1/cardPreviewImage";
 
 export const init = () => {
   //Add removeEventListener when I will have multiple pages (Login included)
@@ -21,12 +22,15 @@ let dragAvatarY = 0;
 
 let targetItemId = "";
 let destinationType: Destination | undefined;
+let currentDragArea: DragItemType | undefined;
 type Destination = "inside" | "after" | "before";
+type DragItemType = "sidebar-row" | "gallery-card" | "card-subtrack";
 
-export const onItemMouseDown = (itemId: string) => {
-  dom.addClassToElement(cls.sidebar, cls.noUserSelect);
+export const onItemMouseDown = (itemId: string, source: DragItemType) => {
+  dom.addClassToElement(cls.page, cls.noUserSelect);
   distanceTraveledWithMouseDown = 0;
   itemIdMouseDownOn = itemId;
+  currentDragArea = source;
 };
 
 function onMouseMove(e: MouseEvent) {
@@ -35,48 +39,46 @@ function onMouseMove(e: MouseEvent) {
       e.movementX * e.movementX + e.movementY * e.movementY
     );
     if (distanceTraveledWithMouseDown > 3 && !isDragging) {
-      startDrag(itemIdMouseDownOn);
+      startDrag(itemIdMouseDownOn, e);
     } else if (isDragging && dragAvatar && dragDestination) {
       onMouseMoveDuringDrag(dragAvatar, dragDestination, e);
     }
   }
 }
+const getElementBeingDragged = (itemId: string): HTMLElement =>
+  dom.div(getPreviewImage(items.getItem(itemId)));
 
-const startDrag = (itemId: string) => {
+const startDrag = (itemId: string, e: MouseEvent) => {
   dom.addClassToElement(cls.page, cls.grabbing);
   dom.addClassToElement(cls.sidebar, cls.sidebarHideChevrons);
-  view
-    .findItemChildrenContainer(itemId)
-    .classList.add(cls.sidebarRowChildrenContainerHighlighted);
-  const originalRow = view.findRowById(itemId);
-  const row = originalRow.cloneNode(true);
-  originalRow.classList.add(cls.transparent);
-  var rect = originalRow.getBoundingClientRect();
+  dragAvatarX = e.clientX - 104 / 2;
+  dragAvatarY = e.clientY - 104 / 1.5;
+  console.log(dragAvatarX, dragAvatarY);
   dragAvatar = dom.div({
     className: cls.dragAvatar,
     style: {
-      ...styles.absoluteTopLeft(rect.top, rect.left),
-
-      width: rect.width + "px",
-      height: rect.height + "px",
+      ...styles.absoluteTopLeft(dragAvatarY, dragAvatarX),
+      width: 104,
+      height: 104,
       zIndex: zIndexes.dragAvatar,
+      opacity: 0.6,
+      borderRadius: 4,
+      overflow: "hidden",
     },
   });
   dragDestination = dom.div({
     id: "drag-destination",
     style: {
-      transition: "all 100ms ease-out",
       backgroundColor: "#03a9f4",
       position: "absolute",
       height: "4px",
       zIndex: zIndexes.dragDestinationIndicator,
     },
   });
-  dragAvatar.appendChild(row);
+  dragAvatar.appendChild(getElementBeingDragged(itemId));
+
   dom.findById("root").appendChild(dragAvatar);
   dom.findById("root").appendChild(dragDestination);
-  dragAvatarX = rect.left;
-  dragAvatarY = rect.top;
   isDragging = true;
 };
 
@@ -87,6 +89,7 @@ const onMouseMoveDuringDrag = (
 ) => {
   dragAvatarX += e.movementX;
   dragAvatarY += e.movementY;
+  console.log(dragAvatarX, dragAvatarY);
   dragAvatar.style.setProperty("left", dragAvatarX + "px");
   dragAvatar.style.setProperty("top", dragAvatarY + "px");
   const potentialRowUnder = document
@@ -106,12 +109,16 @@ const onMouseMoveDuringDrag = (
       dragDestination.style.top = rect.top - 2 + "px";
     }
     const iconsWidth = 16;
-    const focusShift = sidebar.focusLevel * style.rowMarginPerLevel;
+    const focusShift = sidebar.focusLevel * sidebarStyles.rowMarginPerLevel;
     const elementLeft =
       parseInt(rowUnder.style.paddingLeft) + iconsWidth - focusShift;
     const isInside =
-      e.clientX > elementLeft + style.rowMarginPerLevel && isOnTheSecondHalf;
-    const left = isInside ? elementLeft + style.rowMarginPerLevel : elementLeft;
+      e.clientX > elementLeft + sidebarStyles.rowMarginPerLevel &&
+      isOnTheSecondHalf &&
+      items.isContainer(items.getItem(targetItemId));
+    const left = isInside
+      ? elementLeft + sidebarStyles.rowMarginPerLevel
+      : elementLeft;
     if (isInside) destinationType = "inside";
     dragDestination.style.left = left + "px";
 
@@ -125,23 +132,31 @@ const onMouseMoveDuringDrag = (
 function onMouseUp() {
   if (itemIdMouseDownOn && isDragging) {
     if (targetItemId && destinationType) {
-      const row = view.findRowById(itemIdMouseDownOn);
-      const childContainer = view.findItemChildrenContainer(itemIdMouseDownOn);
-      sidebarAnimations
-        .collapseRowAndChildContainer(row, childContainer)
-        .addEventListener("finish", () => {
-          row.remove();
-          childContainer.remove();
-        });
+      const row = dom.maybefindById(ids.sidebarRow(itemIdMouseDownOn));
+      if (row) {
+        const childContainer = view.findItemChildrenContainer(
+          itemIdMouseDownOn
+        );
+        sidebarAnimations
+          .collapseRowAndChildContainer(row, childContainer)
+          .addEventListener("finish", () => {
+            row.remove();
+            childContainer.remove();
+          });
+      }
       removeFromParent(itemIdMouseDownOn);
       insertItemToLocation(itemIdMouseDownOn, targetItemId, destinationType);
+    } else {
+      sidebarAnimations.removeClassHidingChevrons();
     }
 
-    var originalRow = view.findRowById(itemIdMouseDownOn);
+    var originalRow = getElementBeingDragged(itemIdMouseDownOn);
     dom.removeClassFromElement(cls.page, cls.grabbing);
-    view
-      .findItemChildrenContainer(itemIdMouseDownOn)
-      .classList.remove(cls.sidebarRowChildrenContainerHighlighted);
+    if (currentDragArea == "sidebar-row") {
+      view
+        .findItemChildrenContainer(itemIdMouseDownOn)
+        .classList.remove(cls.sidebarRowChildrenContainerHighlighted);
+    }
     originalRow.classList.remove(cls.transparent);
     dom.findFirstByClass(cls.dragAvatar).remove();
     dom.findById("drag-destination").remove();

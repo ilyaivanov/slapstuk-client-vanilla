@@ -2,7 +2,6 @@ import { cls, colors, cssText, css, cssClass, zIndexes, dom } from "./infra";
 import { cssTag, styles } from "./infra/style";
 import * as sidebarStyle from "./sidebar/styles";
 
-const defaultSidebarWidth = 300;
 cssTag("body", {
   overflow: "hidden",
 });
@@ -33,7 +32,7 @@ cssClass(cls.sidebar, {
   backgroundColor: colors.menu,
   // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.leftSidebarMenu,
-  width: `${defaultSidebarWidth}px`,
+  width: `${sidebarStyle.defaultSidebarWidth}px`,
   transition: `margin ${sidebarStyle.sidebarCollapseTime}ms ease-out`,
 });
 
@@ -44,17 +43,17 @@ cssClass(cls.rightSidebar, {
   backgroundColor: colors.menu,
   // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.rightSidebarMenu,
-  width: `${defaultSidebarWidth}px`,
+  width: `${sidebarStyle.defaultSidebarWidth}px`,
   transition: `margin ${sidebarStyle.sidebarCollapseTime}ms ease-out`,
 });
 
 cssClass(cls.sidebarHidden, {
-  marginLeft: -defaultSidebarWidth + "px",
+  marginLeft: -sidebarStyle.defaultSidebarWidth + "px",
   boxShadow: "none",
 });
 
 cssClass(cls.rightSidebarHidden, {
-  marginRight: -defaultSidebarWidth + "px",
+  marginRight: -sidebarStyle.defaultSidebarWidth + "px",
   boxShadow: "none",
 });
 

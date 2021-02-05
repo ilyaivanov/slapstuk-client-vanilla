@@ -16,7 +16,7 @@ export const viewRowAndItsChildren = (
 ): DivDefinition[] => {
   return [viewRow(item, level), viewChildren(item, level + 1)];
 };
-const viewRow = (item: Item, level: number): DivDefinition => ({
+export const viewRow = (item: Item, level: number): DivDefinition => ({
   id: rowId(item.id),
   className: [
     cls.sidebarRow,
@@ -29,7 +29,7 @@ const viewRow = (item: Item, level: number): DivDefinition => ({
     ["data-level"]: level + "",
   },
   on: {
-    mousedown: () => dnd.onItemMouseDown(item.id),
+    mousedown: () => dnd.onItemMouseDown(item.id, "sidebar-row"),
     click: () => controller.selectItem(item.id),
   },
   children: [
@@ -107,13 +107,15 @@ export const findFocusButton = (row: HTMLElement) => {
 };
 
 export const updateItemChevron = (item: Item) => {
-  const row = findRowById(item.id);
-  const chevronContainer = dom.findFirstByClass(
-    cls.sidebarRowExpandButtonContainer,
-    row
-  );
-  if (items.hasChildren(item)) chevronContainer.classList.remove(cls.hidden);
-  else chevronContainer.classList.add(cls.hidden);
+  const row = dom.maybefindById(rowId(item.id));
+  if (row) {
+    const chevronContainer = dom.findFirstByClass(
+      cls.sidebarRowExpandButtonContainer,
+      row
+    );
+    if (items.hasChildren(item)) chevronContainer.classList.remove(cls.hidden);
+    else chevronContainer.classList.add(cls.hidden);
+  }
 };
 
 export const findFocusButtonForItem = (itemId: string) => {

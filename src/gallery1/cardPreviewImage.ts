@@ -16,11 +16,12 @@ export const itemPreview = (item: Item): DivDefinition => {
   };
 };
 
-const getPreviewImage = (item: Item): DivDefinition => {
+export const getPreviewImage = (item: Item): DivDefinition => {
   if (!items.isFolder(item))
     return {
       type: "img",
       style: {
+        //TODO: extract styles into classes
         ...styles.overlay,
         width: "100%",
         height: "100%",
@@ -29,7 +30,8 @@ const getPreviewImage = (item: Item): DivDefinition => {
         //this makes animation better for non-channel items
         objectPosition: items.isChannel(item) ? undefined : "top",
       },
-      attributes: { src: items.getImageSrc(item) },
+
+      attributes: { src: items.getImageSrc(item), draggable: "false" },
     };
   else {
     return folderPreviewGrid(item);
@@ -64,7 +66,7 @@ const folderPreviewGrid = (item: Folder): DivDefinition => {
         display: "block",
         objectFit: "cover",
       },
-      attributes: { src },
+      attributes: { src, draggable: "false" },
     })),
   };
 };

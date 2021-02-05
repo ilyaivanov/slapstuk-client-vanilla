@@ -5,6 +5,7 @@ import * as items from "../items";
 import * as api from "../api/youtubeRequest";
 import { mapReponseItem } from "../search/controller";
 import { itemPreview } from "./cardPreviewImage";
+import * as dnd from "../dnd/dnd";
 
 //VIEW
 export const viewCard = (item: Item): DivDefinition => ({
@@ -17,6 +18,7 @@ export const viewCard = (item: Item): DivDefinition => ({
     {
       className: cls.cardImageWithTextContainer,
       on: {
+        mousedown: () => dnd.onItemMouseDown(item.id, "gallery-card"),
         click: () => {
           if (items.isContainer(item)) {
             const card = dom.findById(ids.card(item.id));
@@ -91,13 +93,14 @@ const viewSubtracksContent = (item: Item): DivDefinition[] =>
 const viewSubtracks = (itemId: string): DivDefinition[] =>
   items.getChildren(itemId).map(viewSubtrack);
 
-const viewSubtrack = (item: Item): DivDefinition => ({
+export const viewSubtrack = (item: Item): DivDefinition => ({
   id: ids.subtrack(item.id),
   className: [
     cls.subtrack,
     player.itemIdBeingPlayed == item.id ? cls.itemBeingPlayed : cls.none,
   ],
   on: {
+    mousedown: () => dnd.onItemMouseDown(item.id, "card-subtrack"),
     click: (e) => {
       e.stopPropagation();
       if (items.isVideo(item)) player.playItem(item.id);
