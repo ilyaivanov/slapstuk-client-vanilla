@@ -22,6 +22,16 @@ export const init = (sidebarParent: HTMLElement) => {
       },
     })
   );
+  if (items.focusedItemId !== "HOME") {
+    //turn off container animiation during init
+    const container = dom.findFirstByClass(cls.sidebarFocusContainer);
+    const transition = container.style.transition;
+    container.style.transition = "margin 0s linear";
+    focusOnItem(items.getItem(items.focusedItemId));
+    setTimeout(() => {
+      container.style.transition = transition;
+    }, 20);
+  }
 };
 
 const addNewItem = () => {
