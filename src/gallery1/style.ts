@@ -147,11 +147,6 @@ cssClass(cls.cardTextForFolder, {
 cssClass(cls.subtracksContainer, {
   transition: `height ${cardExpandCollapseSpeed}ms linear`,
   overflowY: "overlay" as any,
-  // maxHeight: `800px`,
-  //window.innerHeight and blah-blah for inline animations
-  // maxHeight: `calc(100vh - ${
-  //   gap * 2 + headerHeight + playerStyle.playerHeight + 73
-  // }px)`,
 });
 
 cssText(styles.cssTextForScrollBar(cls.subtracksContainer, { width: 8 }));
@@ -162,12 +157,18 @@ cssClass(cls.subtrack, {
   alignItems: "center",
   justifyContent: "flex-start",
   fontSize: 13,
+  wordBreak: "break-word",
   color: "rgb(220, 220, 220)",
   fontWeight: "normal",
   borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
   cursor: "pointer",
   transition: playerStyle.backgroundTransition,
 });
+
+css(`.${cls.subtrack}:last-of-type`, {
+  borderBottom: "none",
+});
+
 css(`.${cls.page}.${cls.grabbing} .${cls.subtrack}`, {
   cursor: "grabbing",
 });

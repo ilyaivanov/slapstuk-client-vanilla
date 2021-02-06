@@ -1,10 +1,9 @@
 import { isIsolated } from "../infra";
-import { getSampleItems } from "../playgrounds/initSampleSearchResults";
+import * as legacy from "../playgrounds/slapstukLegacyItems";
 import * as firebase from "./loginService";
 
 export const init = () => {
   if (isIsolated) {
-    console.log("Initiating an isolated mode");
     setTimeout(() => {
       onAuthStateChanged({ uid: "SAMPLE_USER_ID" });
     });
@@ -35,7 +34,9 @@ export const loadUserSettings = (
 ): Promise<firebase.PersistedState> => {
   if (isIsolated) {
     return Promise.resolve({
-      itemsSerialized: JSON.stringify(getSampleItems()),
+      itemsSerialized: JSON.stringify(
+        legacy.convertLegacyItems(legacy.legacyItems)
+      ),
       focusedItemId: "HOME",
       selectedItemId: "HOME",
     });
