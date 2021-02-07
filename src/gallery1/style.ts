@@ -134,6 +134,7 @@ cssClass(cls.cardText, {
   fontSize: 14,
   color: "rgb(220, 220, 220)",
   fontWeight: "normal",
+  wordBreak: "break-word",
 });
 
 cssClass(cls.cardTextForFolder, {
