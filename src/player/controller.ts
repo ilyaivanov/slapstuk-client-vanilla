@@ -1,15 +1,11 @@
-import { cls, dom, ids } from "../infra";
+import { cls, dom, ids, styles } from "../infra";
 import { play } from "./youtubePlayer";
 import * as items from "../items";
 import * as sidebarView from "../sidebar/view";
-import "./styles";
+import * as style from "./styles";
 
 export let itemIdBeingPlayed = "";
-export const init = () => {
-  dom
-    .findFirstByClass(cls.player)
-    .appendChild(dom.fragment([{ id: "youtubePlayer" }]));
-};
+const hasPlayer = false;
 
 export const playNext = () => {
   const nextItem = items.getNextItem(itemIdBeingPlayed);
@@ -21,8 +17,13 @@ export const onVideoEnd = () => {
 };
 
 export const playItem = (itemId: string) => {
+  if (!hasPlayer) {
+    dom
+      .findFirstByClass(cls.player)
+      .appendChild(dom.fragment([{ id: "youtubePlayer" }]));
+  }
   const item = items.getItem(itemId);
-  if (item && item.videoId) {
+  if (item && items.isVideo(item) && item.videoId) {
     if (itemIdBeingPlayed) removeItemBeingPlayedFromItem(itemIdBeingPlayed);
 
     addItemBeingPlayedToItem(itemId);
@@ -33,7 +34,16 @@ export const playItem = (itemId: string) => {
 };
 
 export const toggleVisibility = () => {
-  dom.findFirstByClass(cls.player).classList.toggle(cls.playerHidden);
+  //TODO: this won't work properly if I'm saving player visibility config
+  //it assumes player is always hidden initialliy
+  const player = dom.findFirstByClass(cls.player);
+  if (player.classList.contains(cls.playerHidden)) {
+    styles.setPlayerHeightRootVariable(style.playerHeight);
+    player.classList.remove(cls.playerHidden);
+  } else {
+    styles.setPlayerHeightRootVariable(0);
+    player.classList.add(cls.playerHidden);
+  }
 };
 
 const removeItemBeingPlayedFromItem = (itemId: string) => {
@@ -45,6 +55,7 @@ const removeItemBeingPlayedFromItem = (itemId: string) => {
     );
     parent = items.findParentItem(parent.id);
   }
+  console.log(itemId);
   dom.removeClassFromElementById(ids.card(itemId), cls.itemBeingPlayed);
   dom.removeClassFromElementById(ids.subtrack(itemId), cls.itemBeingPlayed);
 };

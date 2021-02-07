@@ -1,7 +1,11 @@
-import { cls, colors, css, cssClass, zIndexes } from "../infra";
+import { cls, colors, css, cssClass, styles, zIndexes } from "../infra";
 
 export const playerHeight = 70;
-export const backgroundTransition = 'background-color 200ms ease-out'
+export const backgroundTransition = "background-color 200ms ease-out";
+export const playerVisibilityTransition = "200ms ease-out";
+
+styles.setPlayerHeightRootVariable(0);
+
 cssClass(cls.player, {
   height: playerHeight + "px",
   backgroundColor: colors.menu,
@@ -22,7 +26,7 @@ css("#youtubePlayer", {
 
 cssClass(cls.player, {
   position: "relative",
-  transition: "margin 200ms ease-out",
+  transition: `margin ${playerVisibilityTransition}`,
 });
 
 cssClass(cls.playerHidden, {

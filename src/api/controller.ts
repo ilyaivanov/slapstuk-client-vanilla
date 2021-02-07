@@ -1,9 +1,9 @@
 import { isIsolated } from "../infra";
+import * as legacy from "../playgrounds/slapstukLegacyItems";
 import * as firebase from "./loginService";
 
 export const init = () => {
   if (isIsolated) {
-    console.log("Initiating an isolated mode");
     setTimeout(() => {
       onAuthStateChanged({ uid: "SAMPLE_USER_ID" });
     });
@@ -29,34 +29,28 @@ export const logout = () => {
   }
 };
 
-export const loadUserSettings = (userId: string): Promise<any> => {
+export const loadUserSettings = (
+  userId: string
+): Promise<firebase.PersistedState> => {
   if (isIsolated) {
-    const items: Items = {
-      HOME: {
-        id: "HOME",
-        title: "HOME",
-        itemType: "folder",
-        children: ["1", "2"],
-      },
-      1: {
-        id: "1",
-        title: "First Item",
-        itemType: "folder",
-        children: [],
-      },
-      2: {
-        id: "2",
-        title: "Second Item",
-        itemType: "folder",
-        children: [],
-      },
-    };
     return Promise.resolve({
-      itemsSerialized: JSON.stringify(items),
+      itemsSerialized: JSON.stringify(
+        legacy.convertLegacyItems(legacy.legacyItems)
+      ),
+      focusedItemId: "HOME",
+      selectedItemId: "HOME",
     });
   } else {
     return firebase.loadUserSettings(userId);
   }
+};
+
+export const saveUserSettings = (
+  userId: string,
+  state: firebase.PersistedState
+): Promise<any> => {
+  if (isIsolated) return Promise.resolve();
+  return firebase.saveUserSettings(state, userId);
 };
 
 const onAuthStateChanged = (user: any) => {

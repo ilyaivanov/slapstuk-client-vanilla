@@ -2,85 +2,93 @@ import { cls, dom, ClassName, DivDefinition, EventsDefinition } from "../infra";
 import * as controller from "./controller";
 import * as style from "./styles";
 import * as items from "../items";
+import * as dnd from "../dnd/dnd";
 
-export const viewRow = (item: Item, level: number): DivDefinition[] => {
-  return [
-    {
-      id: rowId(item.id),
-      className: [
-        cls.sidebarRow,
-        item.id === items.selectedItemId ? cls.sidebarRowSelected : cls.none,
-      ],
-      style: {
-        paddingLeft: level * style.rowMarginPerLevel + "px",
-      },
-      attributes: {
-        ["data-level"]: level + "",
-      },
-      on: {
-        mousedown: () => controller.onItemMouseDown(item.id),
-        click: () => controller.selectItem(item.id),
-      },
-      children: [
-        {
-          className: [
-            cls.sidebarRowExpandButtonContainer,
-            item.children.length == 0 ? cls.hidden : cls.none,
-          ],
-          children: chevron([
-            cls.sidebarRowExpandButton,
-            item.isOpenFromSidebar ? cls.rotated : cls.none,
-          ]),
-          on: {
-            click: (e) => {
-              console.log("chevron clicked", item.title);
-              e.stopPropagation();
-              controller.toggleSidebarVisibilityForItem(item);
-            },
-          },
-        },
-        arrow(cls.sidebarRowCircle, {
-          click: (e) => {
-            e.stopPropagation();
-            controller.onCirclePressed(item);
-          },
-        }),
-        {
-          className: cls.sidebarRowText,
-          children: item.title,
-        },
-        {
-          className: cls.sidebarEditItemButton,
-          children: "e",
-          on: {
-            click: (e) => {
-              e.stopPropagation();
-              controller.onEdit(item.id);
-            },
-          },
-        },
-        {
-          className: cls.sidebarRemoveItemButton,
-          children: "x",
-          on: {
-            click: (e) => {
-              e.stopPropagation();
-              controller.removeItem(item);
-            },
-          },
-        },
-      ],
-    },
-    viewChildren(item.id, level + 1),
-  ];
+export const viewItemChildren = (itemId: string, initialLevel = 0) =>
+  items
+    .getChildren(itemId)
+    .map((item) => viewRowAndItsChildren(item, initialLevel))
+    .flat();
+
+export const viewRowAndItsChildren = (
+  item: Item,
+  level: number
+): DivDefinition[] => {
+  return [viewRow(item, level), viewChildren(item, level + 1)];
 };
+export const viewRow = (item: Item, level: number): DivDefinition => ({
+  id: rowId(item.id),
+  className: [
+    cls.sidebarRow,
+    item.id === items.selectedItemId ? cls.sidebarRowSelected : cls.none,
+  ],
+  style: {
+    paddingLeft: level * style.rowMarginPerLevel + "px",
+  },
+  attributes: {
+    ["data-level"]: level + "",
+  },
+  on: {
+    mousedown: () => dnd.onItemMouseDown(item.id, "sidebar-row"),
+    click: () => controller.selectItem(item.id),
+  },
+  children: [
+    {
+      className: [
+        cls.sidebarRowExpandButtonContainer,
+        items.hasChildren(item) ? cls.none : cls.hidden,
+      ],
+      children: chevron([
+        cls.sidebarRowExpandButton,
+        items.isOpenAtSidebar(item) ? cls.rotated : cls.none,
+      ]),
+      on: {
+        click: (e) => {
+          console.log("chevron clicked", item.title);
+          e.stopPropagation();
+          controller.toggleSidebarVisibilityForItem(item as ItemContainer);
+        },
+      },
+    },
+    arrow(cls.sidebarRowCircle, {
+      click: (e) => {
+        e.stopPropagation();
+        controller.onCirclePressed(item);
+      },
+    }),
+    {
+      className: cls.sidebarRowText,
+      children: item.title,
+    },
+    {
+      className: cls.sidebarEditItemButton,
+      children: "e",
+      on: {
+        click: (e) => {
+          e.stopPropagation();
+          controller.onEdit(item.id);
+        },
+      },
+    },
+    {
+      className: cls.sidebarRemoveItemButton,
+      children: "x",
+      on: {
+        click: (e) => {
+          e.stopPropagation();
+          controller.removeItem(item);
+        },
+      },
+    },
+  ],
+});
 
-export const viewChildren = (itemId: string, level: number): DivDefinition => {
-  const children = items.getChildren(itemId);
+export const viewChildren = (item: Item, level: number): DivDefinition => {
+  const children = items.getChildren(item.id);
   return {
     className: cls.sidebarRowChildrenContainer,
-    children: items.getItem(itemId).isOpenFromSidebar
-      ? children.map((row) => viewRow(row, level)).flat()
+    children: items.isOpenAtSidebar(item)
+      ? children.map((row) => viewRowAndItsChildren(row, level)).flat()
       : [],
   };
 };
@@ -99,13 +107,15 @@ export const findFocusButton = (row: HTMLElement) => {
 };
 
 export const updateItemChevron = (item: Item) => {
-  const row = findRowById(item.id);
-  const chevronContainer = dom.findFirstByClass(
-    cls.sidebarRowExpandButtonContainer,
-    row
-  );
-  if (item.children.length > 0) chevronContainer.classList.remove(cls.hidden);
-  else chevronContainer.classList.add(cls.hidden);
+  const row = dom.maybefindById(rowId(item.id));
+  if (row) {
+    const chevronContainer = dom.findFirstByClass(
+      cls.sidebarRowExpandButtonContainer,
+      row
+    );
+    if (items.hasChildren(item)) chevronContainer.classList.remove(cls.hidden);
+    else chevronContainer.classList.add(cls.hidden);
+  }
 };
 
 export const findFocusButtonForItem = (itemId: string) => {

@@ -12,9 +12,10 @@ export const headerHeight = 56;
 export const expandCollapseTransitionTime = 400;
 export const focusTransitionTime = 400;
 export const fadeOutTime = 400;
+export const sidebarCollapseTime = 200;
 //TODO: Fix this constant. change breaks layout (chevron is not properly positioned)
 export const rowMarginPerLevel = 16;
-
+export const defaultSidebarWidth = 300;
 const focusTransition = `${focusTransitionTime}ms ease-in-out`;
 
 css(`.${cls.page}.${cls.grabbing}`, {

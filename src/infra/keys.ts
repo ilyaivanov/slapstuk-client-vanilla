@@ -9,6 +9,8 @@ export const ids = {
 export const cls = {
   page: "page",
   sidebar: "sidebar",
+  rightSidebar: "sidebar-right",
+  rightSidebarHidden: "sidebar-right-hidden",
   sidebarHidden: "sidebar-hidden",
   grabbing: "page-grabbing",
   header: "header",
@@ -35,6 +37,7 @@ export const cls = {
 
   //gallery
   gallery: "gallery",
+  scrolly: "scrolly",
   card: "card",
   cardImage: "card-image",
   folderImages: "card-image-for-folder",
@@ -49,6 +52,7 @@ export const cls = {
   cardTypeBoxTriangleFolder: "card-type-box-triangle-folder",
   cardTypeBoxTextContainer: "card-type-box-text-container",
 
+  cardPreviewContainer: "card-preview-container",
   cardImageHidden: "card-image-hidden",
   cardText: "card-text",
   cardTextForFolder: "card-text-folder",
@@ -62,6 +66,9 @@ export const cls = {
   playerHidden: "player-hidden",
   itemBeingPlayed: "item-being-played",
 
+  //gallery1
+  card1: "card1",
+  column1: "column1",
   //login
   loginContainer: "login-container",
   loginForm: "login-form",
@@ -78,11 +85,12 @@ export const cls = {
 } as const;
 
 export const zIndexes = {
-  leftSidebarMenu: "200",
-  dragAvatar: "400",
-  dragDestinationIndicator: "350",
-  topMenu: "300",
-  player: "300",
+  leftSidebarMenu: 200,
+  rightSidebarMenu: 200,
+  dragAvatar: 400,
+  dragDestinationIndicator: 350,
+  topMenu: 300,
+  player: 300,
 };
 
 export type ClassName = valueof<typeof cls>;

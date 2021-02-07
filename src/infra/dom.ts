@@ -1,4 +1,5 @@
 import { ClassName } from "./keys";
+import { Styles, convertNumericStylesToPixels } from "./style";
 
 export type EventsDefinition = {
   [key in string]: (e: MouseEvent) => void;
@@ -8,12 +9,12 @@ export type DivDefinition = {
   id?: string;
   className?: ClassName | (ClassName | undefined)[];
   children?: DivDefinition | DivDefinition[] | string;
-  style?: Partial<CSSStyleDeclaration>;
+  style?: Styles;
 
   attributes?: any;
   on?: EventsDefinition;
 
-  type?: "button" | "div" | "svg" | "path" | "img" | "span" | 'input';
+  type?: "button" | "div" | "svg" | "path" | "img" | "span" | "input";
   onClick?: (e: Event) => void;
 };
 
@@ -26,6 +27,7 @@ export const div = (divDefinition: DivDefinition): HTMLElement => {
       type
     ) as unknown) as HTMLElement;
   else elem = document.createElement(type);
+
   const { className } = divDefinition;
   if (className) {
     if (typeof className == "string") {
@@ -51,7 +53,11 @@ export const div = (divDefinition: DivDefinition): HTMLElement => {
   }
 
   if (divDefinition.id) elem.id = divDefinition.id;
-  if (divDefinition.style) Object.assign(elem.style, divDefinition.style);
+  if (divDefinition.style)
+    Object.assign(
+      elem.style,
+      convertNumericStylesToPixels(divDefinition.style)
+    );
   if (divDefinition.onClick)
     elem.addEventListener("click", divDefinition.onClick);
 
@@ -169,5 +175,17 @@ export const removeClassFromElementById = (
   const elem = maybefindById(id);
   if (elem) elem.classList.remove(classToRemove);
 };
+export const root = findById("root");
 
-// export const setChildren = (node: HTMLElement, )
+export const set = (
+  node: HTMLElement,
+  children: DivDefinition | DivDefinition[] | HTMLElement
+) => {
+  node.innerHTML = ``;
+  if (isHtmlElement(children)) node.appendChild(children);
+  else if (Array.isArray(children)) node.appendChild(fragment(children));
+  else node.appendChild(div(children));
+};
+
+const isHtmlElement = (item: any): item is HTMLElement =>
+  item && typeof item.animate == "function";

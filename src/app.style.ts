@@ -1,20 +1,19 @@
-import { cls, colors, cssText, css, cssClass, zIndexes } from "./infra";
+import { cls, colors, cssText, css, cssClass, zIndexes, dom } from "./infra";
+import { cssTag, styles } from "./infra/style";
 import * as sidebarStyle from "./sidebar/styles";
 
-const defaultSidebarWidth = 300;
-cssText(`
-body{
-  overflow: hidden;
-}`);
+cssTag("body", {
+  overflow: "hidden",
+});
 
 cssClass(cls.page, {
   display: "grid",
-  gridTemplateColumns: "auto 1fr",
+  gridTemplateColumns: "auto 1fr auto",
   gridTemplateRows: "auto 1fr auto",
   gridTemplateAreas: `
-    "header header"
-    "sidebar gallery"
-    "player player"`,
+    "header header header"
+    "sidebar gallery rightSidebar"
+    "player player player"`,
   backgroundColor: colors.gallery,
   height: "100vh",
 });
@@ -29,16 +28,33 @@ cssClass(cls.header, {
 cssClass(cls.sidebar, {
   position: "relative",
   gridArea: "sidebar",
-  overflowY: "overlay",
+  overflowY: "overlay" as any,
   backgroundColor: colors.menu,
-  boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
+  // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.leftSidebarMenu,
-  width: `${defaultSidebarWidth}px`,
-  transition: "margin 200ms ease-out",
+  width: `${sidebarStyle.defaultSidebarWidth}px`,
+  transition: `margin ${sidebarStyle.sidebarCollapseTime}ms ease-out`,
+});
+
+cssClass(cls.rightSidebar, {
+  position: "relative",
+  gridArea: "rightSidebar",
+  overflowY: "overlay" as any,
+  backgroundColor: colors.menu,
+  // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
+  zIndex: zIndexes.rightSidebarMenu,
+  width: `${sidebarStyle.defaultSidebarWidth}px`,
+  transition: `margin ${sidebarStyle.sidebarCollapseTime}ms ease-out`,
 });
 
 cssClass(cls.sidebarHidden, {
-  marginLeft: -defaultSidebarWidth + "px",
+  marginLeft: -sidebarStyle.defaultSidebarWidth + "px",
+  boxShadow: "none",
+});
+
+cssClass(cls.rightSidebarHidden, {
+  marginRight: -sidebarStyle.defaultSidebarWidth + "px",
+  boxShadow: "none",
 });
 
 cssClass(cls.gallery, {

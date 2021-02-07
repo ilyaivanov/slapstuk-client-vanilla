@@ -1,84 +1,58 @@
-import { dom } from ".";
-import { DivDefinition } from "./dom";
+import { Styles, convertNumericStylesToPixels } from "./style";
 
-export const collapseElementHeight = (
-  node: HTMLElement,
-  time: number,
-  removeNodeAfter = false
-) => {
-  node.style.height = node.offsetHeight + "px";
-  clearPendingTimeouts(node);
+const defaultSpeed = 1200; //pixels per second
 
-  setTimeout(() => {
-    node.style.height = "0px";
-    var timeout = setTimeout(() => {
-      if (removeNodeAfter) {
-        node.remove();
-      } else {
-        node.innerHTML = "";
-        node.removeAttribute("data-timeout");
-      }
-    }, time);
-    node.setAttribute("data-timeout", timeout + "");
-
-    //this 20 for setTimeout let's browser to apply height and then transition to a new height
-    // kind of buggy, but if I set 0 no CSS animation happends
-    // tried to use requestAnimationFrame without any success
-    // need to think on this, maybe use WebAnimations API
-  }, 20);
+export type Options = KeyframeAnimationOptions & {
+  speed?: number;
+  doNotFadeOut?: boolean;
 };
 
-export const openElementHeight = (
-  node: HTMLElement,
-  children: string | DivDefinition | DivDefinition[],
-  time: number,
-  getTargetHeightAfterAppend?: () => number
-) => {
-  node.style.height = "0px";
-  var hasClearedTimeout = clearPendingTimeouts(node);
-  if (!hasClearedTimeout) {
-    if (typeof children == "string") node.append(children);
-    else if (Array.isArray(children)) node.appendChild(dom.fragment(children));
-    else node.append(dom.div(children));
+export const animateHeight = (
+  elem: HTMLElement,
+  from: number,
+  to: number,
+  options?: Options
+): Animation => {
+  const targetOpacity = from > to ? 0 : 1;
+  const sourceOpacity = from <= to ? 0 : 1;
+
+  const start: Styles = {
+    height: from,
+    opacity: sourceOpacity,
+  };
+  const end: Styles = {
+    height: to,
+    opacity: targetOpacity,
+  };
+  if (options?.doNotFadeOut) {
+    delete start.opacity;
+    delete end.opacity;
   }
-  setTimeout(() => {
-    node.style.height = getTargetHeightAfterAppend
-      ? getTargetHeightAfterAppend() + "px"
-      : node.scrollHeight + "px";
-    var timeout = setTimeout(() => {
-      node.style.removeProperty("height");
-      node.removeAttribute("data-timeout");
-    }, time);
-    node.setAttribute("data-timeout", timeout + "");
-  }, 20);
+  return animate(elem, [start, end], {
+    duration: getDuration(from, to, options?.speed || defaultSpeed),
+    easing: "ease-out",
+    ...options,
+  });
 };
 
-export const expandElementHeight = (
-  node: HTMLElement,
-  time: number,
-  targetHeight: number,
-  onDone: () => void
+export const getDuration = (from: number, to: number, speed: number) => {
+  const distance = Math.abs(to - from);
+  return (distance / speed) * 1000;
+};
+
+//this module allows using numbers for properties for animation
+//also in case I will be using unit tests with jest, I can mock animations more easily if it is extracted
+
+export const animate = (
+  element: HTMLElement,
+  //I'm using my plain styles here, even thought Keyframe has three additional properies
+  // like CompositeOperationOrAuto, but sinse I'm not using them and do not forsee usage, I won't add them into types
+  // future me - please add type union if you are going to use config for each frame
+  frames: Styles[] | Styles,
+  options: KeyframeAnimationOptions
 ) => {
-  node.style.transition = 'height 0ms ease-in';
-  node.style.height = "0px";
-  clearPendingTimeouts(node);
-  setTimeout(() => {
-    node.style.removeProperty('transition');
-    node.style.height = targetHeight + "px";
-    var timeout = setTimeout(() => {
-      node.style.removeProperty("height");
-      node.removeAttribute("data-timeout");
-      onDone();
-    }, time);
-    node.setAttribute("data-timeout", timeout + "");
-  }, 20);
-};
-
-const clearPendingTimeouts = (node: HTMLElement): boolean => {
-  const timeout = node.dataset.timeout;
-  if (timeout) {
-    clearTimeout(parseInt(timeout));
-    node.removeAttribute("data-timeout");
-  }
-  return !!timeout;
+  const convertedStyles = Array.isArray(frames)
+    ? frames.map(convertNumericStylesToPixels)
+    : convertNumericStylesToPixels(frames);
+  return element.animate(convertedStyles as any, options);
 };
