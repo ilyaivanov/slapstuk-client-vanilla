@@ -28,7 +28,7 @@ export const getPreviewImage = (item: Item): DivDefinition => {
         display: "block",
         objectFit: "cover",
         //this makes animation better for non-channel items
-        objectPosition: items.isChannel(item) ? undefined : "top",
+        objectPosition: "top",
       },
 
       attributes: { src: items.getImageSrc(item), draggable: "false" },
@@ -66,7 +66,7 @@ const folderPreviewGrid = (item: Folder): DivDefinition => {
         maxHeight: "100%",
         display: "block",
         objectFit: "cover",
-        objectPosition: "0 0",
+        objectPosition: "top",
       },
       attributes: { src, draggable: "false" },
     })),
