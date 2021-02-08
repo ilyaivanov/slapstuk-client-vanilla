@@ -47,7 +47,7 @@ export const initApp = (userId: string) => {
       global.allItems = JSON.parse(data.itemsSerialized);
       items.setItems(JSON.parse(data.itemsSerialized));
       items.setSelectedItem(data.selectedItemId);
-      items.setFocusStack(data.focusedStack);
+      // items.setFocusStack(data.focusedStack);
 
       leftSidebarWidth = data.ui?.leftSidebarWidth || 300;
       styles.setLeftSidebarWidth(leftSidebarWidth);

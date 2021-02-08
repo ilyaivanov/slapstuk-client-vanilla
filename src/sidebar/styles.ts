@@ -6,9 +6,7 @@ import {
   cssClassOnHover,
   cssText,
   colors,
-  zIndexes,
 } from "../infra";
-
 export const headerHeight = 56;
 export const expandCollapseTransitionTime = 400;
 export const focusTransitionTime = 400;
@@ -137,7 +135,7 @@ cssClass(cls.sidebarRowChildrenContainerHighlighted, {
 cssClass(cls.sidebarRowExpandButton, {
   width: "14px",
   height: "14px",
-  color: "rgb(184, 184, 184)",
+  color: colors.iconRegular,
   transition: `transform ${expandCollapseTransitionTime}ms ease-out, 
                  opacity ${expandCollapseTransitionTime}ms ease-out`,
   opacity: "0",
@@ -170,75 +168,6 @@ css(
     pointerEvents: "none",
   }
 );
-
-//Row Circle
-cssClass(cls.sidebarRowCircle, {
-  minWidth: "6px",
-  width: "6px",
-  height: "6px",
-  borderRadius: "3px",
-  backgroundColor: "rgb(184, 184, 184)",
-  color: "transparent",
-  marginRight: "8px",
-  marginLeft: "4px",
-  transition: `
-  transform 200ms ease-out,
-  color 200ms ease-out`,
-});
-
-cssClass(cls.sidebarRowCircleChannel, {
-  backgroundColor: colors.channelColor,
-});
-
-cssClass(cls.sidebarRowCirclePlaylist, {
-  backgroundColor: colors.playlistColor,
-});
-
-css(`.${cls.sidebarRowFocused} .${cls.sidebarRowCircle}`, {
-  color: "rgb(184, 184, 184)",
-  backgroundColor: "rgba(0,0,0,0)",
-  minWidth: "10px",
-  width: "10px",
-  height: "20px",
-  marginRight: "4px",
-});
-
-cssClassOnHover(cls.sidebarRowCircle, {
-  transform: "scale(1.6)",
-  backgroundColor: "white",
-  color: "white",
-  animation: "none",
-});
-
-css(`.${cls.sidebarRowCircle}:active`, {
-  transform: "scale(1.2)",
-});
-
-css(`.${cls.sidebarRowFocused} .${cls.sidebarRowCircle}:hover`, {
-  color: "white",
-  backgroundColor: "rgba(0,0,0,0)",
-  transform: "scale(1.5)",
-});
-
-cssClass(cls.circlePlaying, {
-  animation: "pulsate 0.6s ease-in-out infinite both",
-});
-
-cssText(`
-@keyframes pulsate {
-  0% {
-    transform: scale(1) translate3d(0px, 0px, 0px);
-  }
-  33% {
-    transform: scale(1.4, 0.9) translate3d(0px, 3px, 0px);
-  }
-  66% {
-    transform: scale(0.9, 1.1) translate3d(0px, -1px, 0px);
-  }
-  100% {
-    transform: scale(1) translate3d(0px, 0px, 0px);
-  }
-}`);
 
 //DND
 cssClass(cls.dragAvatar, {
@@ -310,7 +239,7 @@ css(`.${cls.sidebar}:hover .${cls.sidebarHeader} > *`, {
 cssClass(cls.sidebarHeaderIcon, {
   height: sidebarHeaderHeight - 4,
   padding: "0 6px",
-  color: "rgb(184, 184, 184)",
+  color: colors.iconRegular,
 });
 
 cssClassOnHover(cls.sidebarHeaderIcon, {

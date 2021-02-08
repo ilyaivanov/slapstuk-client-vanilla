@@ -1,5 +1,12 @@
 export { cls, ids, ClassName, zIndexes } from "./keys";
-export { cssClass, css, styles, cssClassOnHover, cssText } from "./style";
+export {
+  cssClass,
+  css,
+  styles,
+  cssClassOnHover,
+  cssClassOnActive,
+  cssText,
+} from "./style";
 export {
   div,
   findFirstByClass,
@@ -9,11 +16,26 @@ export {
   EventsDefinition,
 } from "./dom";
 export * as dom from "./dom";
+export * as icons from "./icons";
 export * as anim from "./animations";
 export * as colors from "./colors";
 export * as utils from "./utils";
 // import * as dom from "./dom";
 // import * as anim from "./animations";
+import {
+  cssClass,
+  css as selector,
+  cssClassOnHover,
+  cssClassOnActive,
+  cssText,
+} from "./style";
+export const s = {
+  selector,
+  class: cssClass,
+  active: cssClassOnActive,
+  hover: cssClassOnHover,
+  text: cssText,
+};
 
 declare const ISOLATED: boolean;
 

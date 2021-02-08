@@ -16,6 +16,10 @@ export const cssClassOnHover = (clas: ClassName, styles: Styles) => {
   const text = cssToString("." + clas + ":hover", styles);
   s.innerHTML += text;
 };
+export const cssClassOnActive = (clas: ClassName, styles: Styles) => {
+  const text = cssToString("." + clas + ":active", styles);
+  s.innerHTML += text;
+};
 
 export const css = (selector: string | string[], styles: Styles) => {
   const res = Array.isArray(selector) ? selector.join(", ") : selector;

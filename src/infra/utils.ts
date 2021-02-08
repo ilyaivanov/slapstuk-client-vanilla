@@ -24,3 +24,13 @@ export const max = (vals: number[]): number | undefined => {
   }
   return undefined;
 };
+
+export const findDuplicates = <T>(vals: T[]): T[] => {
+  const duplicates = [];
+  const set = new Set<T>();
+  for (var i = 0; i < vals.length; i++) {
+    if (set.has(vals[i])) duplicates.push(vals[i]);
+    else set.add(vals[i]);
+  }
+  return duplicates;
+};

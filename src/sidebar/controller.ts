@@ -1,4 +1,4 @@
-import { anim, cls, dom, ids, styles } from "../infra";
+import { anim, cls, DivDefinition, dom, icons, ids, styles } from "../infra";
 import * as view from "./view";
 import * as style from "./styles";
 import * as gallery from "../gallery1/gallery";
@@ -6,6 +6,7 @@ import * as items from "../items";
 import * as sidebarAnimations from "./sidebarAnimations";
 import * as dnd from "../dnd/dnd";
 import { loadItemChildren } from "../search/controller";
+import { viewItemIcon } from "./itemIcon";
 
 export const init = (sidebarParent: HTMLElement) => {
   const itemsToRender = view.viewItemChildren("HOME");
@@ -245,6 +246,9 @@ const focusOnItem = (item: Item) => {
     cls.sidebarFocusContainerFocused
   );
   row.classList.add(cls.sidebarRowFocused);
+  const svg = dom.findFirstByClass(cls.itemIcon, row);
+  const arrowPath = icons.arrow().children as DivDefinition;
+  dom.set(svg, arrowPath);
   view
     .findItemChildrenContainer(item.id)
     .classList.add(cls.sidebarRowChildrenContainerFocused);
@@ -254,6 +258,12 @@ const focusOnItem = (item: Item) => {
   );
 };
 
+const setItemIcon = (item: Item, row: HTMLElement) => {
+  const svg = dom.findFirstByClass(cls.itemIcon, row);
+  const arrowPath = viewItemIcon(item).children as DivDefinition;
+  dom.set(svg, arrowPath);
+};
+
 const unfocus = () => {
   const currentItemFocused = items.focusedItemId;
   const itemIdFocused = items.popFromFocusStack();
@@ -261,9 +271,10 @@ const unfocus = () => {
     dom.removeClassFromElement(cls.sidebarFocusContainerFocused);
     focusLevel = 0;
     dom.findAllByClass(cls.sidebarRowFocused).forEach((row) => {
-      row.classList.remove(cls.sidebarRowFocused);
       const itemId = view.itemIdFromRow(row);
       const item = items.getItem(itemId);
+      row.classList.remove(cls.sidebarRowFocused);
+      setItemIcon(item, row);
       const isItemEmpty = dom.isEmpty(view.findItemChildrenContainer(itemId));
       if (!items.isOpenAtSidebar(item) && !isItemEmpty) {
         hideItemChildren(item);
@@ -276,6 +287,7 @@ const unfocus = () => {
     const row = view.findRowById(currentItemFocused);
     row.classList.remove(cls.sidebarRowFocused);
     const item = items.getItem(currentItemFocused);
+    setItemIcon(item, row);
     const isItemEmpty = dom.isEmpty(
       view.findItemChildrenContainer(currentItemFocused)
     );

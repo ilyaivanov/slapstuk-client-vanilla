@@ -1,3 +1,5 @@
+import { findDuplicates } from "./utils";
+
 export const ids = {
   sidebarRow: (itemId: string) => "row-" + itemId,
   card: (itemId: string) => "card-" + itemId,
@@ -26,6 +28,11 @@ export const cls = {
     "sidebar-row-children-container-highlighted",
   sidebarRowChildrenContainerFocused: "sidebar-row-children-container-focused",
   sidebarRowCircle: "sidebar-row-circle",
+  itemIcon: "ii",
+  sidebarFolderIcon: "sfi",
+  sidebarVideoIcon: "svi",
+  sidebarChannelIcon: "sci",
+  sidebarPlaylistIcon: "spi",
   sidebarRowCircleChannel: "sidebar-row-circle-c",
   sidebarRowCirclePlaylist: "sidebar-row-circle-p",
   circlePlaying: "sidebar-row-circle-playing",
@@ -90,6 +97,10 @@ export const cls = {
   loadGridContainer: "load-grid-container",
   none: "",
 } as const;
+
+const duplicatedClasses = findDuplicates(Object.values(cls));
+if (duplicatedClasses.length > 0)
+  console.error(`Infra has duplicated clases: ${duplicatedClasses.join(", ")}`);
 
 export const zIndexes = {
   leftSidebarMenu: 200,
