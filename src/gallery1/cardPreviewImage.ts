@@ -53,8 +53,8 @@ const folderPreviewGrid = (item: Folder): DivDefinition => {
   return {
     style: {
       display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gridTemplateRows: "1fr 1fr",
+      gridTemplateColumns: "50% 50%",
+      gridTemplateRows: "50% 50%",
       gridGap: "2px",
       ...styles.overlay,
     },
@@ -63,8 +63,10 @@ const folderPreviewGrid = (item: Folder): DivDefinition => {
       style: {
         width: "100%",
         height: "100%",
+        maxHeight: "100%",
         display: "block",
         objectFit: "cover",
+        objectPosition: "0 0",
       },
       attributes: { src, draggable: "false" },
     })),
