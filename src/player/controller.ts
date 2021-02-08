@@ -24,6 +24,9 @@ export const playItem = (itemId: string) => {
   }
   const item = items.getItem(itemId);
   if (item && items.isVideo(item) && item.videoId) {
+    if (itemIdBeingPlayed) removeItemBeingPlayedFromItem(itemIdBeingPlayed);
+
+    addItemBeingPlayedToItem(itemId);
     itemIdBeingPlayed = itemId;
     play(item.videoId);
   }
@@ -44,4 +47,14 @@ export const toggleVisibility = () => {
 
 export const toggleYoutubePlayerVisibility = () => {
   dom.findById(ids.youtubeIframe).classList.toggle(cls.youtubePlayerHidden);
+};
+
+const removeItemBeingPlayedFromItem = (itemId: string) => {
+  dom.removeClassFromElementById(ids.card(itemId), cls.itemBeingPlayed);
+  dom.removeClassFromElementById(ids.subtrack(itemId), cls.itemBeingPlayed);
+};
+
+const addItemBeingPlayedToItem = (itemId: string) => {
+  dom.addClassToElementById(ids.card(itemId), cls.itemBeingPlayed);
+  dom.addClassToElementById(ids.subtrack(itemId), cls.itemBeingPlayed);
 };
