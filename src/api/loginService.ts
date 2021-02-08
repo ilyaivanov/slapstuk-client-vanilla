@@ -42,6 +42,9 @@ export type PersistedState = {
   selectedItemId: string;
   focusedItemId: string;
   itemsSerialized: string;
+  ui?: {
+    leftSidebarWidth: number;
+  };
 };
 
 export const loadUserSettings = (userId: string): Promise<PersistedState> =>

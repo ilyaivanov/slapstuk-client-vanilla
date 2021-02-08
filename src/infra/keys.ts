@@ -8,6 +8,8 @@ export const ids = {
 export const cls = {
   page: "page",
   sidebar: "sidebar",
+  sidebarScroll: "sidebar-scrol",
+  sidebarWidthAdjuster: "sidebar-w",
   rightSidebar: "sidebar-right",
   rightSidebarHidden: "sidebar-right-hidden",
   sidebarHidden: "sidebar-hidden",

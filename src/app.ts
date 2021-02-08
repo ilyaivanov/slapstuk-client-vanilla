@@ -1,4 +1,4 @@
-import { cls, dom, ids, isIsolated } from "./infra";
+import { cls, dom, ids, isIsolated, styles } from "./infra";
 import * as sidebarController from "./sidebar/controller";
 import * as gallery from "./gallery1/gallery";
 import * as searchController from "./search/controller";
@@ -33,6 +33,13 @@ export const init = () => {
 
 export const initLogin = () => login.init();
 
+//temp UI options model
+let leftSidebarWidth = 0;
+export const setLeftSidebarWidth = (width: number) => {
+  leftSidebarWidth = width;
+  styles.setLeftSidebarWidth(width);
+  gallery.rerenderIfColumnsChanged();
+};
 export const initApp = (userId: string) => {
   api.loadUserSettings(userId).then((data) => {
     if (data) {
@@ -41,6 +48,9 @@ export const initApp = (userId: string) => {
       items.setItems(JSON.parse(data.itemsSerialized));
       items.setSelectedItem(data.selectedItemId);
       items.setFocusedItem(data.focusedItemId);
+      leftSidebarWidth = data.ui?.leftSidebarWidth || 300;
+      styles.setLeftSidebarWidth(leftSidebarWidth);
+      styles.setRightSidebarWidth(300);
     }
     const root = dom.findById("root");
     root.innerHTML = "";
@@ -91,6 +101,7 @@ export const initApp = (userId: string) => {
                       itemsSerialized: JSON.stringify(items.allItems),
                       selectedItemId: items.selectedItemId,
                       focusedItemId: items.focusedItemId,
+                      ui: { leftSidebarWidth },
                     });
                   },
                 },

@@ -5,6 +5,7 @@ import * as sidebar from "../sidebar/controller";
 import * as sidebarAnimations from "../sidebar/sidebarAnimations";
 import * as items from "../items";
 import { getPreviewImage } from "../gallery1/cardPreviewImage";
+import * as app from "../app";
 
 export const init = () => {
   //Add removeEventListener when I will have multiple pages (Login included)
@@ -33,8 +34,18 @@ export const onItemMouseDown = (itemId: string, source: DragItemType) => {
   currentDragArea = source;
 };
 
+//Sidebar Width adjuster
+let isMouseDownOnAdjuster = false;
+export const onSidebarWidthAdjusterMouseDown = () => {
+  console.log("onSidebarWidthAdjusterMouseDown");
+  dom.addClassToElement(cls.page, cls.noUserSelect);
+  isMouseDownOnAdjuster = true;
+};
+
 function onMouseMove(e: MouseEvent) {
-  if (itemIdMouseDownOn) {
+  if (isMouseDownOnAdjuster) {
+    app.setLeftSidebarWidth(e.clientX);
+  } else if (itemIdMouseDownOn) {
     distanceTraveledWithMouseDown += Math.sqrt(
       e.movementX * e.movementX + e.movementY * e.movementY
     );
@@ -163,12 +174,17 @@ function onMouseUp() {
     dom.findFirstByClass(cls.dragAvatar).remove();
     dom.findById("drag-destination").remove();
   }
+
+  if (isMouseDownOnAdjuster) {
+    dom.removeClassFromElement(cls.page, cls.noUserSelect);
+  }
   dragAvatar = undefined;
   dragDestination = undefined;
   isDragging = false;
   itemIdMouseDownOn = undefined;
   targetItemId = "";
   destinationType = undefined;
+  isMouseDownOnAdjuster = false;
 }
 
 export const removeFromParent = (itemId: string) => {

@@ -10,10 +10,14 @@ import { loadItemChildren } from "../search/controller";
 export const init = (sidebarParent: HTMLElement) => {
   const itemsToRender = view.viewItemChildren("HOME");
   const focusContainer = dom.div({
-    className: cls.sidebarFocusContainer,
-    children: [view.viewHomeRow()].concat(itemsToRender.flat()),
+    className: cls.sidebarScroll,
+    children: {
+      className: cls.sidebarFocusContainer,
+      children: [view.viewHomeRow()].concat(itemsToRender.flat()),
+    },
   });
   sidebarParent.appendChild(focusContainer);
+  dom.append(sidebarParent, view.viewSidebarWidthAdjuster());
   dom.append(sidebarParent, view.viewSidebarHeader());
   if (items.focusedItemId !== "HOME") {
     //turn off container animiation during init

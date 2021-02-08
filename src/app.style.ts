@@ -28,12 +28,17 @@ cssClass(cls.header, {
 cssClass(cls.sidebar, {
   position: "relative",
   gridArea: "sidebar",
-  overflowY: "auto",
+
   backgroundColor: colors.menu,
   // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.leftSidebarMenu,
-  width: `${sidebarStyle.defaultSidebarWidth}px`,
+  width: styles.cssLeftSidebarWidthVariable,
   transition: `margin ${sidebarStyle.sidebarCollapseTime}ms ease-out`,
+});
+
+cssClass(cls.sidebarScroll, {
+  ...styles.overlay,
+  overflowY: "auto",
 });
 
 cssClass(cls.rightSidebar, {
@@ -43,17 +48,17 @@ cssClass(cls.rightSidebar, {
   backgroundColor: colors.menu,
   // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.rightSidebarMenu,
-  width: `${sidebarStyle.defaultSidebarWidth}px`,
+  width: styles.cssRightSidebarWidthVariable,
   transition: `margin ${sidebarStyle.sidebarCollapseTime}ms ease-out`,
 });
 
 cssClass(cls.sidebarHidden, {
-  marginLeft: -sidebarStyle.defaultSidebarWidth + "px",
+  marginLeft: `calc(-1 * ${styles.cssLeftSidebarWidthVariable})`,
   boxShadow: "none",
 });
 
 cssClass(cls.rightSidebarHidden, {
-  marginRight: -sidebarStyle.defaultSidebarWidth + "px",
+  marginRight: `calc(-1 * ${styles.cssRightSidebarWidthVariable})`,
   boxShadow: "none",
 });
 

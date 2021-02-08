@@ -6,6 +6,7 @@ import {
   cssClassOnHover,
   cssText,
   colors,
+  zIndexes,
 } from "../infra";
 
 export const headerHeight = 56;
@@ -15,7 +16,6 @@ export const fadeOutTime = 400;
 export const sidebarCollapseTime = 200;
 //TODO: Fix this constant. change breaks layout (chevron is not properly positioned)
 export const rowMarginPerLevel = 16;
-export const defaultSidebarWidth = 300;
 const focusTransition = `${focusTransitionTime}ms ease-in-out`;
 export const sidebarHeaderHeight = 20;
 
@@ -34,7 +34,7 @@ cssClass(cls.sidebarFocusContainer, {
   position: "relative",
 });
 
-cssText(styles.cssTextForScrollBar(cls.sidebar, { width: 8 }));
+cssText(styles.cssTextForScrollBar(cls.sidebarScroll, { width: 8 }));
 
 cssClass(cls.sidebarRow, {
   height: "27px",
@@ -294,8 +294,9 @@ cssClass(cls.sidebarHeader, {
   position: "absolute",
   top: 0,
   left: 0,
-  right: 0,
+  right: 1,
 });
+
 //this tricky css is used to preserve background color on sidebarHeader
 //such that it will hide parent items of currently focused items
 css(`.${cls.sidebarHeader} > *`, {
@@ -316,4 +317,22 @@ cssClass(cls.sidebarHeaderIcon, {
 cssClassOnHover(cls.sidebarHeaderIcon, {
   color: "white",
   cursor: "pointer",
+});
+
+cssClass(cls.sidebarWidthAdjuster, {
+  position: "absolute",
+  top: 0,
+  right: -1,
+  width: 2,
+  bottom: 0,
+  backgroundColor: "rgba(255, 255, 255, 0.1)",
+  cursor: "col-resize",
+});
+
+cssClassOnHover(cls.sidebarWidthAdjuster, {
+  backgroundColor: colors.primary,
+});
+
+css(`.${cls.sidebarHidden} .${cls.sidebarWidthAdjuster}`, {
+  display: "none",
 });

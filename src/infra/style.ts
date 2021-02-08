@@ -88,10 +88,21 @@ export const styles = {
     ${width ? "width: " + width + "px" : ""}
     ${height ? "height: " + height + "px" : ""}
   }`,
+
+  cssPlayerHeightVariable: "-player-height",
   //this variable is used to set maxHeight for cards
   setPlayerHeightRootVariable: (height: number) =>
     dom.root.style.setProperty("--player-height", `${height}px`),
 
+  cssLeftSidebarWidthVariable: "var(--sidebar-left-width)",
+
+  setLeftSidebarWidth: (width: number) =>
+    dom.root.style.setProperty("--sidebar-left-width", `${width}px`),
+
+  cssRightSidebarWidthVariable: "var(--sidebar-right-width)",
+
+  setRightSidebarWidth: (width: number) =>
+    dom.root.style.setProperty("--sidebar-right-width", `${width}px`),
   cancelAllCurrentAnimations: (elem: HTMLElement) =>
     elem.getAnimations().forEach((a) => a.cancel()),
 };
