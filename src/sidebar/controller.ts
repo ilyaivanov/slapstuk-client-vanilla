@@ -214,7 +214,7 @@ const focusOnItem = (item: Item) => {
     .findItemChildrenContainer(item.id)
     .classList.add(cls.sidebarRowChildrenContainerFocused);
   view.setFocusContainerNegativeMargins(
-    parseInt(row.style.paddingLeft),
+    (focusLevel + 1) * style.rowMarginPerLevel,
     row.offsetTop - style.sidebarHeaderHeight
   );
 };
