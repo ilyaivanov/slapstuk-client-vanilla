@@ -7,7 +7,10 @@ let currentCols = 0;
 let currentItems: Item[] = [];
 
 export const rerenderIfColumnsChanged = () => {
-  const colsCount = Math.round((gallery.clientWidth - gap) / (320 + gap));
+  const colsCount = Math.max(
+    1,
+    Math.round((gallery.clientWidth - gap) / (320 + gap))
+  );
   if (colsCount != currentCols) {
     currentCols = colsCount;
     dom.set(gallery, viewGallery());
