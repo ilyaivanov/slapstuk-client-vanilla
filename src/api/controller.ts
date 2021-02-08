@@ -37,7 +37,7 @@ export const loadUserSettings = (
       itemsSerialized: JSON.stringify(
         legacy.convertLegacyItems(legacy.legacyItems)
       ),
-      focusedItemId: "HOME",
+      focusedStack: [],
       selectedItemId: "HOME",
     });
   } else {

@@ -16,15 +16,35 @@ export let defaultItems: Items = {
 export let allItems: Items = { ...defaultItems };
 
 export let selectedItemId = "HOME";
-export let focusedItemId = "HOME";
+export const setSelectedItem = (itemId: string) => (selectedItemId = itemId);
 
 export const setItems = (newItesm: Items) =>
   (allItems = {
     ...defaultItems,
     ...newItesm,
   });
-export const setSelectedItem = (itemId: string) => (selectedItemId = itemId);
-export const setFocusedItem = (itemId: string) => (focusedItemId = itemId);
+
+export let focusedItemId = "HOME";
+export let focusStack: string[] = [];
+export const pushToFocusStack = (itemId: string) => {
+  console.trace("puishing");
+  focusedItemId = itemId;
+  focusStack.push(itemId);
+};
+export const popFromFocusStack = (): string => {
+  if (focusStack.length > 0) {
+    focusStack.pop();
+    focusedItemId = focusStack[focusStack.length - 1] || "HOME";
+    return focusedItemId;
+  } else return "HOME";
+};
+
+export const setFocusStack = (stack: string[]) => {
+  if (stack && stack.length > 0) {
+    focusStack = stack;
+    focusedItemId = stack[stack.length - 1];
+  }
+};
 
 export const getHomeItems = (): Item[] => getChildren("HOME");
 

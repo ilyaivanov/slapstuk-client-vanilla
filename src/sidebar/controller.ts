@@ -221,20 +221,24 @@ export let focusLevel = 0;
 export const onCirclePressed = (item: Item) => {
   const row = view.findRowById(item.id);
   if (row.classList.contains(cls.sidebarRowFocused)) unfocus();
-  else focusOnItem(item);
+  else {
+    // I'm not removing cls.sidebarRowFocused from DOM
+    // because I'm traversing and closing all non-closed items on unfocus
+    dom.removeClassFromElement(cls.sidebarRowChildrenContainerFocused);
+
+    items.pushToFocusStack(item.id);
+    focusOnItem(item);
+  }
 };
 
 const focusOnItem = (item: Item) => {
-  // I'm not removing cls.sidebarRowFocused from DOM
-  // because I'm traversing and closing all non-closed items on unfocus
-  dom.removeClassFromElement(cls.sidebarRowChildrenContainerFocused);
-
-  items.setFocusedItem(item.id);
   const row = view.findRowById(item.id);
 
   focusLevel = view.parseLevelFromRow(row);
   //I'm not changing model here, thus I would be able to close item back again when unfocus
-  if (!items.isOpenAtSidebar(item)) showItemChildren(item, focusLevel);
+  const container = view.findItemChildrenContainer(item.id);
+  if (!items.isOpenAtSidebar(item) && dom.isEmpty(container))
+    showItemChildren(item, focusLevel);
 
   dom.addClassToElement(
     cls.sidebarFocusContainer,
@@ -251,18 +255,33 @@ const focusOnItem = (item: Item) => {
 };
 
 const unfocus = () => {
-  items.setFocusedItem("HOME");
-  dom.removeClassFromElement(cls.sidebarFocusContainerFocused);
-  focusLevel = 0;
-  dom.findAllByClass(cls.sidebarRowFocused).forEach((row) => {
+  const currentItemFocused = items.focusedItemId;
+  const itemIdFocused = items.popFromFocusStack();
+  if (itemIdFocused == "HOME") {
+    dom.removeClassFromElement(cls.sidebarFocusContainerFocused);
+    focusLevel = 0;
+    dom.findAllByClass(cls.sidebarRowFocused).forEach((row) => {
+      row.classList.remove(cls.sidebarRowFocused);
+      const itemId = view.itemIdFromRow(row);
+      const item = items.getItem(itemId);
+      const isItemEmpty = dom.isEmpty(view.findItemChildrenContainer(itemId));
+      if (!items.isOpenAtSidebar(item) && !isItemEmpty) {
+        hideItemChildren(item);
+      }
+    });
+
+    view.setFocusContainerNegativeMargins(0, 0);
+  } else {
+    dom.removeClassFromElement(cls.sidebarFocusContainerFocused);
+    const row = view.findRowById(currentItemFocused);
     row.classList.remove(cls.sidebarRowFocused);
-    const itemId = view.itemIdFromRow(row);
-    const item = items.getItem(itemId);
-    const isItemEmpty = dom.isEmpty(view.findItemChildrenContainer(itemId));
+    const item = items.getItem(currentItemFocused);
+    const isItemEmpty = dom.isEmpty(
+      view.findItemChildrenContainer(currentItemFocused)
+    );
     if (!items.isOpenAtSidebar(item) && !isItemEmpty) {
       hideItemChildren(item);
     }
-  });
-
-  view.setFocusContainerNegativeMargins(0, 0);
+    focusOnItem(items.getItem(itemIdFocused));
+  }
 };

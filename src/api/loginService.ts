@@ -40,7 +40,7 @@ export const saveUserSettings = (
 
 export type PersistedState = {
   selectedItemId: string;
-  focusedItemId: string;
+  focusedStack: string[];
   itemsSerialized: string;
   ui?: {
     leftSidebarWidth: number;

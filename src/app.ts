@@ -47,7 +47,8 @@ export const initApp = (userId: string) => {
       global.allItems = JSON.parse(data.itemsSerialized);
       items.setItems(JSON.parse(data.itemsSerialized));
       items.setSelectedItem(data.selectedItemId);
-      items.setFocusedItem(data.focusedItemId);
+      items.setFocusStack(data.focusedStack);
+
       leftSidebarWidth = data.ui?.leftSidebarWidth || 300;
       styles.setLeftSidebarWidth(leftSidebarWidth);
       styles.setRightSidebarWidth(300);
@@ -100,7 +101,7 @@ export const initApp = (userId: string) => {
                     api.saveUserSettings(userId, {
                       itemsSerialized: JSON.stringify(items.allItems),
                       selectedItemId: items.selectedItemId,
-                      focusedItemId: items.focusedItemId,
+                      focusedStack: items.focusStack,
                       ui: { leftSidebarWidth },
                     });
                   },
