@@ -180,7 +180,7 @@ cssClass(cls.sidebarRowCircle, {
   height: "6px",
   borderRadius: "3px",
   backgroundColor: "rgb(184, 184, 184)",
-  color: "rgb(184, 184, 184)",
+  color: "transparent",
   marginRight: "8px",
   marginLeft: "4px",
   transition: `
@@ -188,7 +188,16 @@ cssClass(cls.sidebarRowCircle, {
   color 200ms ease-out`,
 });
 
+cssClass(cls.sidebarRowCircleChannel, {
+  backgroundColor: colors.channelColor,
+});
+
+cssClass(cls.sidebarRowCirclePlaylist, {
+  backgroundColor: colors.playlistColor,
+});
+
 css(`.${cls.sidebarRowFocused} .${cls.sidebarRowCircle}`, {
+  color: "rgb(184, 184, 184)",
   backgroundColor: "rgba(0,0,0,0)",
   minWidth: "10px",
   width: "10px",

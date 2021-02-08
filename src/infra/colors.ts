@@ -11,3 +11,8 @@ export const selectedRow = `rgba(255,255,255,0.14)`;
 const primary = "#1565C0";
 
 export const cardBeingPlayedBackground = primary;
+
+export const folderColor = "#000000";
+export const playlistColor = "#1eaa00";
+export const channelColor = "#0070dd";
+export const videoColor = "#FF0000"; // not used right now

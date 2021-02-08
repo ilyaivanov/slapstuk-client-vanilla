@@ -50,12 +50,20 @@ export const viewRow = (item: Item, level: number): DivDefinition => ({
         },
       },
     },
-    arrow(cls.sidebarRowCircle, {
-      click: (e) => {
-        e.stopPropagation();
-        controller.onCirclePressed(item);
-      },
-    }),
+
+    arrow(
+      [
+        cls.sidebarRowCircle,
+        item.type == "YTchannel" ? cls.sidebarRowCircleChannel : cls.none,
+        item.type == "YTplaylist" ? cls.sidebarRowCirclePlaylist : cls.none,
+      ],
+      {
+        click: (e) => {
+          e.stopPropagation();
+          controller.onCirclePressed(item);
+        },
+      }
+    ),
     {
       className: cls.sidebarRowText,
       children: item.title,
@@ -247,6 +255,22 @@ export const showVideo = (className?: ClassName | ClassName[]) =>
     "0 0 576 512",
     className
   );
+// export const list = (className?: ClassName | ClassName[]) =>
+//   svgPath(
+//     "M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V86a6 6 0 0 1 6-6h404a6 6 0 0 1 6 6v340a6 6 0 0 1-6 6zm-42-92v24c0 6.627-5.373 12-12 12H204c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h200c6.627 0 12 5.373 12 12zm0-96v24c0 6.627-5.373 12-12 12H204c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h200c6.627 0 12 5.373 12 12zm0-96v24c0 6.627-5.373 12-12 12H204c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h200c6.627 0 12 5.373 12 12zm-252 12c0 19.882-16.118 36-36 36s-36-16.118-36-36 16.118-36 36-36 36 16.118 36 36zm0 96c0 19.882-16.118 36-36 36s-36-16.118-36-36 16.118-36 36-36 36 16.118 36 36zm0 96c0 19.882-16.118 36-36 36s-36-16.118-36-36 16.118-36 36-36 36 16.118 36 36z",
+//     "0 0 512 512",
+//     className
+//   );
+// export const userAvatar = (
+//   className?: ClassName | ClassName[],
+//   on?: EventsDefinition
+// ) =>
+//   svgPath(
+//     "M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z",
+//     "0 0 448 512",
+//     className,
+//     on
+//   );
 
 //UTILS
 

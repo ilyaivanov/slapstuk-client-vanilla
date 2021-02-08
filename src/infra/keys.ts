@@ -23,6 +23,8 @@ export const cls = {
     "sidebar-row-children-container-highlighted",
   sidebarRowChildrenContainerFocused: "sidebar-row-children-container-focused",
   sidebarRowCircle: "sidebar-row-circle",
+  sidebarRowCircleChannel: "sidebar-row-circle-c",
+  sidebarRowCirclePlaylist: "sidebar-row-circle-p",
   circlePlaying: "sidebar-row-circle-playing",
   sidebarRowText: "sidebar-row-text",
   sidebarRowInputField: "sidebar-row-text-input",

@@ -89,32 +89,29 @@ cssClass(cls.cardTypeBoxTriangle, {
   pointerEvents: "auto",
   borderLeft: `${triangleWidth}px solid transparent`,
 });
-const folderColor = "#000000";
-const playlistColor = "#1eaa00";
-const channelColor = "#0070dd";
-const videoColor = "#FF0000"; // not used right now
+
 const triangleAlpha = 0.6;
 
 const triangleBorder = (hex: string) =>
   `${triangleWidth}px solid ${utils.hexToRGB(hex, triangleAlpha)}`;
 
 cssClass(cls.cardTypeBoxTrianglePlaylist, {
-  borderTop: triangleBorder(playlistColor),
+  borderTop: triangleBorder(colors.playlistColor),
 });
 
 cssClass(cls.cardTypeBoxTriangleChannel, {
-  borderTop: triangleBorder(channelColor),
+  borderTop: triangleBorder(colors.channelColor),
 });
 
 cssClass(cls.cardTypeBoxTriangleFolder, {
-  borderTop: triangleBorder(folderColor),
+  borderTop: triangleBorder(colors.folderColor),
 });
 
 export const getItemColor = (item: Item) => {
-  if (items.isFolder(item)) return folderColor;
-  if (items.isChannel(item)) return channelColor;
-  if (items.isPlaylist(item)) return playlistColor;
-  if (items.isVideo(item)) return videoColor;
+  if (items.isFolder(item)) return colors.folderColor;
+  if (items.isChannel(item)) return colors.channelColor;
+  if (items.isPlaylist(item)) return colors.playlistColor;
+  if (items.isVideo(item)) return colors.videoColor;
   //@ts-expect-error
   console.error(`Unknown item type for ${item.type}. Using white`);
   return "white";
