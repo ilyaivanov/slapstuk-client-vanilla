@@ -190,10 +190,12 @@ export const set = (
 export const append = (
   node: HTMLElement,
   children: DivDefinition | DivDefinition[] | HTMLElement
-) => {
-  if (isHtmlElement(children)) node.appendChild(children);
-  else if (Array.isArray(children)) node.appendChild(fragment(children));
-  else node.appendChild(div(children));
+): HTMLElement => {
+  if (isHtmlElement(children)) return node.appendChild(children);
+  else if (Array.isArray(children))
+    //TODO: check this strange convertion
+    return (node.appendChild(fragment(children)) as unknown) as HTMLElement;
+  else return node.appendChild(div(children));
 };
 
 const isHtmlElement = (item: any): item is HTMLElement =>

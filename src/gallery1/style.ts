@@ -135,7 +135,7 @@ cssClassOnHover(cls.cardTypeBoxTriangleFolder, {
   borderTop: triangleBorder(colors.folderColor, 1),
 });
 
-export const getItemColor = (item: Item) => {
+export const getItemColor = (item: Item): string => {
   if (items.isFolder(item)) return colors.folderColor;
   if (items.isChannel(item)) return colors.channelColor;
   if (items.isPlaylist(item)) return colors.playlistColor;
@@ -209,22 +209,29 @@ css(`.${cls.subtrack}:hover`, {
 
 cssClass(cls.subtrackImage, {
   width: 32,
+  minWidth: 32,
   height: 32,
-  objectFit: "cover",
+  overflow: "hidden",
+  position: "relative",
   borderRadius: 4,
   marginRight: 8,
 });
+css(`.${cls.subtrackImage} img`, {
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+});
 
 cssClass(cls.subtrackPlaylistImage, {
-  border: `2px solid ${colors.playlistColor}`,
+  border: `1px solid ${colors.playlistColor}`,
 });
 
 cssClass(cls.subtrackChannelImage, {
-  border: `2px solid ${colors.channelColor}`,
+  border: `1px solid ${colors.channelColor}`,
 });
 
 cssClass(cls.subtrackFolderImage, {
-  border: `2px solid ${colors.folderColor}`,
+  border: `1px solid ${colors.folderColor}`,
 });
 
 const imageHeight = 180;

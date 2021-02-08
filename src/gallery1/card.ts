@@ -1,4 +1,4 @@
-import { anim, cls, dom, ids, DivDefinition, styles } from "../infra";
+import { anim, cls, dom, ids, DivDefinition, styles, utils } from "../infra";
 import * as style from "./style";
 import * as player from "../player/controller";
 import * as sidebar from "../sidebar/controller";
@@ -117,14 +117,43 @@ export const viewSubtrack = (item: Item): DivDefinition => ({
       e.stopPropagation();
       if (e.ctrlKey && !items.isVideo(item)) {
         sidebar.selectItem(item.id);
+      } else if (items.isPlaylist(item)) {
+        if (items.isNeedsToBeLoaded(item)) {
+          const row = e.currentTarget as HTMLElement;
+          const imageContainer = dom.findFirstByClass(cls.subtrackImage, row);
+          const loader = dom.append(imageContainer, {
+            style: {
+              ...styles.overlay,
+              ...styles.flexCenter,
+            },
+            children: {
+              style: {
+                width: 16,
+                height: 16,
+                borderRadius: 8,
+                backgroundColor: utils.hexToRGBA(style.getItemColor(item), 0.8),
+                animation: "pulsate 0.4s ease-in-out infinite both",
+              },
+            },
+          });
+          loadItemChildren(item).then((newItems) => {
+            items.setChildren(item.id, newItems);
+            player.playItem(newItems[0].id);
+            loader.remove();
+          });
+        } else {
+          player.playItem(items.getChildren(item.id)[0].id);
+        }
       } else if (items.isVideo(item)) player.playItem(item.id);
     },
   },
   children: [
     {
-      type: "img",
       className: [cls.subtrackImage, getSubtrackImageType(item)],
-      attributes: { src: items.getFirstImage(item) },
+      children: {
+        type: "img",
+        attributes: { src: items.getFirstImage(item) },
+      },
     },
     { type: "span", children: item.title },
   ],
