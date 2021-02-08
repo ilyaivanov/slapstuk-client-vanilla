@@ -37,10 +37,15 @@ export const expandChildContainer = (
   childContainer: HTMLElement,
   options?: anim.Options
 ) =>
-  anim.animateHeight(childContainer, 0, childContainer.scrollHeight, {
-    duration: style.expandCollapseTransitionTime,
-    ...options,
-  });
+  anim.animateHeight(
+    childContainer,
+    options?.initialHeight || 0,
+    childContainer.scrollHeight,
+    {
+      duration: style.expandCollapseTransitionTime,
+      ...options,
+    }
+  );
 
 export const collapseChildContainer = (
   childContainer: HTMLElement,

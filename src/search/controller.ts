@@ -15,7 +15,35 @@ export const search = () => {
   }
 };
 
-export const mapReponseItem = (resItem: ResponseItem): Item => {
+const getChannelSubitems = (item: YoutubeChannel) =>
+  Promise.all([
+    api.getChannelPlaylists(item.channelId),
+    api.getChannelUploadsPlaylistId(item.channelId),
+  ]).then(([channelPlaylists, uploadsPlaylistId]) =>
+    [
+      {
+        type: "YTplaylist",
+        children: [],
+        id: Math.random() + "",
+        image: item.image,
+        playlistId: uploadsPlaylistId,
+        title: item.title + " - Uploads",
+      } as Item,
+    ].concat(channelPlaylists.items.map(mapReponseItem))
+  );
+
+const getPlaylistSubitems = (item: YoutubePlaylist) =>
+  api
+    .fetchPlaylistVideos(item.playlistId)
+    .then((response) => response.items.map(mapReponseItem));
+
+export const loadItemChildren = (item: Item): Promise<Item[]> => {
+  if (items.isPlaylist(item)) return getPlaylistSubitems(item);
+  else if (items.isChannel(item)) return getChannelSubitems(item);
+  else throw Error(`Can't figure out how to load ${item.type}`);
+};
+
+const mapReponseItem = (resItem: ResponseItem): Item => {
   if (resItem.itemType == "video")
     return {
       type: "YTvideo",

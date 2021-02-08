@@ -2,8 +2,7 @@ import { anim, cls, dom, ids, DivDefinition, styles } from "../infra";
 import * as style from "./style";
 import * as player from "../player/controller";
 import * as items from "../items";
-import * as api from "../api/youtubeRequest";
-import { mapReponseItem } from "../search/controller";
+import { loadItemChildren } from "../search/controller";
 import { itemPreview } from "./cardPreviewImage";
 import * as dnd from "../dnd/dnd";
 
@@ -150,33 +149,7 @@ const loadSubitemsIfNeeded = (
 
   if (items.isOpenAtGallery(item) && items.isContainerNeedToFetch(item)) {
     items.startLoading(item);
-    if (item.type == "YTplaylist") {
-      item.isLoading = true;
-      api
-        .fetchPlaylistVideos(item.playlistId)
-        .then((response) => response.items.map(mapReponseItem))
-        .then((newItems) => doneLoading(newItems));
-    }
-    if (item.type == "YTchannel") {
-      item.isLoading = true;
-      Promise.all([
-        api.getChannelPlaylists(item.channelId),
-        api.getChannelUploadsPlaylistId(item.channelId),
-      ])
-        .then(([channelPlaylists, uploadsPlaylistId]) =>
-          [
-            {
-              type: "YTplaylist",
-              children: [],
-              id: Math.random() + "",
-              image: item.image,
-              playlistId: uploadsPlaylistId,
-              title: item.title + " - Uploads",
-            } as Item,
-          ].concat(channelPlaylists.items.map(mapReponseItem))
-        )
-        .then((newItems) => doneLoading(newItems));
-    }
+    loadItemChildren(item).then((newItems) => doneLoading(newItems));
   }
 };
 

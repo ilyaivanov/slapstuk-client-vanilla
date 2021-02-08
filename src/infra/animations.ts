@@ -5,6 +5,7 @@ const defaultSpeed = 1200; //pixels per second
 export type Options = KeyframeAnimationOptions & {
   speed?: number;
   doNotFadeOut?: boolean;
+  initialHeight?: number;
 };
 
 export const animateHeight = (

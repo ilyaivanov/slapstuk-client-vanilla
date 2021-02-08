@@ -1,6 +1,7 @@
 import { cls, dom, ClassName, DivDefinition, EventsDefinition } from "../infra";
 import * as controller from "./controller";
 import * as style from "./styles";
+import * as galleryStyle from "../gallery1/style";
 import * as items from "../items";
 import * as dnd from "../dnd/dnd";
 
@@ -36,7 +37,10 @@ export const viewRow = (item: Item, level: number): DivDefinition => ({
     {
       className: [
         cls.sidebarRowExpandButtonContainer,
-        items.hasChildren(item) ? cls.none : cls.hidden,
+        items.isVideo(item) ||
+        (items.isFolder(item) && !items.hasChildren(item))
+          ? cls.hidden
+          : cls.none,
       ],
       children: chevron([
         cls.sidebarRowExpandButton,
@@ -134,6 +138,15 @@ export const viewChildren = (item: Item, level: number): DivDefinition => {
       : [],
   };
 };
+
+export const viewLoadingLabel = (item: Item, parentItemLevel: number) => ({
+  style: {
+    paddingLeft: (parentItemLevel + 3) * style.rowMarginPerLevel,
+    fontStyle: "italic",
+    color: galleryStyle.getItemColor(item),
+  },
+  children: "Loading...",
+});
 
 export const rowId = (itemId: string) => `row-${itemId}`;
 export const itemIdFromRow = (row: HTMLElement) => row.id.substr(4);

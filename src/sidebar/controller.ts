@@ -1,10 +1,11 @@
-import { cls, dom, ids } from "../infra";
+import { anim, cls, dom, ids, styles } from "../infra";
 import * as view from "./view";
 import * as style from "./styles";
 import * as gallery from "../gallery1/gallery";
 import * as items from "../items";
 import * as sidebarAnimations from "./sidebarAnimations";
 import * as dnd from "../dnd/dnd";
+import { loadItemChildren } from "../search/controller";
 
 export const init = (sidebarParent: HTMLElement) => {
   const itemsToRender = view.viewItemChildren("HOME");
@@ -120,17 +121,38 @@ export const selectItem = (itemId: string) => {
 //Items expand\collapse
 export const toggleSidebarVisibilityForItem = (item: ItemContainer) => {
   const itemLevel = view.parseLevelFromRow(view.findRowById(item.id));
-
   item.isOpenFromSidebar = !item.isOpenFromSidebar;
-
   const button = view.findToggleButton(item.id);
+  if (items.isContainerNeedToFetch(item)) {
+    const doneLoading = (newItems: Item[]) => {
+      items.stopLoading(item);
+      items.setChildren(item.id, newItems);
+      if (items.isOpenAtSidebar(item)) {
+        const childrenElement = view.findItemChildrenContainer(item.id);
+        const initialHeight = childrenElement.clientHeight;
+        childrenElement.innerHTML = ``;
+        //this is tricky. If items will be fetched during current animation, I do not need to revert animations (as if during click)
+        styles.cancelAllCurrentAnimations(childrenElement);
+        showItemChildren(item, itemLevel, { initialHeight });
+      }
+    };
+
+    //TODO: think about pagingation and videos hidden option here
+    items.startLoading(item);
+    showItemChildren(item, itemLevel);
+    loadItemChildren(item).then((newItems) => doneLoading(newItems));
+  } else {
+    if (item.isOpenFromSidebar) {
+      showItemChildren(item, itemLevel);
+    } else {
+      hideItemChildren(item);
+    }
+  }
 
   if (item.isOpenFromSidebar) {
     button.classList.add(cls.rotated);
-    showItemChildren(item, itemLevel);
   } else {
     button.classList.remove(cls.rotated);
-    hideItemChildren(item);
   }
 };
 
@@ -147,15 +169,20 @@ const onChildrenAnimationDone = (item: Item, container: HTMLElement) => {
     container.innerHTML = "";
 };
 
-const showItemChildren = (item: Item, parentItemLevel: number) => {
+const showItemChildren = (
+  item: Item,
+  parentItemLevel: number,
+  options?: anim.Options
+) => {
   const childrenElement = view.findItemChildrenContainer(item.id);
   if (!revertAllAnimations(childrenElement)) {
-    dom.set(
-      childrenElement,
-      view.viewItemChildren(item.id, parentItemLevel + 1)
-    );
+    const content = items.isLoading(item)
+      ? view.viewLoadingLabel(item, parentItemLevel)
+      : view.viewItemChildren(item.id, parentItemLevel + 1);
+
+    dom.set(childrenElement, content);
     sidebarAnimations
-      .expandChildContainer(childrenElement)
+      .expandChildContainer(childrenElement, options)
       .addEventListener("finish", () =>
         onChildrenAnimationDone(item, childrenElement)
       );
