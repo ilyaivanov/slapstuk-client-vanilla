@@ -1,8 +1,16 @@
-import { cls, dom, ClassName, DivDefinition, EventsDefinition } from "../infra";
+import {
+  cls,
+  dom,
+  ClassName,
+  DivDefinition,
+  EventsDefinition,
+  utils,
+} from "../infra";
 import * as controller from "./controller";
 import * as style from "./styles";
 import * as galleryStyle from "../gallery1/style";
 import * as items from "../items";
+import * as app from "../app";
 import * as dnd from "../dnd/dnd";
 
 export const viewItemChildren = (itemId: string, initialLevel = 0) =>
@@ -223,7 +231,18 @@ export const viewSidebarHeader = (): DivDefinition => ({
 
 export const viewSidebarWidthAdjuster = (): DivDefinition => ({
   className: cls.sidebarWidthAdjuster,
-  on: { mousedown: dnd.onSidebarWidthAdjusterMouseDown },
+  on: {
+    mousedown: dnd.onSidebarWidthAdjusterMouseDown,
+    dblclick: () => {
+      const maxWidth = utils.max(
+        dom.findAllByClass(cls.sidebarRowText).map((r) => {
+          const rect = r.getBoundingClientRect();
+          return rect.x + rect.width;
+        })
+      );
+      if (maxWidth) app.setLeftSidebarWidth(maxWidth + 10);
+    },
+  },
 });
 
 //ICONS

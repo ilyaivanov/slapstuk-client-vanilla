@@ -13,3 +13,14 @@ export function hexToRGB(hex: string, alpha: number) {
     return "rgb(" + r + ", " + g + ", " + b + ")";
   }
 }
+
+export const max = (vals: number[]): number | undefined => {
+  if (vals.length > 0) {
+    let max = vals[0];
+    for (var i = 0; i < vals.length; i++) {
+      if (max < vals[i]) max = vals[i];
+    }
+    return max;
+  }
+  return undefined;
+};

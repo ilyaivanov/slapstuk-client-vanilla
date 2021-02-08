@@ -114,7 +114,6 @@ css(
 cssClass(cls.sidebarRowText, {
   transition: `font-size ${focusTransition}`,
   whiteSpace: "nowrap",
-  flex: "1",
 });
 
 css(`.${cls.sidebarRowFocused} .${cls.sidebarRowText}`, {
