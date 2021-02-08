@@ -117,34 +117,35 @@ export const viewSubtrack = (item: Item): DivDefinition => ({
       e.stopPropagation();
       if (e.ctrlKey && !items.isVideo(item)) {
         sidebar.selectItem(item.id);
-      } else if (items.isPlaylist(item)) {
-        if (items.isNeedsToBeLoaded(item)) {
-          const row = e.currentTarget as HTMLElement;
-          const imageContainer = dom.findFirstByClass(cls.subtrackImage, row);
-          const loader = dom.append(imageContainer, {
+      } else if (items.isPlaylist(item) && items.isNeedsToBeLoaded(item)) {
+        const row = e.currentTarget as HTMLElement;
+        const imageContainer = dom.findFirstByClass(cls.subtrackImage, row);
+        const loader = dom.append(imageContainer, {
+          style: {
+            ...styles.overlay,
+            ...styles.flexCenter,
+          },
+          children: {
             style: {
-              ...styles.overlay,
-              ...styles.flexCenter,
+              width: 16,
+              height: 16,
+              borderRadius: 8,
+              backgroundColor: utils.hexToRGBA(style.getItemColor(item), 0.8),
+              animation: "pulsate 0.4s ease-in-out infinite both",
             },
-            children: {
-              style: {
-                width: 16,
-                height: 16,
-                borderRadius: 8,
-                backgroundColor: utils.hexToRGBA(style.getItemColor(item), 0.8),
-                animation: "pulsate 0.4s ease-in-out infinite both",
-              },
-            },
-          });
-          loadItemChildren(item).then((newItems) => {
-            items.setChildren(item.id, newItems);
-            player.playItem(newItems[0].id);
-            loader.remove();
-          });
-        } else {
-          player.playItem(items.getChildren(item.id)[0].id);
-        }
-      } else if (items.isVideo(item)) player.playItem(item.id);
+          },
+        });
+        loadItemChildren(item).then((newItems) => {
+          items.setChildren(item.id, newItems);
+          player.playItem(newItems[0].id);
+          loader.remove();
+        });
+      } else if (items.isVideo(item)) {
+        player.playItem(item.id);
+      } else if (items.isContainer(item)) {
+        const video = items.getFirstVideo(item);
+        if (video) player.playItem(video.id);
+      }
     },
   },
   children: [

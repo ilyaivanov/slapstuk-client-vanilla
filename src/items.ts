@@ -178,6 +178,13 @@ export const getFirstImage = (item: Item): string | undefined => {
   return getImageSrc(item) as string;
 };
 
+export const getFirstVideo = (item: Item): YoutubeVideo | undefined => {
+  if (isContainer(item)) {
+    const children = getChildren(item.id);
+    return children.map(getFirstVideo).filter((x) => !!x)[0] as YoutubeVideo;
+  } else if (isVideo(item)) return item;
+};
+
 export const getImageSrc = (item: Item): string | undefined => {
   if (isVideo(item))
     return `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
