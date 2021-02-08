@@ -1,4 +1,13 @@
-import { cls, css, colors, cssText, styles, cssClass, utils } from "../infra";
+import {
+  cls,
+  css,
+  colors,
+  cssText,
+  styles,
+  cssClass,
+  utils,
+  cssClassOnHover,
+} from "../infra";
 import * as playerStyle from "../player/styles";
 import { headerHeight } from "../sidebar/styles";
 import * as items from "../items";
@@ -96,19 +105,34 @@ cssClass(cls.cardTypeBoxTriangle, {
 
 const triangleAlpha = 0.6;
 
-const triangleBorder = (hex: string) =>
-  `${triangleWidth}px solid ${utils.hexToRGBA(hex, triangleAlpha)}`;
+const triangleBorder = (hex: string, alpha: number) =>
+  `${triangleWidth}px solid ${utils.hexToRGBA(hex, alpha)}`;
 
 cssClass(cls.cardTypeBoxTrianglePlaylist, {
-  borderTop: triangleBorder(colors.playlistColor),
+  cursor: "auto",
+  borderTop: triangleBorder(colors.playlistColor, triangleAlpha),
 });
 
 cssClass(cls.cardTypeBoxTriangleChannel, {
-  borderTop: triangleBorder(colors.channelColor),
+  cursor: "auto",
+  borderTop: triangleBorder(colors.channelColor, triangleAlpha),
 });
 
 cssClass(cls.cardTypeBoxTriangleFolder, {
-  borderTop: triangleBorder(colors.folderColor),
+  cursor: "auto",
+  borderTop: triangleBorder(colors.folderColor, triangleAlpha),
+});
+
+cssClassOnHover(cls.cardTypeBoxTrianglePlaylist, {
+  borderTop: triangleBorder(colors.playlistColor, 1),
+});
+
+cssClassOnHover(cls.cardTypeBoxTriangleChannel, {
+  borderTop: triangleBorder(colors.channelColor, 1),
+});
+
+cssClassOnHover(cls.cardTypeBoxTriangleFolder, {
+  borderTop: triangleBorder(colors.folderColor, 1),
 });
 
 export const getItemColor = (item: Item) => {

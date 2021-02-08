@@ -60,6 +60,15 @@ export const viewCard = (item: Item): DivDefinition => ({
       className: cls.cardTypeBox,
       children: [
         {
+          attributes: {
+            title: items.isFolder(item)
+              ? "You created this Folder"
+              : items.isChannel(item)
+              ? "Youtube Channel"
+              : items.isPlaylist(item)
+              ? "Youtube Playlist"
+              : cls.none,
+          },
           className: [
             cls.cardTypeBoxTriangle,
             items.isFolder(item)
