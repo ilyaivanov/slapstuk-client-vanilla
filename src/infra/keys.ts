@@ -1,6 +1,5 @@
 export const ids = {
   sidebarRow: (itemId: string) => "row-" + itemId,
-  sidebarRowChildren: (itemId: string) => "row-children-" + itemId,
   card: (itemId: string) => "card-" + itemId,
   subtrack: (itemId: string) => "subtrack-" + itemId,
   searchInput: "search-input",
@@ -32,7 +31,8 @@ export const cls = {
   sidebarRemoveItemButton: "remove-item",
   sidebarEditItemButton: "edit-item",
   sidebarHideChevrons: "sidebar-hide-chevrons",
-  sidebarPlusIcon: "sidebar-plus-icon",
+  sidebarHeader: "sidebar-header",
+  sidebarHeaderIcon: "sidebar-header-icon",
   dragAvatar: "drag-avatar",
 
   //gallery

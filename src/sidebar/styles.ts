@@ -17,6 +17,7 @@ export const sidebarCollapseTime = 200;
 export const rowMarginPerLevel = 16;
 export const defaultSidebarWidth = 300;
 const focusTransition = `${focusTransitionTime}ms ease-in-out`;
+export const sidebarHeaderHeight = 20;
 
 css(`.${cls.page}.${cls.grabbing}`, {
   cursor: "grabbing",
@@ -28,6 +29,8 @@ cssClass(cls.noUserSelect, {
 
 cssClass(cls.sidebarFocusContainer, {
   transition: `margin ${focusTransition}`,
+  paddingTop: sidebarHeaderHeight,
+  //this relative positioning is used to properly set negative margins relative to row positions
   position: "relative",
 });
 
@@ -147,7 +150,8 @@ css(`.${cls.sidebar}:hover .${cls.sidebarRowExpandButton}`, {
 });
 
 cssClass(cls.sidebarRowExpandButtonContainer, {
-  padding: "2px",
+  padding: 2,
+  paddingLeft: 6,
   color: "gray",
   ...styles.flexCenter,
 });
@@ -271,15 +275,37 @@ cssClass(cls.transparent, {
   pointerEvents: "none",
 });
 
-//Plus icon
-cssClass(cls.sidebarPlusIcon, {
-  color: "rgb(184, 184, 184)",
-  marginLeft: "16px",
-  marginTop: "2px",
-  width: "18px",
-  height: "18px",
-  cursor: "pointer",
+//sidebar header
+cssClass(cls.sidebarHeader, {
+  backgroundColor: colors.menu,
+  height: 20,
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
 });
-cssClassOnHover(cls.sidebarPlusIcon, {
+//this tricky css is used to preserve background color on sidebarHeader
+//such that it will hide parent items of currently focused items
+css(`.${cls.sidebarHeader} > *`, {
+  transition: "opacity 200ms ease-out",
+  opacity: 0,
+});
+
+css(`.${cls.sidebar}:hover .${cls.sidebarHeader} > *`, {
+  opacity: 1,
+});
+
+cssClass(cls.sidebarHeaderIcon, {
+  height: sidebarHeaderHeight - 4,
+  padding: "0 6px",
+  color: "rgb(184, 184, 184)",
+});
+
+cssClassOnHover(cls.sidebarHeaderIcon, {
   color: "white",
+  cursor: "pointer",
 });

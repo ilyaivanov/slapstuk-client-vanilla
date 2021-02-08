@@ -1,4 +1,4 @@
-import { cls, dom } from "../infra";
+import { cls, dom, ids } from "../infra";
 import * as view from "./view";
 import * as style from "./styles";
 import * as gallery from "../gallery1/gallery";
@@ -13,15 +13,7 @@ export const init = (sidebarParent: HTMLElement) => {
     children: [view.viewHomeRow()].concat(itemsToRender.flat()),
   });
   sidebarParent.appendChild(focusContainer);
-  focusContainer.appendChild(
-    dom.div({
-      className: cls.sidebarPlusIcon,
-      children: view.plus(cls.none),
-      on: {
-        click: addNewItem,
-      },
-    })
-  );
+  dom.append(sidebarParent, view.viewSidebarHeader());
   if (items.focusedItemId !== "HOME") {
     //turn off container animiation during init
     const container = dom.findFirstByClass(cls.sidebarFocusContainer);
@@ -34,20 +26,31 @@ export const init = (sidebarParent: HTMLElement) => {
   }
 };
 
-const addNewItem = () => {
+export const addNewItem = () => {
   const newItem: Item = {
     children: [],
     id: Math.random() + "",
     title: "",
     type: "folder",
   };
-  items.appendChildTo("HOME", newItem);
-  const plus = dom.findFirstByClass(cls.sidebarPlusIcon);
-  const newNodes = view.viewRowAndItsChildren(newItem, 0).map(dom.div);
-  plus.insertAdjacentElement("beforebegin", newNodes[0]);
-  plus.insertAdjacentElement("beforebegin", newNodes[1]);
-  sidebarAnimations.expandRowAndChildContainer(newNodes[0], newNodes[1]);
-  onEdit(newItem.id);
+  items.prependChildTo(items.focusedItemId, newItem);
+  if (items.focusedItemId == "HOME") {
+    const home = dom.findById(ids.sidebarRow("HOME"));
+    const newNodes = view.viewRowAndItsChildren(newItem, 0).map(dom.div);
+    home.insertAdjacentElement("afterend", newNodes[1]);
+    home.insertAdjacentElement("afterend", newNodes[0]);
+    sidebarAnimations.expandRowAndChildContainer(newNodes[0], newNodes[1]);
+    onEdit(newItem.id);
+  } else {
+    const focusedNode = view.findItemChildrenContainer(items.focusedItemId);
+    const newNodes = view
+      .viewRowAndItsChildren(newItem, focusLevel + 1)
+      .map(dom.div);
+    focusedNode.insertAdjacentElement("afterbegin", newNodes[1]);
+    focusedNode.insertAdjacentElement("afterbegin", newNodes[0]);
+    sidebarAnimations.expandRowAndChildContainer(newNodes[0], newNodes[1]);
+    onEdit(newItem.id);
+  }
 };
 
 export const onEdit = (itemId: string) => {
@@ -212,7 +215,7 @@ const focusOnItem = (item: Item) => {
     .classList.add(cls.sidebarRowChildrenContainerFocused);
   view.setFocusContainerNegativeMargins(
     parseInt(row.style.paddingLeft),
-    row.offsetTop
+    row.offsetTop - style.sidebarHeaderHeight
   );
 };
 

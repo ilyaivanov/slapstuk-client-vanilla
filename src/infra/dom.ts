@@ -187,5 +187,14 @@ export const set = (
   else node.appendChild(div(children));
 };
 
+export const append = (
+  node: HTMLElement,
+  children: DivDefinition | DivDefinition[] | HTMLElement
+) => {
+  if (isHtmlElement(children)) node.appendChild(children);
+  else if (Array.isArray(children)) node.appendChild(fragment(children));
+  else node.appendChild(div(children));
+};
+
 const isHtmlElement = (item: any): item is HTMLElement =>
   item && typeof item.animate == "function";

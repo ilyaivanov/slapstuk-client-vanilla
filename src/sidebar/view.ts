@@ -91,7 +91,6 @@ export const viewHomeRow = (): DivDefinition => ({
   ],
   style: {
     paddingLeft: 18,
-    fontSize: 22,
   },
   attributes: {
     ["data-level"]: "0",
@@ -101,6 +100,7 @@ export const viewHomeRow = (): DivDefinition => ({
   },
   children: [
     {
+      style: { fontSize: 22 },
       className: cls.sidebarRowText,
       children: items.getItem("HOME").title,
     },
@@ -176,6 +176,27 @@ export const parseLevelFromRow = (row: HTMLElement): number => {
   return parseInt(levelStr);
 };
 
+export const viewSidebarHeader = (): DivDefinition => ({
+  className: cls.sidebarHeader,
+  children: [
+    {
+      attributes: { title: "Coolapse all nodes" },
+      children: minusSquare(cls.sidebarHeaderIcon),
+    },
+    {
+      attributes: { title: "Hide all videos from sidebar" },
+      children: hideVideo(cls.sidebarHeaderIcon),
+    },
+    {
+      attributes: { title: "Create new folder" },
+      children: folderPlus(cls.sidebarHeaderIcon),
+      on: {
+        click: controller.addNewItem,
+      },
+    },
+  ],
+});
+
 //ICONS
 const chevron = (className?: ClassName | ClassName[]): DivDefinition =>
   svgPath(
@@ -199,6 +220,31 @@ export const plus = (className?: ClassName | ClassName[]) =>
   svgPath(
     "m405.332031 192h-170.664062v-170.667969c0-11.773437-9.558594-21.332031-21.335938-21.332031-11.773437 0-21.332031 9.558594-21.332031 21.332031v170.667969h-170.667969c-11.773437 0-21.332031 9.558594-21.332031 21.332031 0 11.777344 9.558594 21.335938 21.332031 21.335938h170.667969v170.664062c0 11.777344 9.558594 21.335938 21.332031 21.335938 11.777344 0 21.335938-9.558594 21.335938-21.335938v-170.664062h170.664062c11.777344 0 21.335938-9.558594 21.335938-21.335938 0-11.773437-9.558594-21.332031-21.335938-21.332031zm0 0",
     "0 0 426.66667 426.66667",
+    className
+  );
+
+export const folderPlus = (className?: ClassName | ClassName[]) =>
+  svgPath(
+    "M464,128H272L208,64H48A48,48,0,0,0,0,112V400a48,48,0,0,0,48,48H464a48,48,0,0,0,48-48V176A48,48,0,0,0,464,128ZM359.5,296a16,16,0,0,1-16,16h-64v64a16,16,0,0,1-16,16h-16a16,16,0,0,1-16-16V312h-64a16,16,0,0,1-16-16V280a16,16,0,0,1,16-16h64V200a16,16,0,0,1,16-16h16a16,16,0,0,1,16,16v64h64a16,16,0,0,1,16,16Z",
+    "0 0 512 512",
+    className
+  );
+export const minusSquare = (className?: ClassName | ClassName[]) =>
+  svgPath(
+    "M108 284c-6.6 0-12-5.4-12-12v-32c0-6.6 5.4-12 12-12h232c6.6 0 12 5.4 12 12v32c0 6.6-5.4 12-12 12H108zM448 80v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h352c26.5 0 48 21.5 48 48zm-48 346V86c0-3.3-2.7-6-6-6H54c-3.3 0-6 2.7-6 6v340c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z",
+    "0 0 448 512",
+    className
+  );
+export const hideVideo = (className?: ClassName | ClassName[]) =>
+  svgPath(
+    "M633.8 458.1l-55-42.5c15.4-1.4 29.2-13.7 29.2-31.1v-257c0-25.5-29.1-40.4-50.4-25.8L448 177.3v137.2l-32-24.7v-178c0-26.4-21.4-47.8-47.8-47.8H123.9L45.5 3.4C38.5-2 28.5-.8 23 6.2L3.4 31.4c-5.4 7-4.2 17 2.8 22.4L42.7 82 416 370.6l178.5 138c7 5.4 17 4.2 22.5-2.8l19.6-25.3c5.5-6.9 4.2-17-2.8-22.4zM32 400.2c0 26.4 21.4 47.8 47.8 47.8h288.4c11.2 0 21.4-4 29.6-10.5L32 154.7v245.5z",
+    "0 0 640 512",
+    className
+  );
+export const showVideo = (className?: ClassName | ClassName[]) =>
+  svgPath(
+    "M336.2 64H47.8C21.4 64 0 85.4 0 111.8v288.4C0 426.6 21.4 448 47.8 448h288.4c26.4 0 47.8-21.4 47.8-47.8V111.8c0-26.4-21.4-47.8-47.8-47.8zm189.4 37.7L416 177.3v157.4l109.6 75.5c21.2 14.6 50.4-.3 50.4-25.8V127.5c0-25.4-29.1-40.4-50.4-25.8z",
+    "0 0 576 512",
     className
   );
 

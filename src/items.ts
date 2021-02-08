@@ -80,7 +80,7 @@ export const toggleIsCollapsedInGallery = (item: ItemContainer) => {
   }
 };
 
-export const appendChildTo = (parentId: string, item: Item) => {
+export const prependChildTo = (parentId: string, item: Item) => {
   const parent = allItems[parentId];
   if (isContainer(parent)) {
     parent.children = [item.id].concat(parent.children);
