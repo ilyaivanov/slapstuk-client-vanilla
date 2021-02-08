@@ -31,8 +31,8 @@ export const viewItemIcon = (item: Item) =>
 s.class(cls.itemIcon, {
   minWidth: 8,
   width: 8,
-  marginRight: 6,
-  marginLeft: 0,
+  marginRight: 8,
+  marginLeft: 2,
   transition: "transform 100ms ease-out, color 100ms ease-out",
 });
 
