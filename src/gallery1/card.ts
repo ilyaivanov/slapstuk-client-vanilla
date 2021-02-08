@@ -168,7 +168,7 @@ const getSubtrackImageType = (item: Item) =>
     ? cls.subtrackPlaylistImage
     : cls.none;
 
-const viewSubtracksLoadingGrid = (item: Item): DivDefinition => ({
+export const viewSubtracksLoadingGrid = (item: Item): DivDefinition => ({
   style: {
     ...styles.flexCenter,
     margin: "10px",

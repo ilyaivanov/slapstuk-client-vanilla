@@ -1,4 +1,4 @@
-import { cls, dom, utils } from "../infra";
+import { cls, dom, styles, utils } from "../infra";
 import * as card from "./card";
 const gap = 20;
 
@@ -25,6 +25,16 @@ export const renderItems = (itemsToRender: Item[]) => {
   currentCols = getColsCountFor();
 
   dom.set(gallery, viewGallery());
+};
+
+export const renderLoadingIndicator = (item: Item) => {
+  dom.set(gallery, {
+    style: {
+      ...styles.flexCenter,
+      height: "100%",
+    },
+    children: card.viewSubtracksLoadingGrid(item),
+  });
 };
 const getColsCountFor = () =>
   Math.round((gallery.clientWidth - gap) / (320 + gap));

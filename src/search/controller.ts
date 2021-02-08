@@ -28,6 +28,7 @@ const getChannelSubitems = (item: YoutubeChannel) =>
         image: item.image,
         playlistId: uploadsPlaylistId,
         title: item.title + " - Uploads",
+        isCollapsedInGallery: true,
       } as Item,
     ].concat(channelPlaylists.items.map(mapReponseItem))
   );

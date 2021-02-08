@@ -2,6 +2,7 @@ import { anim, cls, DivDefinition, dom, icons, ids, styles } from "../infra";
 import * as view from "./view";
 import * as style from "./styles";
 import * as gallery from "../gallery1/gallery";
+import * as card from "../gallery1/card";
 import * as items from "../items";
 import * as sidebarAnimations from "./sidebarAnimations";
 import * as dnd from "../dnd/dnd";
@@ -121,7 +122,19 @@ export const selectItem = (itemId: string) => {
   dom.removeClassFromElement(cls.sidebarRowSelected);
   const row = dom.maybefindById(ids.sidebarRow(itemId));
   if (row) row.classList.add(cls.sidebarRowSelected);
-  gallery.renderItems(items.getChildren(itemId));
+
+  const item = items.getItem(itemId);
+  if (items.isContainer(item) && items.isNeedsToBeLoaded(item)) {
+    gallery.renderLoadingIndicator(item);
+    items.startLoading(item);
+    loadItemChildren(item).then((newItems) => {
+      items.stopLoading(item);
+      items.setChildren(item.id, newItems);
+      gallery.renderItems(newItems);
+    });
+  } else {
+    gallery.renderItems(items.getChildren(itemId));
+  }
 };
 
 //Items expand\collapse
