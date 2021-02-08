@@ -175,9 +175,7 @@ function onMouseUp() {
     dom.findById("drag-destination").remove();
   }
 
-  if (isMouseDownOnAdjuster) {
-    dom.removeClassFromElement(cls.page, cls.noUserSelect);
-  }
+  dom.removeClassFromElement(cls.page, cls.noUserSelect);
   dragAvatar = undefined;
   dragDestination = undefined;
   isDragging = false;

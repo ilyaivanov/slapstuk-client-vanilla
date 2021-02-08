@@ -79,7 +79,7 @@ export const initApp = (userId: string) => {
               },
               {
                 type: "button",
-                on: { click: player.toggleVisibility },
+                on: { click: player.toggleYoutubePlayerVisibility },
                 children: "toggle player",
               },
               {

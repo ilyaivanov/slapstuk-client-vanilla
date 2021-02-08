@@ -1,3 +1,4 @@
+import { ids } from "../infra";
 import * as controller from "./controller";
 
 var player: any;
@@ -29,7 +30,7 @@ function init() {
 //@ts-ignore
 global.onYouTubeIframeAPIReady = () => {
   isLoadingPlayer = false;
-  player = new YT.Player("youtubePlayer", {
+  player = new YT.Player(ids.youtubeIframe, {
     height: "100%",
     width: "100%",
     videoId: videoRequested,

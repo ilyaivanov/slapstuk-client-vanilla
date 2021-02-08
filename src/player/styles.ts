@@ -1,4 +1,4 @@
-import { cls, colors, css, cssClass, styles, zIndexes } from "../infra";
+import { cls, colors, css, cssClass, ids, styles, zIndexes } from "../infra";
 
 export const playerHeight = 70;
 export const backgroundTransition = "background-color 200ms ease-out";
@@ -16,12 +16,15 @@ css(`.${cls.page} .${cls.gallery} .${cls.itemBeingPlayed}`, {
   backgroundColor: colors.cardBeingPlayedBackground,
 });
 
-css("#youtubePlayer", {
+css("#" + ids.youtubeIframe, {
   position: "absolute",
   right: "20px",
   bottom: playerHeight + 20 + "px",
   width: "400px",
   height: "150px",
+  opacity: 1,
+  transform: "translate3d(0, 0, 0)",
+  transition: "opacity 200ms ease-out, transform 200ms ease-out",
 });
 
 cssClass(cls.player, {
@@ -29,6 +32,12 @@ cssClass(cls.player, {
   transition: `margin ${playerVisibilityTransition}`,
 });
 
-cssClass(cls.playerHidden, {
+cssClass(cls.player, {
   marginBottom: -playerHeight + "px",
+});
+
+css(`#${ids.youtubeIframe}.${cls.youtubePlayerHidden}`, {
+  opacity: 0,
+  pointerEvents: "none",
+  transform: "translate3d(0, 10px, 0)",
 });

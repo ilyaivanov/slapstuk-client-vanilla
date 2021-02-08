@@ -3,6 +3,7 @@ export const ids = {
   card: (itemId: string) => "card-" + itemId,
   subtrack: (itemId: string) => "subtrack-" + itemId,
   searchInput: "search-input",
+  youtubeIframe: "youtube-player",
 } as const;
 
 export const cls = {
@@ -69,6 +70,7 @@ export const cls = {
   //player
   player: "player",
   playerHidden: "player-hidden",
+  youtubePlayerHidden: "yp-h",
   itemBeingPlayed: "item-being-played",
 
   //gallery1
