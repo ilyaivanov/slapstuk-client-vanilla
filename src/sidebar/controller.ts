@@ -10,7 +10,7 @@ export const init = (sidebarParent: HTMLElement) => {
   const itemsToRender = view.viewItemChildren("HOME");
   const focusContainer = dom.div({
     className: cls.sidebarFocusContainer,
-    children: itemsToRender.flat(),
+    children: [view.viewHomeRow()].concat(itemsToRender.flat()),
   });
   sidebarParent.appendChild(focusContainer);
   focusContainer.appendChild(

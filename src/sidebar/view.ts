@@ -83,6 +83,40 @@ export const viewRow = (item: Item, level: number): DivDefinition => ({
   ],
 });
 
+export const viewHomeRow = (): DivDefinition => ({
+  id: rowId("HOME"),
+  className: [
+    cls.sidebarRow,
+    "HOME" === items.selectedItemId ? cls.sidebarRowSelected : cls.none,
+  ],
+  style: {
+    paddingLeft: 18,
+    fontSize: 22,
+  },
+  attributes: {
+    ["data-level"]: "0",
+  },
+  on: {
+    click: () => controller.selectItem("HOME"),
+  },
+  children: [
+    {
+      className: cls.sidebarRowText,
+      children: items.getItem("HOME").title,
+    },
+    {
+      className: cls.sidebarEditItemButton,
+      children: "e",
+      on: {
+        click: (e) => {
+          e.stopPropagation();
+          controller.onEdit("HOME");
+        },
+      },
+    },
+  ],
+});
+
 export const viewChildren = (item: Item, level: number): DivDefinition => {
   const children = items.getChildren(item.id);
   return {
