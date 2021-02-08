@@ -37,11 +37,19 @@ s.class(cls.itemIcon, {
 });
 
 s.class(cls.sidebarFolderIcon, {
-  color: utils.hexToRGBA(colors.folderColor, 1),
+  color: colors.iconRegular,
+});
+
+s.hover(cls.sidebarFolderIcon, {
+  color: colors.iconHover,
 });
 
 s.class(cls.sidebarVideoIcon, {
-  color: colors.videoColor,
+  color: colors.iconRegular,
+});
+
+s.hover(cls.sidebarVideoIcon, {
+  color: colors.iconHover,
 });
 
 s.class(cls.sidebarChannelIcon, {
@@ -58,6 +66,7 @@ s.active(cls.itemIcon, {
   transform: "scale(1.5) translate3d(0, 1px, 0)",
 });
 s.selector(`.${cls.sidebarRowFocused} .${cls.itemIcon}`, {
+  marginLeft: 4,
   transform: "scale(2)",
 });
 s.selector(`.${cls.sidebarRowFocused} .${cls.itemIcon}:hover`, {
