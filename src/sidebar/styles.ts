@@ -49,47 +49,46 @@ cssClass(cls.sidebarRow, {
   position: "relative",
 });
 
-cssClass(cls.sidebarRemoveItemButton, {
+cssClass(cls.sidebarIconsContainer, {
+  ...styles.flexCenter,
   position: "absolute",
-  right: "10px",
-  top: "0",
-  bottom: "0",
-  width: "10px",
-  color: "black",
-  opacity: "0",
+  right: 0,
+  top: 0,
+  bottom: 0,
+  background: `linear-gradient(to right, transparent 0%, ${colors.sidebarRowHover} 15%)`,
+  opacity: 0,
+  transform: "translate3d(10px, 0, 0)",
+  paddingLeft: 10,
+  transition: "opacity 0ms linear, transform 0ms linear",
 });
 
-cssClassOnHover(cls.sidebarRemoveItemButton, {
-  color: "#f44336",
-});
-cssClass(cls.sidebarEditItemButton, {
-  position: "absolute",
-  right: "25px",
-  top: "0",
-  bottom: "0",
-  width: "10px",
-  color: "black",
-  opacity: "0",
+css(`.${cls.sidebarRow}:hover .${cls.sidebarIconsContainer}`, {
+  transition: "opacity 200ms ease-in 200ms, transform 200ms ease-in 200ms",
+  transform: "translate3d(0, 0, 0)",
+  opacity: "1",
 });
 
-cssClassOnHover(cls.sidebarRemoveItemButton, {
-  color: "#f44336",
+cssClass(cls.sidebarIcon, {
+  color: colors.iconRegular,
+  width: 20,
+  height: 18,
+  paddingRight: 5,
 });
-cssClassOnHover(cls.sidebarEditItemButton, {
-  color: "white",
+
+cssClassOnHover(cls.sidebarIcon, {
+  color: colors.iconHover,
 });
-css(
-  [
-    `.${cls.sidebarRow}:hover .${cls.sidebarRemoveItemButton}`,
-    `.${cls.sidebarRow}:hover .${cls.sidebarEditItemButton}`,
-  ],
-  {
-    opacity: "1",
-  }
-);
+
+cssClass(cls.sidebarIconDelete, {
+  marginTop: 2,
+});
+
+cssClassOnHover(cls.sidebarIconDelete, {
+  color: colors.danger,
+});
 
 cssClassOnHover(cls.sidebarRow, {
-  backgroundColor: "rgba(255,255,255, 0.08)",
+  backgroundColor: colors.sidebarRowHover,
 });
 
 css(`.${cls.sidebar} .${cls.sidebarRowSelected}`, {
@@ -273,7 +272,7 @@ cssText(`
   }
   100%{
     background-color: #af4448;
-    margin-left: -80px;
+    transform: translate3d(-80px, 0, 0);
     opacity: 0;
   }
 }

@@ -28,7 +28,7 @@ cssClass(cls.header, {
 cssClass(cls.sidebar, {
   position: "relative",
   gridArea: "sidebar",
-  overflowY: "overlay" as any,
+  overflowY: "auto",
   backgroundColor: colors.menu,
   // boxShadow: "1px 2px 15px 5px rgba(0, 0, 0, 0.53)",
   zIndex: zIndexes.leftSidebarMenu,
