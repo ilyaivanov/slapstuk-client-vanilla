@@ -6,6 +6,7 @@ import {
   EventsDefinition,
   utils,
   icons,
+  ids,
 } from "../infra";
 import * as controller from "./controller";
 import * as style from "./styles";
@@ -214,8 +215,18 @@ export const viewSidebarWidthAdjuster = (): DivDefinition => ({
   on: {
     mousedown: dnd.onSidebarWidthAdjusterMouseDown,
     dblclick: () => {
+      const rowFocused = dom.findById(ids.sidebarRow(items.focusedItemId));
+      const focusedRowText = dom.findFirstByClass(
+        cls.sidebarRowText,
+        rowFocused
+      );
+      const children =
+        items.focusedItemId === "HOME"
+          ? dom.findFirstByClass(cls.sidebar)
+          : findItemChildrenContainer(items.focusedItemId);
+      const childrenTexts = dom.findAllByClass(cls.sidebarRowText, children);
       const maxWidth = utils.max(
-        dom.findAllByClass(cls.sidebarRowText).map((r) => {
+        childrenTexts.concat([focusedRowText]).map((r) => {
           const rect = r.getBoundingClientRect();
           return rect.x + rect.width;
         })
