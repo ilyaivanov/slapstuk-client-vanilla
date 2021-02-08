@@ -37,6 +37,7 @@ export const viewRow = (item: Item, level: number): DivDefinition => ({
     paddingLeft: level * style.rowMarginPerLevel + "px",
   },
   attributes: {
+    title: item.title,
     ["data-level"]: level + "",
   },
   on: {
