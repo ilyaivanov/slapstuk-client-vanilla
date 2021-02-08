@@ -1,6 +1,7 @@
 import { findDuplicates } from "./utils";
 
 export const ids = {
+  root: "root",
   sidebarRow: (itemId: string) => "row-" + itemId,
   card: (itemId: string) => "card-" + itemId,
   subtrack: (itemId: string) => "subtrack-" + itemId,
@@ -10,6 +11,7 @@ export const ids = {
 
 export const cls = {
   page: "page",
+  ctrlKeyPressed: "ctp",
   sidebar: "sidebar",
   sidebarScroll: "sidebar-scrol",
   sidebarWidthAdjuster: "sidebar-w",
@@ -71,7 +73,10 @@ export const cls = {
   cardTextForFolder: "card-text-folder",
   subtracksContainer: "card-subtracks-container",
   subtrack: "card-subtrack",
-  subtrackImage: "card-subtrack-image",
+  subtrackImage: "csi",
+  subtrackPlaylistImage: "cspi",
+  subtrackChannelImage: "csci",
+  subtrackFolderImage: "csfi",
   galleryEndSpace: "gallery-end-space",
 
   //player

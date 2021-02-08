@@ -13,12 +13,17 @@ export const primary = "#1565C0";
 
 export const cardBeingPlayedBackground = primary;
 
-export const folderColor = "#000000";
-export const playlistColor = "#1eaa00";
-export const channelColor = "#0070dd";
-export const videoColor = "#F40000";
-
 export const iconRegular = "rgb(184, 184, 184)";
 export const iconHover = "white";
+
+// export const folderColor = "#a335ee";
+// export const playlistColor = "#1eaa00";
+// export const channelColor = "#0070dd";
+// export const videoColor = "#F40000";
+
+export const folderColor = "#724BB7";
+export const playlistColor = "#31B237";
+export const channelColor = "#2186EB";
+export const videoColor = "#DA4A91";
 
 export const danger = "red";

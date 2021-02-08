@@ -1,4 +1,4 @@
-import { cls, s, icons, colors } from "../infra";
+import { cls, s, icons, colors, utils } from "../infra";
 import * as items from "../items";
 import * as player from "../player/controller";
 import * as controller from "./controller";
@@ -29,20 +29,15 @@ export const viewItemIcon = (item: Item) =>
       });
 
 s.class(cls.itemIcon, {
-  minWidth: 7,
-  width: 7,
+  minWidth: 8,
+  width: 8,
   marginRight: 6,
-  marginLeft: 4,
-  color: colors.iconRegular,
+  marginLeft: 0,
   transition: "transform 100ms ease-out, color 100ms ease-out",
 });
 
 s.class(cls.sidebarFolderIcon, {
-  color: colors.iconRegular,
-});
-
-s.hover(cls.sidebarFolderIcon, {
-  color: colors.iconHover,
+  color: utils.hexToRGBA(colors.folderColor, 1),
 });
 
 s.class(cls.sidebarVideoIcon, {

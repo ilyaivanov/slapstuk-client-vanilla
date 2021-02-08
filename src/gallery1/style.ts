@@ -60,6 +60,10 @@ css(`.${cls.page}.${cls.grabbing} .${cls.card}`, {
   cursor: "grabbing",
 });
 
+css(`.${cls.ctrlKeyPressed} .${cls.card}`, {
+  cursor: "alias",
+});
+
 css(`.${cls.card}:hover`, {
   border: "1px solid rgba(255, 255, 255, 0.2)",
 });
@@ -93,7 +97,7 @@ cssClass(cls.cardTypeBoxTriangle, {
 const triangleAlpha = 0.6;
 
 const triangleBorder = (hex: string) =>
-  `${triangleWidth}px solid ${utils.hexToRGB(hex, triangleAlpha)}`;
+  `${triangleWidth}px solid ${utils.hexToRGBA(hex, triangleAlpha)}`;
 
 cssClass(cls.cardTypeBoxTrianglePlaylist, {
   borderTop: triangleBorder(colors.playlistColor),
@@ -163,6 +167,10 @@ cssClass(cls.subtrack, {
   transition: playerStyle.backgroundTransition,
 });
 
+css(`.${cls.ctrlKeyPressed} .${cls.subtrack}`, {
+  cursor: "alias",
+});
+
 css(`.${cls.subtrack}:last-of-type`, {
   borderBottom: "none",
 });
@@ -181,6 +189,18 @@ cssClass(cls.subtrackImage, {
   objectFit: "cover",
   borderRadius: 4,
   marginRight: 8,
+});
+
+cssClass(cls.subtrackPlaylistImage, {
+  border: `2px solid ${colors.playlistColor}`,
+});
+
+cssClass(cls.subtrackChannelImage, {
+  border: `2px solid ${colors.channelColor}`,
+});
+
+cssClass(cls.subtrackFolderImage, {
+  border: `2px solid ${colors.folderColor}`,
 });
 
 const imageHeight = 180;

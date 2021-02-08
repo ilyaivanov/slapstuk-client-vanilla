@@ -1,6 +1,7 @@
 import { anim, cls, dom, ids, DivDefinition, styles } from "../infra";
 import * as style from "./style";
 import * as player from "../player/controller";
+import * as sidebar from "../sidebar/controller";
 import * as items from "../items";
 import { loadItemChildren } from "../search/controller";
 import { itemPreview } from "./cardPreviewImage";
@@ -18,8 +19,10 @@ export const viewCard = (item: Item): DivDefinition => ({
       className: cls.cardImageWithTextContainer,
       on: {
         mousedown: () => dnd.onItemMouseDown(item.id, "gallery-card"),
-        click: () => {
-          if (items.isContainer(item)) {
+        click: (e) => {
+          if (e.ctrlKey && !items.isVideo(item)) {
+            sidebar.selectItem(item.id);
+          } else if (items.isContainer(item)) {
             const card = dom.findById(ids.card(item.id));
             const imageContainer = dom.findFirstByClass(
               cls.cardPreviewContainer,
@@ -37,6 +40,7 @@ export const viewCard = (item: Item): DivDefinition => ({
           } else player.playItem(item.id);
         },
       },
+
       children: [
         itemPreview(item),
         {
@@ -102,18 +106,29 @@ export const viewSubtrack = (item: Item): DivDefinition => ({
     mousedown: () => dnd.onItemMouseDown(item.id, "card-subtrack"),
     click: (e) => {
       e.stopPropagation();
-      if (items.isVideo(item)) player.playItem(item.id);
+      if (e.ctrlKey && !items.isVideo(item)) {
+        sidebar.selectItem(item.id);
+      } else if (items.isVideo(item)) player.playItem(item.id);
     },
   },
   children: [
     {
       type: "img",
-      className: cls.subtrackImage,
+      className: [cls.subtrackImage, getSubtrackImageType(item)],
       attributes: { src: items.getFirstImage(item) },
     },
     { type: "span", children: item.title },
   ],
 });
+
+const getSubtrackImageType = (item: Item) =>
+  items.isChannel(item)
+    ? cls.subtrackChannelImage
+    : items.isFolder(item)
+    ? cls.subtrackFolderImage
+    : items.isPlaylist(item)
+    ? cls.subtrackPlaylistImage
+    : cls.none;
 
 const viewSubtracksLoadingGrid = (item: Item): DivDefinition => ({
   style: {

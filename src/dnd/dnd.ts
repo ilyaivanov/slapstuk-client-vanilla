@@ -11,6 +11,23 @@ export const init = () => {
   //Add removeEventListener when I will have multiple pages (Login included)
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("mouseup", onMouseUp);
+  document.addEventListener("keydown", onKeyDown);
+  document.addEventListener("keyup", onKeyUp);
+};
+
+let isCtrlDown = false;
+const onKeyDown = (e: KeyboardEvent) => {
+  if (e.ctrlKey) {
+    isCtrlDown = true;
+    dom.findById(ids.root).classList.add(cls.ctrlKeyPressed);
+  }
+};
+
+const onKeyUp = (e: KeyboardEvent) => {
+  if (isCtrlDown && !e.ctrlKey) {
+    isCtrlDown = false;
+    dom.findById(ids.root).classList.remove(cls.ctrlKeyPressed);
+  }
 };
 
 let itemIdMouseDownOn: string | undefined;

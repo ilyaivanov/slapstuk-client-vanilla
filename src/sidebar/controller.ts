@@ -119,7 +119,8 @@ export const removeItem = (item: Item) => {
 export const selectItem = (itemId: string) => {
   items.setSelectedItem(itemId);
   dom.removeClassFromElement(cls.sidebarRowSelected);
-  view.findRowById(itemId).classList.add(cls.sidebarRowSelected);
+  const row = dom.maybefindById(ids.sidebarRow(itemId));
+  if (row) row.classList.add(cls.sidebarRowSelected);
   gallery.renderItems(items.getChildren(itemId));
 };
 
