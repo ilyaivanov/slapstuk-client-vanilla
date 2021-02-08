@@ -48,6 +48,8 @@ export const convertLegacyItems = (legacyItems: LegacyItems): Items => {
         channelId: legacyItem.videoId || "",
         children: legacyItem.children,
         image: legacyItem.image || "",
+        isCollapsedInGallery:
+          legacyItem.children.length == 0 || !legacyItem.isOpenInGallery,
       };
       legacyItem.children.forEach((id) => convertFolder(legacyItems[id]));
     }
@@ -59,6 +61,8 @@ export const convertLegacyItems = (legacyItems: LegacyItems): Items => {
         children: legacyItem.children,
         image: legacyItem.image || "",
         playlistId: legacyItem.youtubePlaylistId,
+        isCollapsedInGallery:
+          legacyItem.children.length == 0 || !legacyItem.isOpenInGallery,
       };
       legacyItem.children.forEach((id) => convertFolder(legacyItems[id]));
     }
