@@ -17,11 +17,11 @@ export const viewItemIcon = (item: Item) =>
         click: (e) => play(item, e),
       })
     : items.isChannel(item)
-    ? icons.userAvatar([cls.itemIcon, cls.sidebarChannelIcon], {
+    ? icons.circle([cls.itemIcon, cls.sidebarChannelIcon], {
         click: (e) => focus(item, e),
       })
     : items.isPlaylist(item)
-    ? icons.bars([cls.itemIcon, cls.sidebarPlaylistIcon], {
+    ? icons.circle([cls.itemIcon, cls.sidebarPlaylistIcon], {
         click: (e) => focus(item, e),
       })
     : icons.circle([cls.itemIcon, cls.sidebarFolderIcon], {
@@ -29,8 +29,8 @@ export const viewItemIcon = (item: Item) =>
       });
 
 s.class(cls.itemIcon, {
-  minWidth: 10,
-  width: 10,
+  minWidth: 7,
+  width: 7,
   marginRight: 6,
   marginLeft: 4,
   color: colors.iconRegular,
@@ -38,8 +38,6 @@ s.class(cls.itemIcon, {
 });
 
 s.class(cls.sidebarFolderIcon, {
-  minWidth: 6,
-  width: 6,
   color: colors.iconRegular,
 });
 
@@ -63,6 +61,12 @@ s.hover(cls.itemIcon, {
 });
 s.active(cls.itemIcon, {
   transform: "scale(1.5) translate3d(0, 1px, 0)",
+});
+s.selector(`.${cls.sidebarRowFocused} .${cls.itemIcon}`, {
+  transform: "scale(2)",
+});
+s.selector(`.${cls.sidebarRowFocused} .${cls.itemIcon}:hover`, {
+  transform: "scale(2.5)",
 });
 
 s.class(cls.sidebarRowCircleChannel, {
