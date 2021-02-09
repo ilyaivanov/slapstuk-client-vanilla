@@ -1,12 +1,12 @@
 import { anim, cls, DivDefinition, dom, icons, ids, styles } from "../infra";
 import * as view from "./view";
 import * as style from "./styles";
-import * as gallery from "../gallery1/gallery";
-import * as card from "../gallery1/card";
+import * as gallery from "../gallery/gallery";
+import * as card from "../gallery/card";
 import * as items from "../items";
 import * as sidebarAnimations from "./sidebarAnimations";
 import * as dnd from "../dnd/dnd";
-import { LoadingItemsReponse, loadItemChildren } from "../search/controller";
+import { LoadingItemsReponse, loadItemChildren } from "../api/search";
 import { viewItemIcon } from "./itemIcon";
 
 export const init = (sidebarParent: HTMLElement) => {

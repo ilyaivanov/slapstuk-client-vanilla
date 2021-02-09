@@ -1,16 +1,7 @@
-import {
-  cls,
-  dom,
-  ClassName,
-  DivDefinition,
-  EventsDefinition,
-  utils,
-  icons,
-  ids,
-} from "../infra";
+import { cls, dom, DivDefinition, utils, icons, ids } from "../infra";
 import * as controller from "./controller";
 import * as style from "./styles";
-import * as galleryStyle from "../gallery1/style";
+import * as galleryStyle from "../gallery/style";
 import * as items from "../items";
 import * as app from "../app";
 import * as dnd from "../dnd/dnd";

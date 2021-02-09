@@ -1,23 +1,22 @@
-import { cls, dom, styles, utils } from "../infra";
+import { cls, DivDefinition, dom, styles, utils } from "../infra";
 import * as card from "./card";
 import * as items from "../items";
-import { loadItemChildren } from "../search/controller";
-const gap = 20;
+import { loadItemChildren } from "../api/search";
+import * as style from "./style";
 
 let gallery: HTMLElement;
 let currentCols = 0;
 let currentItems: Item[] = [];
 
 export const rerenderIfColumnsChanged = () => {
-  const colsCount = Math.max(
-    1,
-    Math.round((gallery.clientWidth - gap) / (320 + gap))
-  );
+  const colsCount = Math.max(1, getColsCountFor());
   if (colsCount != currentCols) {
     currentCols = colsCount;
     renderGallery();
   }
 };
+const getColsCountFor = () =>
+  Math.round((gallery.clientWidth - style.gap) / (320 + style.gap));
 
 const renderGallery = () => dom.set(gallery, viewGallery());
 
@@ -28,7 +27,7 @@ export const renderItems = (itemsToRender: Item[]) => {
   currentItems = itemsToRender;
   currentCols = getColsCountFor();
 
-  renderGallery();
+  galleryTransition(gallery, viewGallery());
 };
 
 export const renderLoadingIndicator = (item: Item) => {
@@ -40,8 +39,6 @@ export const renderLoadingIndicator = (item: Item) => {
     children: card.viewSubtracksLoadingGrid(item),
   });
 };
-const getColsCountFor = () =>
-  Math.round((gallery.clientWidth - gap) / (320 + gap));
 
 const viewGallery = () => ({
   className: cls.scrolly,
@@ -60,16 +57,12 @@ export const onGalleryScroll = (e: MouseEvent) => {
   const distanceFromBottom =
     node.scrollHeight - node.scrollTop - node.offsetHeight;
   if (distanceFromBottom < 5 && items.needToLoadNextPage(item)) {
-    console.log("Starting to load ", item);
     items.startLoading(item);
     showGalleryTopLoadingIndicator();
-    //view some loader
     loadItemChildren(item).then((response) => {
       items.doneLoadingPage(item, response);
       hideGalleryTopLoadingIndicator();
-      console.log("doneLoadingPage", item, response);
       renderItems(items.getChildren(items.selectedItemId));
-      // remove that loader
     });
   }
 };
@@ -79,3 +72,33 @@ const showGalleryTopLoadingIndicator = () =>
 
 const hideGalleryTopLoadingIndicator = () =>
   dom.removeClassFromElement(cls.galleyTopLoading, cls.galleyTopLoadingActive);
+
+const galleryTransition = (parent: HTMLElement, nextContent: DivDefinition) => {
+  const from: Keyframe = {
+    opacity: 1,
+    transform: "translate3d(0, 0, 0)",
+  };
+  const toHide: Keyframe = {
+    opacity: 0,
+    transform: "translate3d(-20px, 0, 0)",
+  };
+  const toAppear: Keyframe = {
+    opacity: 0,
+    transform: "translate3d(20px, 0, 0)",
+  };
+
+  styles.cancelAllCurrentAnimations(parent);
+  const animation = parent.animate([from, toHide], {
+    fill: "forwards",
+    duration: 200,
+    easing: "ease-in",
+  });
+  animation.addEventListener("finish", () => {
+    dom.set(parent, nextContent);
+    gallery.animate([toAppear, from], {
+      fill: "forwards",
+      duration: 200,
+      easing: "ease-out",
+    });
+  });
+};

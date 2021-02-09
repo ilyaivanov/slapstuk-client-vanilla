@@ -1,4 +1,4 @@
-import { LoadingItemsReponse } from "./search/controller";
+import { LoadingItemsReponse } from "./api/search";
 
 export let defaultItems: Items = {
   HOME: {

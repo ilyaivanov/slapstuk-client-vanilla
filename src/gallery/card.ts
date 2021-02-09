@@ -3,7 +3,7 @@ import * as style from "./style";
 import * as player from "../player/controller";
 import * as sidebar from "../sidebar/controller";
 import * as items from "../items";
-import { LoadingItemsReponse, loadItemChildren } from "../search/controller";
+import { LoadingItemsReponse, loadItemChildren } from "../api/search";
 import { itemPreview } from "./cardPreviewImage";
 import * as dnd from "../dnd/dnd";
 

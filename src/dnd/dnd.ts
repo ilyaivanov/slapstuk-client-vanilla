@@ -4,7 +4,7 @@ import * as sidebarStyles from "../sidebar/styles";
 import * as sidebar from "../sidebar/controller";
 import * as sidebarAnimations from "../sidebar/sidebarAnimations";
 import * as items from "../items";
-import { getPreviewImage } from "../gallery1/cardPreviewImage";
+import { getPreviewImage } from "../gallery/cardPreviewImage";
 import * as app from "../app";
 
 export const init = () => {

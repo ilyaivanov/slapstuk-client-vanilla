@@ -1,8 +1,8 @@
 import { dom, ids, isIsolated } from "../infra";
-import * as api from "../api/youtubeRequest";
-import * as gallery from "../gallery1/gallery";
+import * as api from "./youtubeRequest";
+import * as gallery from "../gallery/gallery";
 import * as items from "../items";
-import { ResponseItem } from "../api/youtubeRequest";
+import { ResponseItem } from "./youtubeRequest";
 
 export const search = () => {
   const input = dom.findById(ids.searchInput) as HTMLInputElement;
@@ -19,6 +19,18 @@ export const search = () => {
       gallery.renderItems(itemsMapped);
     });
   }
+};
+
+export const loadItemChildren = (item: Item): Promise<LoadingItemsReponse> => {
+  if (items.isPlaylist(item)) return getPlaylistSubitems(item);
+  else if (items.isChannel(item)) return getChannelSubitems(item);
+  else if (items.isSearch(item)) return searchForNextPage(item);
+  else throw Error(`Can't figure out how to load ${item.type}`);
+};
+
+export type LoadingItemsReponse = {
+  items: Item[];
+  nextPageToken?: string;
 };
 
 const searchForNextPage = (
@@ -68,18 +80,6 @@ const getPlaylistSubitems = (
       nextPageToken: response.nextPageToken,
       items: response.items.map(mapReponseItem),
     }));
-
-export const loadItemChildren = (item: Item): Promise<LoadingItemsReponse> => {
-  if (items.isPlaylist(item)) return getPlaylistSubitems(item);
-  else if (items.isChannel(item)) return getChannelSubitems(item);
-  else if (items.isSearch(item)) return searchForNextPage(item);
-  else throw Error(`Can't figure out how to load ${item.type}`);
-};
-
-export type LoadingItemsReponse = {
-  items: Item[];
-  nextPageToken?: string;
-};
 
 const mapReponseItem = (resItem: ResponseItem): Item => {
   if (resItem.itemType == "video")

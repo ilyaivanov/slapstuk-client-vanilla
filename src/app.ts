@@ -1,7 +1,7 @@
 import { cls, dom, ids, isIsolated, styles } from "./infra";
 import * as sidebarController from "./sidebar/controller";
-import * as gallery from "./gallery1/gallery";
-import * as searchController from "./search/controller";
+import * as gallery from "./gallery/gallery";
+import * as searchController from "./api/search";
 import * as player from "./player/controller";
 import * as login from "./login/controller";
 import "./app.style";

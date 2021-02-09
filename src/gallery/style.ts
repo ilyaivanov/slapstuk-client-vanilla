@@ -1,168 +1,301 @@
-// import { cls, css, colors, cssText, styles, cssClass } from "../infra";
-// import * as playerStyle from "../player/styles";
+import {
+  cls,
+  css,
+  colors,
+  cssText,
+  styles,
+  cssClass,
+  utils,
+  cssClassOnHover,
+} from "../infra";
+import * as playerStyle from "../player/styles";
+import { headerHeight } from "../sidebar/styles";
+import * as items from "../items";
 
-// export const gap = 20;
-// export const galleryFadeSpeed = 150;
-// export const cardExpandCollapseSpeed = 200;
-// export const cardHeaderHeight = 35;
+export const gap = 20;
+export const galleryFadeSpeed = 150;
+export const cardExpandCollapseSpeed = 200;
+const cardPadding = 11;
+//Gallery
+cssClass(cls.gallery, {
+  backgroundColor: colors.gallery,
+  position: "relative",
+});
 
-// cssClass(cls.galleryEndSpace, {
-//   height: "100%",
-//   width: `${gap}px`,
-// });
+cssClass(cls.galleryScrollyContainer, {
+  ...styles.overlay,
+  overflowY: "overlay" as any,
+});
+cssText(styles.cssTextForScrollBar(cls.galleryScrollyContainer, { width: 8 }));
 
-// //CARDS
-// cssClass(cls.card, {
-//   color: "white",
-//   width: "322px",
-//   backgroundColor: colors.card,
-//   marginLeft: `${gap}px`,
-//   marginBottom: `${gap}px`,
-//   borderRadius: "4px",
-//   border: "1px solid rgba(255, 255, 255, 0.1)",
-//   boxShadow: "1px 2px 5px 0px rgba(0, 0, 0, 0.53)",
-//   maxHeight: "calc(100% - 20px)",
-//   cursor: "pointer",
-//   overflow: "hidden",
-//   position: "relative",
-//   transition: playerStyle.backgroundTransition,
-// });
+cssClass(cls.scrolly, {
+  paddingTop: gap,
+  paddingRight: gap,
+  display: "flex",
+  flexDirection: "row",
+});
 
-// css(`.${cls.card}:hover`, {
-//   border: "1px solid rgba(255, 255, 255, 0.2)",
-// });
+cssClass(cls.galleyTopLoading, {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  backgroundColor: colors.primary,
+});
 
-// css(`.${cls.cardImageWithTextContainer}:hover`, {
-//   backgroundColor: colors.cardHover,
-// });
+css(`.${cls.galleyTopLoading}.${cls.galleyTopLoadingActive}`, {
+  height: 4,
+  animation: "topLoading 2000ms infinite",
+});
 
-// css(`.${cls.itemBeingPlayed} .${cls.cardImageWithTextContainer}`, {
-//   backgroundColor: "inherit",
-// });
+cssText(`
+@keyframes topLoading{
+  0%{
+    right: 100%;
+    left: 0;
+  }
+  50%{
+    right: 0;
+    left: 0;
+  }
+  100%{
+    left: 100%;
+  }
+}
+`);
 
-// const triangleWidth = 25;
+cssClass(cls.column1, {
+  flex: 1,
+  marginLeft: gap,
+});
 
-// cssClass(cls.cardTypeBox, {
-//   position: "absolute",
-//   pointerEvents: "none",
-//   top: "0",
-//   right: "0",
-//   width: `${triangleWidth}px`,
-//   height: `${triangleWidth}px`,
-// });
+//CARDS
+const getMaxHeightModifiers = () => headerHeight + gap * 2;
+export const getMaxHeightForSubitemsInPixels = (): number => {
+  return window.innerHeight - getMaxHeightModifiers();
+};
 
-// cssClass(cls.cardTypeBoxTriangle, {
-//   width: "0",
-//   height: "0",
-//   pointerEvents: "auto",
-//   borderLeft: `${triangleWidth}px solid transparent`,
-// });
+export const initialPadding = 56.25; //aspect ratio of a 320 x 180 image
+export const initialPaddingPercent = initialPadding + "%";
 
-// cssClass(cls.cardTypeBoxTrianglePlaylist, {
-//   borderTop: `${triangleWidth}px solid rgba(30, 170, 0, 0.6)`,
-// });
+//I need to convert relative percents to absolute points before animations
+//aftert animation end I will place percents back, so that card would remain fluid
+export const getExpandedHeight = (box: HTMLElement) =>
+  box.clientWidth * (initialPadding / 100);
 
-// cssClass(cls.cardTypeBoxTriangleChannel, {
-//   borderTop: `${triangleWidth}px solid rgba(0, 112, 221, 0.6)`,
-// });
+cssClass(cls.card, {
+  color: "white",
+  backgroundColor: colors.card,
+  marginBottom: gap,
+  borderRadius: 4,
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  cursor: "pointer",
+  overflow: "hidden",
+  position: "relative",
+  transition: playerStyle.backgroundTransition,
+  maxHeight: `calc(100vh - ${getMaxHeightModifiers()}px - var(--player-height))`,
+  display: "flex",
+  flexDirection: "column",
+});
+css(`.${cls.page}.${cls.grabbing} .${cls.card}`, {
+  cursor: "grabbing",
+});
 
-// cssClass(cls.cardTypeBoxTriangleFolder, {
-//   borderTop: `${triangleWidth}px solid rgba(0, 0, 0, 0.6)`,
-// });
+css(`.${cls.ctrlKeyPressed} .${cls.card}`, {
+  cursor: "alias",
+});
 
-// cssClass(cls.cardTypeBoxTextContainer, {
-//   position: "absolute",
-//   top: "1px",
-//   right: "4px",
-//   fontSize: "12px",
-//   fontWeight: "500",
-//   color: "white",
-// });
+css(`.${cls.card}:hover`, {
+  border: "1px solid rgba(255, 255, 255, 0.2)",
+});
 
-// cssClass(cls.cardText, {
-//   padding: "8px",
-//   fontSize: "14px",
-//   color: "rgb(220, 220, 220)",
-//   fontWeight: "400",
-// });
+css(`.${cls.cardImageWithTextContainer}:hover`, {
+  backgroundColor: colors.cardHover,
+});
 
-// cssClass(cls.cardTextForFolder, {
-//   fontSize: "16px",
-//   color: "white",
-//   fontWeight: "500",
-// });
+css(`.${cls.itemBeingPlayed} .${cls.cardImageWithTextContainer}`, {
+  backgroundColor: "inherit",
+});
 
-// //CARD'S SUBSTRACKS
+const triangleWidth = 25;
 
-// cssClass(cls.subtracksContainer, {
-//   transition: `height ${cardExpandCollapseSpeed}ms linear`,
-//   overflowY: "overlay",
-//   maxHeight: `calc(100% - ${cardHeaderHeight}px)`,
-// });
+cssClass(cls.cardTypeBox, {
+  position: "absolute",
+  pointerEvents: "none",
+  top: 0,
+  right: 0,
+  width: triangleWidth,
+  height: triangleWidth,
+});
 
-// cssText(styles.cssTextForScrollBar(cls.subtracksContainer, { width: 8 }));
+cssClass(cls.cardTypeBoxTriangle, {
+  width: 0,
+  height: 0,
+  pointerEvents: "auto",
+  borderLeft: `${triangleWidth}px solid transparent`,
+});
 
-// cssClass(cls.subtrack, {
-//   padding: "5px 8px",
-//   display: "flex",
-//   alignItems: "center",
-//   justifyContent: "flex-start",
-//   fontSize: "14px",
-//   color: "rgb(220, 220, 220)",
-//   fontWeight: "400",
-//   borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-//   cursor: "pointer",
-//   transition: playerStyle.backgroundTransition,
-// });
+const triangleAlpha = 0.6;
 
-// css(`.${cls.subtrack}:hover`, {
-//   backgroundColor: colors.cardHover,
-// });
+const triangleBorder = (hex: string, alpha: number) =>
+  `${triangleWidth}px solid ${utils.hexToRGBA(hex, alpha)}`;
 
-// cssClass(cls.subtrackImage, {
-//   width: "32px",
-//   height: "32px",
-//   objectFit: "cover",
-//   borderRadius: "4px",
-//   marginRight: "8px",
-// });
+cssClass(cls.cardTypeBoxTrianglePlaylist, {
+  borderTop: triangleBorder(colors.playlistColor, triangleAlpha),
+});
 
-// const imageHeight = 180;
-// const imageWidth = 320;
-// cssClass(cls.cardImage, {
-//   display: "block",
-//   opacity: "1",
-//   transition: `
-//     margin-top ${cardExpandCollapseSpeed}ms linear,
-//     opacity ${cardExpandCollapseSpeed}ms ease-out`,
-//   width: `${imageWidth}px`,
-//   height: `${imageHeight}px`,
-//   objectFit: "cover",
-// });
+cssClass(cls.cardTypeBoxTriangleChannel, {
+  borderTop: triangleBorder(colors.channelColor, triangleAlpha),
+});
 
-// cssClass(cls.cardImageHidden, {
-//   marginTop: `-${imageHeight}px`,
-//   opacity: "0",
-// });
+cssClass(cls.cardTypeBoxTriangleFolder, {
+  borderTop: triangleBorder(colors.folderColor, triangleAlpha),
+});
 
-// cssClass(cls.folderImages, {
-//   display: "flex",
-//   flexDirection: "row",
-// });
+cssClassOnHover(cls.cardTypeBoxTrianglePlaylist, {
+  borderTop: triangleBorder(colors.playlistColor, 1),
+});
 
-// cssClass(cls.folderImagesSubContanier, {
-//   flex: "1",
-// });
+cssClassOnHover(cls.cardTypeBoxTriangleChannel, {
+  borderTop: triangleBorder(colors.channelColor, 1),
+});
 
-// css(`.${cls.folderImages} img`, {
-//   width: "100%",
-//   height: "100%",
-//   display: "block",
-//   objectFit: "cover",
-// });
+cssClassOnHover(cls.cardTypeBoxTriangleFolder, {
+  borderTop: triangleBorder(colors.folderColor, 1),
+});
 
-// cssClass(cls.folderImagesEmpty, {
-//   color: "gray",
-//   fontSize: "40px",
-//   ...styles.flexCenter,
-// });
+export const getItemColor = (item: Item): string => {
+  if (items.isFolder(item)) return colors.folderColor;
+  if (items.isChannel(item)) return colors.channelColor;
+  if (items.isPlaylist(item)) return colors.playlistColor;
+  if (items.isVideo(item)) return colors.videoColor;
+  return "white";
+};
+
+cssClass(cls.cardTypeBoxTextContainer, {
+  position: "absolute",
+  top: 1,
+  right: 4,
+  fontSize: 12,
+  fontWeight: "bolder",
+  color: "white",
+});
+
+cssClass(cls.cardText, {
+  padding: cardPadding,
+  fontSize: 14,
+  color: "rgb(220, 220, 220)",
+  fontWeight: "normal",
+  wordBreak: "break-word",
+});
+
+cssClass(cls.cardTextForFolder, {
+  fontSize: 16,
+  color: "white",
+  fontWeight: "bolder",
+});
+
+//CARD'S SUBSTRACKS
+
+cssClass(cls.subtracksContainer, {
+  transition: `height ${cardExpandCollapseSpeed}ms linear`,
+  overflowY: "overlay" as any,
+});
+
+cssText(styles.cssTextForScrollBar(cls.subtracksContainer, { width: 8 }));
+
+cssClass(cls.subtrack, {
+  padding: `5px ${cardPadding}px`,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-start",
+  fontSize: 13,
+  wordBreak: "break-word",
+  color: "rgb(220, 220, 220)",
+  fontWeight: "normal",
+  borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+  cursor: "pointer",
+  transition: playerStyle.backgroundTransition,
+});
+
+css(`.${cls.ctrlKeyPressed} .${cls.subtrack}`, {
+  cursor: "alias",
+});
+
+css(`.${cls.subtrack}:last-of-type`, {
+  borderBottom: "none",
+});
+
+css(`.${cls.page}.${cls.grabbing} .${cls.subtrack}`, {
+  cursor: "grabbing",
+});
+
+css(`.${cls.subtrack}:hover`, {
+  backgroundColor: colors.cardHover,
+});
+
+cssClass(cls.subtrackImage, {
+  width: 32,
+  minWidth: 32,
+  height: 32,
+  overflow: "hidden",
+  position: "relative",
+  borderRadius: 4,
+  marginRight: 8,
+});
+css(`.${cls.subtrackImage} img`, {
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+});
+
+cssClass(cls.subtrackPlaylistImage, {
+  border: `1px solid ${colors.playlistColor}`,
+});
+
+cssClass(cls.subtrackChannelImage, {
+  border: `1px solid ${colors.channelColor}`,
+});
+
+cssClass(cls.subtrackFolderImage, {
+  border: `1px solid ${colors.folderColor}`,
+});
+
+const imageHeight = 180;
+cssClass(cls.cardImage, {
+  display: "block",
+  opacity: "1",
+  transition: `
+    margin-top ${cardExpandCollapseSpeed}ms linear, 
+    height ${cardExpandCollapseSpeed}ms linear, 
+    opacity ${cardExpandCollapseSpeed}ms ease-out`,
+  width: `100%`,
+  objectFit: "cover",
+});
+
+cssClass(cls.cardImageHidden, {
+  marginTop: `-${imageHeight}px`,
+  opacity: 0,
+});
+
+cssClass(cls.folderImages, {
+  display: "flex",
+  flexDirection: "row",
+});
+
+cssClass(cls.folderImagesSubContanier, {
+  flex: 1,
+});
+
+css(`.${cls.folderImages} img`, {
+  width: "100%",
+  // height: "100%",
+  // maxHeight: "50%",
+  display: "block",
+});
+
+cssClass(cls.folderImagesEmpty, {
+  color: "gray",
+  fontSize: 40,
+  ...styles.flexCenter,
+});
