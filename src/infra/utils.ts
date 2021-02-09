@@ -34,3 +34,10 @@ export const findDuplicates = <T>(vals: T[]): T[] => {
   }
   return duplicates;
 };
+
+export const resolvePromiseIn = <T>(val: T, delay: number): Promise<T> =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(val);
+    }, delay);
+  });

@@ -6,7 +6,11 @@ type Items = {
 
 type Item = ItemContainer | YoutubeVideo;
 
-type ItemContainer = YoutubePlaylist | YoutubeChannel | Folder;
+type ItemContainer =
+  | YoutubePlaylist
+  | YoutubeChannel
+  | Folder
+  | SearchContainer;
 
 type CommonItemProperties = {
   id: string;
@@ -26,10 +30,19 @@ type Folder = {
 } & CommonItemProperties &
   CommonContainerProperties;
 
+type SearchContainer = {
+  type: "search";
+  searchTerm: string;
+  isLoading?: boolean;
+  nextPageToken?: string;
+} & CommonItemProperties &
+  CommonContainerProperties;
+
 type YoutubePlaylist = {
   type: "YTplaylist";
   playlistId: string;
   isLoading?: boolean;
+  nextPageToken?: string;
   image: string;
 } & CommonItemProperties &
   CommonContainerProperties;
@@ -38,6 +51,7 @@ type YoutubeChannel = {
   type: "YTchannel";
   channelId: string;
   isLoading?: boolean;
+  nextPageToken?: string;
   image: string;
 } & CommonItemProperties &
   CommonContainerProperties;

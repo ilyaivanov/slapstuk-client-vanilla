@@ -43,8 +43,6 @@ export const setLeftSidebarWidth = (width: number) => {
 export const initApp = (userId: string) => {
   api.loadUserSettings(userId).then((data) => {
     if (data) {
-      //@ts-ignore
-      global.allItems = JSON.parse(data.itemsSerialized);
       items.setItems(JSON.parse(data.itemsSerialized));
       items.setSelectedItem(data.selectedItemId);
       // items.setFocusStack(data.focusedStack);
@@ -124,6 +122,13 @@ export const initApp = (userId: string) => {
           { className: [cls.rightSidebar, cls.rightSidebarHidden] },
           {
             className: cls.gallery,
+            children: [
+              {
+                on: { scroll: gallery.onGalleryScroll },
+                className: cls.galleryScrollyContainer,
+              },
+              { className: cls.galleyTopLoading },
+            ],
           },
           { className: [cls.player, cls.playerHidden] },
         ],

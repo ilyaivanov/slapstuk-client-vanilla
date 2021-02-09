@@ -6,7 +6,7 @@ import * as card from "../gallery1/card";
 import * as items from "../items";
 import * as sidebarAnimations from "./sidebarAnimations";
 import * as dnd from "../dnd/dnd";
-import { loadItemChildren } from "../search/controller";
+import { LoadingItemsReponse, loadItemChildren } from "../search/controller";
 import { viewItemIcon } from "./itemIcon";
 
 export const init = (sidebarParent: HTMLElement) => {
@@ -120,6 +120,7 @@ export const removeItem = (item: Item) => {
 export const selectItem = (itemId: string) => {
   items.setSelectedItem(itemId);
   dom.removeClassFromElement(cls.sidebarRowSelected);
+  dom.findFirstByClass(cls.gallery).scrollTo({ top: 0 });
   const row = dom.maybefindById(ids.sidebarRow(itemId));
   if (row) row.classList.add(cls.sidebarRowSelected);
 
@@ -127,10 +128,9 @@ export const selectItem = (itemId: string) => {
   if (items.isContainer(item) && items.isNeedsToBeLoaded(item)) {
     gallery.renderLoadingIndicator(item);
     items.startLoading(item);
-    loadItemChildren(item).then((newItems) => {
-      items.stopLoading(item);
-      items.setChildren(item.id, newItems);
-      gallery.renderItems(newItems);
+    loadItemChildren(item).then((response) => {
+      items.doneLoadingPage(item, response);
+      gallery.renderItems(response.items);
     });
   } else {
     gallery.renderItems(items.getChildren(itemId));
@@ -143,9 +143,8 @@ export const toggleSidebarVisibilityForItem = (item: ItemContainer) => {
   item.isOpenFromSidebar = !item.isOpenFromSidebar;
   const button = view.findToggleButton(item.id);
   if (items.isContainerNeedToFetch(item)) {
-    const doneLoading = (newItems: Item[]) => {
-      items.stopLoading(item);
-      items.setChildren(item.id, newItems);
+    const doneLoading = (response: LoadingItemsReponse) => {
+      items.doneLoadingPage(item, response);
       if (items.isOpenAtSidebar(item)) {
         const childrenElement = view.findItemChildrenContainer(item.id);
         const initialHeight = childrenElement.clientHeight;

@@ -3,7 +3,7 @@ import * as style from "./style";
 import * as player from "../player/controller";
 import * as sidebar from "../sidebar/controller";
 import * as items from "../items";
-import { loadItemChildren } from "../search/controller";
+import { LoadingItemsReponse, loadItemChildren } from "../search/controller";
 import { itemPreview } from "./cardPreviewImage";
 import * as dnd from "../dnd/dnd";
 
@@ -54,6 +54,22 @@ export const viewCard = (item: Item): DivDefinition => ({
     },
     {
       className: cls.subtracksContainer,
+      on: {
+        scroll: (e) => {
+          const node = e.currentTarget as HTMLElement;
+          const distanceFromBottom =
+            node.scrollHeight - node.scrollTop - node.offsetHeight;
+          if (distanceFromBottom < 5 && items.needToLoadNextPage(item)) {
+            items.startLoading(item);
+            var loader = dom.append(node, viewSubtracksLoadingGrid(item));
+            loadItemChildren(item).then((response) => {
+              items.doneLoadingPage(item, response);
+              loader.remove();
+              dom.append(node, response.items.map(viewSubtrack));
+            });
+          }
+        },
+      },
       children: viewSubtracksContent(item),
     },
     {
@@ -144,9 +160,10 @@ export const viewSubtrack = (item: Item): DivDefinition => ({
             },
           },
         });
-        loadItemChildren(item).then((newItems) => {
-          items.setChildren(item.id, newItems);
-          player.playItem(newItems[0].id);
+        item.isLoading = true;
+        loadItemChildren(item).then((response) => {
+          items.doneLoadingPage(item, response);
+          player.playItem(response.items[0].id);
           loader.remove();
         });
       } else if (items.isVideo(item)) {
@@ -199,9 +216,8 @@ const loadSubitemsIfNeeded = (
   item: ItemContainer,
   subtracksContainer: HTMLElement
 ) => {
-  const doneLoading = (newItems: Item[]) => {
-    items.stopLoading(item);
-    items.setChildren(item.id, newItems);
+  const doneLoading = (response: LoadingItemsReponse) => {
+    items.doneLoadingPage(item, response);
     const initialHeight = subtracksContainer.clientHeight;
     subtracksContainer.innerHTML = ``;
     //this is tricky. If items will be fetched during current animation, I do not need to revert animations (as if during click)
@@ -212,7 +228,7 @@ const loadSubitemsIfNeeded = (
 
   if (items.isOpenAtGallery(item) && items.isContainerNeedToFetch(item)) {
     items.startLoading(item);
-    loadItemChildren(item).then((newItems) => doneLoading(newItems));
+    loadItemChildren(item).then(doneLoading);
   }
 };
 

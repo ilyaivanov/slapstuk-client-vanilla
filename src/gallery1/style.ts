@@ -20,8 +20,13 @@ const cardPadding = 11;
 cssClass(cls.gallery, {
   backgroundColor: colors.gallery,
   position: "relative",
+});
+
+cssClass(cls.galleryScrollyContainer, {
+  ...styles.overlay,
   overflowY: "overlay" as any,
 });
+cssText(styles.cssTextForScrollBar(cls.galleryScrollyContainer, { width: 8 }));
 
 cssClass(cls.scrolly, {
   paddingTop: gap,
@@ -30,7 +35,34 @@ cssClass(cls.scrolly, {
   flexDirection: "row",
 });
 
-cssText(styles.cssTextForScrollBar(cls.gallery, { width: 8 }));
+cssClass(cls.galleyTopLoading, {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  backgroundColor: colors.primary,
+});
+
+css(`.${cls.galleyTopLoading}.${cls.galleyTopLoadingActive}`, {
+  height: 4,
+  animation: "topLoading 2000ms infinite",
+});
+
+cssText(`
+@keyframes topLoading{
+  0%{
+    right: 100%;
+    left: 0;
+  }
+  50%{
+    right: 0;
+    left: 0;
+  }
+  100%{
+    left: 100%;
+  }
+}
+`);
 
 cssClass(cls.column1, {
   flex: 1,
@@ -137,8 +169,6 @@ export const getItemColor = (item: Item): string => {
   if (items.isChannel(item)) return colors.channelColor;
   if (items.isPlaylist(item)) return colors.playlistColor;
   if (items.isVideo(item)) return colors.videoColor;
-  //@ts-expect-error
-  console.error(`Unknown item type for ${item.type}. Using white`);
   return "white";
 };
 

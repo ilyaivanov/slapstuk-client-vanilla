@@ -1,3 +1,5 @@
+import { LoadingItemsReponse } from "./search/controller";
+
 export let defaultItems: Items = {
   HOME: {
     id: "HOME",
@@ -5,15 +7,19 @@ export let defaultItems: Items = {
     children: [],
     title: "Home",
   },
+};
+
+export let extraItems: Items = {
   SEARCH: {
     id: "SEARCH",
-    type: "folder",
+    title: "Search",
+    type: "search",
+    searchTerm: "",
     children: [],
-    title: "SEARCH",
   },
 };
 
-export let allItems: Items = { ...defaultItems };
+export let allItems: Items = { ...defaultItems, ...extraItems };
 
 export let selectedItemId = "HOME";
 export const setSelectedItem = (itemId: string) => (selectedItemId = itemId);
@@ -22,6 +28,7 @@ export const setItems = (newItesm: Items) =>
   (allItems = {
     ...defaultItems,
     ...newItesm,
+    ...extraItems,
   });
 
 export let focusedItemId = "HOME";
@@ -79,6 +86,15 @@ export const setChildren = (parentId: string, items: Item[]) => {
     });
   }
 };
+export const appendChildren = (parentId: string, items: Item[]) => {
+  const parent = allItems[parentId];
+  if (isContainer(parent)) {
+    parent.children = parent.children.concat(items.map((i) => i.id));
+    items.forEach((item) => {
+      allItems[item.id] = item;
+    });
+  }
+};
 
 export const hasChildren = (item: Item) =>
   isContainer(item) && item.children.length > 0;
@@ -113,34 +129,40 @@ export const findParentItem = (itemId: string): ItemContainer | undefined =>
     (v) => isContainer(v) && v.children.indexOf(itemId) >= 0
   ) as ItemContainer;
 
+export const isNeedsToBeLoaded = (item: Item): boolean =>
+  (isPlaylist(item) && item.children.length == 0 && !item.isLoading) ||
+  (isSearch(item) && item.children.length == 0 && !item.isLoading) ||
+  (isChannel(item) && item.children.length == 0 && !item.isLoading);
+
+export const needToLoadNextPage = (item: Item): boolean =>
+  (isPlaylist(item) && !!item.nextPageToken && !item.isLoading) ||
+  (isChannel(item) && !!item.nextPageToken && !item.isLoading) ||
+  (isSearch(item) && !!item.nextPageToken && !item.isLoading);
+
+export const startLoading = (item: Item) => {
+  if (isPlaylist(item)) item.isLoading = true;
+  else if (isChannel(item)) item.isLoading = true;
+  else if (isSearch(item)) item.isLoading = true;
+};
+
+export const stopLoading = (item: Item) => {
+  if (isPlaylist(item)) delete item.isLoading;
+  else if (isChannel(item)) delete item.isLoading;
+  else if (isSearch(item)) delete item.isLoading;
+};
+export const isLoading = (item: Item): boolean => {
+  return (
+    (isPlaylist(item) && !!item.isLoading) ||
+    (isChannel(item) && !!item.isLoading) ||
+    (isSearch(item) && !!item.isLoading)
+  );
+};
+
 export const isFolder = (item: Item): item is Folder => {
   return item.type == "folder";
 };
 export const isPlaylist = (item: Item): item is YoutubePlaylist => {
   return item.type == "YTplaylist";
-};
-
-export const isNeedsToBeLoaded = (item: Item): boolean => {
-  return (
-    (isPlaylist(item) && item.children.length == 0 && !item.isLoading) ||
-    (isChannel(item) && item.children.length == 0 && !item.isLoading)
-  );
-};
-
-export const startLoading = (item: Item) => {
-  if (isPlaylist(item)) item.isLoading = true;
-  else if (isChannel(item)) item.isLoading = true;
-};
-
-export const stopLoading = (item: ItemContainer) => {
-  if (isPlaylist(item)) delete item.isLoading;
-  else if (isChannel(item)) delete item.isLoading;
-};
-export const isLoading = (item: Item): boolean => {
-  return (
-    (isPlaylist(item) && !!item.isLoading) ||
-    (isChannel(item) && !!item.isLoading)
-  );
 };
 
 export const isVideo = (item: Item): item is YoutubeVideo => {
@@ -151,13 +173,28 @@ export const isChannel = (item: Item): item is YoutubeChannel => {
   return item.type == "YTchannel";
 };
 
+export const isSearch = (item: Item): item is SearchContainer => {
+  return item.type == "search";
+};
+
 export function isContainer(item: Item): item is ItemContainer {
   return (
     item.type == "YTchannel" ||
     item.type == "folder" ||
+    item.type == "search" ||
     item.type == "YTplaylist"
   );
 }
+
+export const doneLoadingPage = (item: Item, response: LoadingItemsReponse) => {
+  if (isPlaylist(item) || isChannel(item) || isSearch(item)) {
+    appendChildren(item.id, response.items);
+    stopLoading(item);
+    item.nextPageToken = response.nextPageToken;
+  } else {
+    console.error(`Uknown item type to handle children load: ${item.type}`);
+  }
+};
 
 export const isContainerNeedToFetch = (item: ItemContainer) => {
   //TODO: probably need to add additional flags to loading status for Youtube playlist and channel

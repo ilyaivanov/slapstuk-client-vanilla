@@ -1,4 +1,4 @@
-import { isIsolated } from "../infra";
+import { isIsolated, utils } from "../infra";
 import * as fakeAPI from "./fakeYoutubeService";
 
 const API_HOST = "https://europe-west1-slapstuk.cloudfunctions.net";
@@ -9,7 +9,13 @@ export const findYoutubeVideos = (
   pageToken?: string
 ): Promise<YoutubeSearchResponse> => {
   if (isIsolated)
-    return Promise.resolve(fakeAPI.sampleResponseWithChannelsAndPlaylists());
+    return utils.resolvePromiseIn(
+      {
+        items: fakeAPI.sampleResponseWithChannelsAndPlaylists().items,
+        nextPageToken: pageToken ? pageToken + "_|" : "dummyToken",
+      },
+      2000
+    );
   verifyNonTextEnvironment();
   let url = `${API_HOST}/getVideos?q=${term}`;
   if (pageToken) url += `&pageToken=${pageToken}`;
@@ -88,14 +94,17 @@ const verifyNonTextEnvironment = () => {
 
 export type YoutubeSearchResponse = {
   items: ResponseItem[];
+  nextPageToken?: string;
 };
 
 export type YoutubePlaylistDetailsResponse = {
   items: ResponseItem[];
+  nextPageToken?: string;
 };
 
 export type YoutubeChannelPlaylistsResponse = {
   items: ResponseItem[];
+  nextPageToken?: string;
 };
 
 export type YoutubeChannelUploadPlaylistResponse = {

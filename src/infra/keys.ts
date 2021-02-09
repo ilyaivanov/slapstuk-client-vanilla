@@ -52,7 +52,10 @@ export const cls = {
 
   //gallery
   gallery: "gallery",
+  galleryScrollyContainer: "gsc",
   scrolly: "scrolly",
+  galleyTopLoading: "gtl",
+  galleyTopLoadingActive: "gtla",
   card: "card",
   cardImage: "card-image",
   folderImages: "card-image-for-folder",
