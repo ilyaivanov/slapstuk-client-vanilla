@@ -109,17 +109,14 @@ const triangleBorder = (hex: string, alpha: number) =>
   `${triangleWidth}px solid ${utils.hexToRGBA(hex, alpha)}`;
 
 cssClass(cls.cardTypeBoxTrianglePlaylist, {
-  cursor: "auto",
   borderTop: triangleBorder(colors.playlistColor, triangleAlpha),
 });
 
 cssClass(cls.cardTypeBoxTriangleChannel, {
-  cursor: "auto",
   borderTop: triangleBorder(colors.channelColor, triangleAlpha),
 });
 
 cssClass(cls.cardTypeBoxTriangleFolder, {
-  cursor: "auto",
   borderTop: triangleBorder(colors.folderColor, triangleAlpha),
 });
 

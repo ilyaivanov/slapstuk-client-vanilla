@@ -63,7 +63,6 @@ const folderPreviewGrid = (item: Folder): DivDefinition => {
       style: {
         width: "100%",
         height: "100%",
-        maxHeight: "100%",
         display: "block",
         objectFit: "cover",
         objectPosition: "top",

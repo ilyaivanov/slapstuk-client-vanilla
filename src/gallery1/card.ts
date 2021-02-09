@@ -58,6 +58,15 @@ export const viewCard = (item: Item): DivDefinition => ({
     },
     {
       className: cls.cardTypeBox,
+      on: {
+        click: () => {
+          const card = dom.findById(ids.card(item.id));
+          dom.findFirstByClass(cls.gallery).scrollTo({
+            top: card.offsetTop - style.gap,
+            behavior: "smooth",
+          });
+        },
+      },
       children: [
         {
           attributes: {
