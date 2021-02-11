@@ -11,6 +11,7 @@ import {
 import * as playerStyle from "../player/styles";
 import { headerHeight } from "../sidebar/styles";
 import * as items from "../items";
+import { card } from "../infra/colors";
 
 export const gap = 20;
 export const galleryFadeSpeed = 150;
@@ -90,7 +91,7 @@ cssClass(cls.card, {
   borderRadius: 4,
   border: "1px solid rgba(255, 255, 255, 0.1)",
   cursor: "pointer",
-  overflow: "hidden",
+  overflowY: "hidden",
   position: "relative",
   transition: playerStyle.backgroundTransition,
   maxHeight: `calc(100vh - ${getMaxHeightModifiers()}px - var(--player-height))`,
@@ -261,7 +262,6 @@ cssClass(cls.subtrackFolderImage, {
   border: `1px solid ${colors.folderColor}`,
 });
 
-const imageHeight = 180;
 cssClass(cls.cardImage, {
   display: "block",
   opacity: "1",
@@ -271,11 +271,6 @@ cssClass(cls.cardImage, {
     opacity ${cardExpandCollapseSpeed}ms ease-out`,
   width: `100%`,
   objectFit: "cover",
-});
-
-cssClass(cls.cardImageHidden, {
-  marginTop: `-${imageHeight}px`,
-  opacity: 0,
 });
 
 cssClass(cls.folderImages, {

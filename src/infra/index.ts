@@ -20,8 +20,8 @@ export * as icons from "./icons";
 export * as anim from "./animations";
 export * as colors from "./colors";
 export * as utils from "./utils";
-// import * as dom from "./dom";
-// import * as anim from "./animations";
+import * as dom from "./dom";
+import * as anim from "./animations";
 import {
   cssClass,
   css as selector,
@@ -42,10 +42,10 @@ declare const ISOLATED: boolean;
 export const isProd = process.env.NODE_ENV === "production";
 export const isIsolated = ISOLATED;
 
-// if (isIsolated) {
-//   //@ts-ignore
-//   global.dom = dom;
+if (isIsolated) {
+  //@ts-ignore
+  global.dom = dom;
 
-//   //@ts-ignore
-//   global.anim = anim;
-// }
+  //@ts-ignore
+  global.anim = anim;
+}

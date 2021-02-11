@@ -284,7 +284,7 @@ const unfocus = () => {
     dom.removeClassFromElement(cls.sidebarFocusContainerFocused);
     focusLevel = 0;
     dom.findAllByClass(cls.sidebarRowFocused).forEach((row) => {
-      const itemId = view.itemIdFromRow(row);
+      const itemId = ids.itemIdFromSidebarRow(row.id);
       const item = items.getItem(itemId);
       row.classList.remove(cls.sidebarRowFocused);
       setItemIcon(item, row);

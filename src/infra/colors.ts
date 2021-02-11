@@ -1,4 +1,5 @@
 export const menu = "#1F1F1F"; //"#232325";
+export const upperCardGradient = "#272727"; //lighter version of a menu color
 export const gallery = "#101010"; //"#181818";
 
 export const card = menu;

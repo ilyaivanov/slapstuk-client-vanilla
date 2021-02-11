@@ -3,8 +3,12 @@ import { findDuplicates } from "./utils";
 export const ids = {
   root: "root",
   sidebarRow: (itemId: string) => "row-" + itemId,
+  itemIdFromSidebarRow: (rowId: string) => rowId.substr("row-".length),
   card: (itemId: string) => "card-" + itemId,
   subtrack: (itemId: string) => "subtrack-" + itemId,
+  itemIdFromSubtrack: (subtrackId: string) =>
+    subtrackId.substr("subtrack-".length),
+
   searchInput: "search-input",
   youtubeIframe: "youtube-player",
 } as const;
@@ -71,7 +75,6 @@ export const cls = {
   cardTypeBoxTextContainer: "card-type-box-text-container",
 
   cardPreviewContainer: "card-preview-container",
-  cardImageHidden: "card-image-hidden",
   cardText: "card-text",
   cardTextForFolder: "card-text-folder",
   subtracksContainer: "card-subtracks-container",

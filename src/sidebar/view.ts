@@ -20,7 +20,7 @@ export const viewRowAndItsChildren = (
   return [viewRow(item, level), viewChildren(item, level + 1)];
 };
 export const viewRow = (item: Item, level: number): DivDefinition => ({
-  id: rowId(item.id),
+  id: ids.sidebarRow(item.id),
   className: [
     cls.sidebarRow,
     item.id === items.selectedItemId ? cls.sidebarRowSelected : cls.none,
@@ -33,7 +33,7 @@ export const viewRow = (item: Item, level: number): DivDefinition => ({
     ["data-level"]: level + "",
   },
   on: {
-    mousedown: () => dnd.onItemMouseDown(item.id, "sidebar-row"),
+    mousedown: () => dnd.onItemMouseDown(item.id),
     click: () => controller.selectItem(item.id),
   },
   children: [
@@ -89,7 +89,7 @@ export const viewRow = (item: Item, level: number): DivDefinition => ({
 });
 
 export const viewHomeRow = (): DivDefinition => ({
-  id: rowId("HOME"),
+  id: ids.sidebarRow("HOME"),
   className: [
     cls.sidebarRow,
     "HOME" === items.selectedItemId ? cls.sidebarRowSelected : cls.none,
@@ -130,11 +130,8 @@ export const viewLoadingLabel = (item: Item, parentItemLevel: number) => ({
   },
   children: "Loading...",
 });
-
-export const rowId = (itemId: string) => `row-${itemId}`;
-export const itemIdFromRow = (row: HTMLElement) => row.id.substr(4);
-
-export const findRowById = (itemId: string) => dom.findById(rowId(itemId));
+export const findRowById = (itemId: string) =>
+  dom.findById(ids.sidebarRow(itemId));
 
 export const findToggleButton = (itemId: string) => {
   return dom.findFirstByClass(cls.sidebarRowExpandButton, findRowById(itemId));
@@ -145,7 +142,7 @@ export const findFocusButton = (row: HTMLElement) => {
 };
 
 export const updateItemChevron = (item: Item) => {
-  const row = dom.maybefindById(rowId(item.id));
+  const row = dom.maybefindById(ids.sidebarRow(item.id));
   if (row) {
     const chevronContainer = dom.findFirstByClass(
       cls.sidebarRowExpandButtonContainer,
@@ -157,7 +154,7 @@ export const updateItemChevron = (item: Item) => {
 };
 
 export const findFocusButtonForItem = (itemId: string) => {
-  const row = dom.findById(rowId(itemId));
+  const row = dom.findById(ids.sidebarRow(itemId));
   return findFocusButton(row);
 };
 

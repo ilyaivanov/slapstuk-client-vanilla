@@ -18,7 +18,7 @@ export const viewCard = (item: Item): DivDefinition => ({
     {
       className: cls.cardImageWithTextContainer,
       on: {
-        mousedown: () => dnd.onItemMouseDown(item.id, "gallery-card"),
+        mousedown: () => dnd.onItemMouseDown(item.id),
         click: (e) => {
           if (e.ctrlKey && !items.isVideo(item)) {
             sidebar.selectItem(item.id);
@@ -137,7 +137,7 @@ export const viewSubtrack = (item: Item): DivDefinition => ({
     player.itemIdBeingPlayed == item.id ? cls.itemBeingPlayed : cls.none,
   ],
   on: {
-    mousedown: () => dnd.onItemMouseDown(item.id, "card-subtrack"),
+    mousedown: () => dnd.onItemMouseDown(item.id),
     click: (e) => {
       e.stopPropagation();
       if (e.ctrlKey && !items.isVideo(item)) {
