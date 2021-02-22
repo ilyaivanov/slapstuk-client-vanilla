@@ -1,4 +1,5 @@
 import { LoadingItemsReponse } from "./api/search";
+import * as itemEvents from "./itemEvents";
 
 export let defaultItems: Items = {
   HOME: {
@@ -77,15 +78,30 @@ export const getNextItem = (itemId: string): Item | undefined => {
 
 export const setSearchItems = (items: Item[]) => setChildren("SEARCH", items);
 
-export const setChildren = (parentId: string, items: Item[]) => {
+export const setChildren = (parentId: string, items: (Item | string)[]) => {
+  console.log("setChildren");
   const parent = allItems[parentId];
   if (isContainer(parent)) {
-    parent.children = items.map((i) => i.id);
+    parent.children = items.map((i) => (typeof i == "string" ? i : i.id));
     items.forEach((item) => {
-      allItems[item.id] = item;
+      if (typeof item != "string" && allItems[item.id] != item)
+        allItems[item.id] = item;
     });
   }
 };
+
+export const removeFromParent = (itemId: string) => {
+  const parent = findParentItem(itemId);
+  if (parent && isContainer(parent)) {
+    setChildren(
+      parent.id,
+      getChildren(parent.id)
+        .map((c) => c.id)
+        .filter((id) => id != itemId)
+    );
+  }
+};
+
 export const appendChildren = (parentId: string, items: Item[]) => {
   const parent = allItems[parentId];
   if (isContainer(parent)) {

@@ -1,13 +1,22 @@
-import { anim, cls, DivDefinition, dom, icons, ids, styles } from "../infra";
+import {
+  anim,
+  cls,
+  DivDefinition,
+  dom,
+  icons,
+  ids,
+  styles,
+  itemEvents,
+} from "../infra";
 import * as view from "./view";
 import * as style from "./styles";
 import * as gallery from "../gallery/gallery";
-import * as card from "../gallery/card";
 import * as items from "../items";
 import * as sidebarAnimations from "./sidebarAnimations";
-import * as dnd from "../dnd/dnd";
 import { LoadingItemsReponse, loadItemChildren } from "../api/search";
 import { viewItemIcon } from "./itemIcon";
+
+export let areVideosShown = true;
 
 export const init = (sidebarParent: HTMLElement) => {
   const itemsToRender = view.viewItemChildren("HOME");
@@ -67,6 +76,7 @@ export const onEdit = (itemId: string) => {
   const finishEdit = () => {
     const newName = input.value || "New Item";
     items.getItem(itemId).title = newName;
+    itemEvents.fireEvent("title-changed", items.getItem(itemId));
     text.innerHTML = newName;
   };
   const input = dom.div({
@@ -98,7 +108,7 @@ export const removeItem = (item: Item) => {
 
   const parent = items.findParentItem(item.id);
   if (parent) {
-    dnd.removeFromParent(item.id);
+    items.removeFromParent(item.id);
     const cont = view.findItemChildrenContainer(item.id);
     const row = view.findRowById(item.id);
     cont.classList.add(cls.deleted);
@@ -130,10 +140,10 @@ export const selectItem = (itemId: string) => {
     items.startLoading(item);
     loadItemChildren(item).then((response) => {
       items.doneLoadingPage(item, response);
-      gallery.renderItems(response.items);
+      gallery.renderItems();
     });
   } else {
-    gallery.renderItems(items.getChildren(itemId));
+    gallery.renderItems();
   }
 };
 

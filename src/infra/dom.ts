@@ -10,11 +10,20 @@ export type DivDefinition = {
   className?: ClassName | (ClassName | undefined)[];
   children?: DivDefinition | DivDefinition[] | string;
   style?: Styles;
-
+  ref?: (node: HTMLElement) => void;
   attributes?: any;
   on?: EventsDefinition;
 
-  type?: "button" | "div" | "svg" | "path" | "img" | "span" | "input";
+  type?:
+    | "button"
+    | "div"
+    | "svg"
+    | "path"
+    | "img"
+    | "span"
+    | "input"
+    | "li"
+    | "ul";
   onClick?: (e: Event) => void;
 };
 
@@ -75,7 +84,8 @@ export const div = (divDefinition: DivDefinition): HTMLElement => {
     });
   }
 
-  return elem as HTMLElement;
+  if (divDefinition.ref) divDefinition.ref(elem);
+  return elem;
 };
 
 export const fragment = (nodes: DivDefinition[]) => {
@@ -179,11 +189,12 @@ export const root = findById("root");
 
 export const set = (
   node: HTMLElement,
-  children: DivDefinition | DivDefinition[] | HTMLElement
+  children: DivDefinition | DivDefinition[] | HTMLElement | string
 ) => {
   node.innerHTML = ``;
   if (isHtmlElement(children)) node.appendChild(children);
   else if (Array.isArray(children)) node.appendChild(fragment(children));
+  else if (typeof children == "string") node.append(children);
   else node.appendChild(div(children));
 };
 

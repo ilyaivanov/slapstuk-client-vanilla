@@ -16,15 +16,19 @@ export const animateHeight = (
 ): Animation => {
   const targetOpacity = from > to ? 0 : 1;
   const sourceOpacity = from <= to ? 0 : 1;
-
   const start: Styles = {
     height: from,
     opacity: sourceOpacity,
   };
-  const end: Styles = {
+  let end: Styles = {
     height: to,
     opacity: targetOpacity,
   };
+  const s = getComputedStyle(elem);
+  if (s.paddingTop || s.paddingBottom) {
+    end.paddingTop = 0;
+    end.paddingBottom = 0;
+  }
   if (options?.doNotFadeOut) {
     delete start.opacity;
     delete end.opacity;

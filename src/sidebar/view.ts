@@ -186,7 +186,9 @@ export const viewSidebarHeader = (): DivDefinition => ({
     },
     {
       attributes: { title: "Hide all videos from sidebar" },
-      children: icons.hideVideo(cls.sidebarHeaderIcon),
+      children: controller.areVideosShown
+        ? icons.hideVideo(cls.sidebarHeaderIcon)
+        : icons.showVideo(cls.sidebarHeaderIcon),
     },
     {
       attributes: { title: "Create new folder" },

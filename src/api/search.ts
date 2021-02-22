@@ -16,7 +16,7 @@ export const search = () => {
       items.setChildren("SEARCH", itemsMapped);
 
       items.setSelectedItem("SEARCH");
-      gallery.renderItems(itemsMapped);
+      gallery.renderItems();
     });
   }
 };

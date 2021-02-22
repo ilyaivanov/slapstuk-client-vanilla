@@ -234,7 +234,8 @@ function onMouseUp() {
             childContainer.remove();
           });
       }
-      removeFromParent(itemIdMouseDownOn);
+
+      items.removeFromParent(itemIdMouseDownOn);
       insertItemToLocation(itemIdMouseDownOn, targetItemId, destinationType);
       animateMovementInDom(itemIdMouseDownOn, destinationArea);
     } else {
@@ -261,25 +262,6 @@ function onMouseUp() {
   isMouseDownOnAdjuster = false;
 }
 
-export const removeFromParent = (itemId: string) => {
-  const parent = items.findParentItem(itemId);
-  if (parent && items.isContainer(parent)) {
-    setChildren(
-      parent,
-      items
-        .getChildren(parent.id)
-        .map((c) => c.id)
-        .filter((id) => id != itemId)
-    );
-  }
-};
-
-//update functions
-const setChildren = (item: ItemContainer, children: string[]) => {
-  item.children = children;
-  if (item.id !== "HOME") view.updateItemChevron(item);
-};
-
 const insertItemToLocation = (
   itemBeingDraggedId: string,
   targetItemId: string,
@@ -291,7 +273,10 @@ const insertItemToLocation = (
   // const targetItemLevel = view.parseLevelFromRow(targetItemRow);
 
   if (placement == "inside") {
-    setChildren(targetItem, [itemBeingDraggedId].concat(targetItem.children));
+    items.setChildren(
+      targetItem.id,
+      [itemBeingDraggedId].concat(targetItem.children)
+    );
 
     // if (targetItem.isOpenFromSidebar) {
     //   const childNodes = view

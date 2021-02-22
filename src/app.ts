@@ -42,6 +42,7 @@ export const setLeftSidebarWidth = (width: number) => {
 };
 export const initApp = (userId: string) => {
   api.loadUserSettings(userId).then((data) => {
+    console.log(data);
     if (data) {
       items.setItems(JSON.parse(data.itemsSerialized));
       items.setSelectedItem(data.selectedItemId);
@@ -137,6 +138,6 @@ export const initApp = (userId: string) => {
 
     sidebarController.init(dom.findFirstByClass(cls.sidebar));
 
-    gallery.renderItems(items.getChildren(items.selectedItemId));
+    gallery.renderItems();
   });
 };

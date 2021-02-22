@@ -196,10 +196,10 @@ cssText(`
     opacity: 1
   }
   30%{
-    background-color: #af4448;
+    background-color: ${colors.danger};
   }
   100%{
-    background-color: #af4448;
+    background-color: ${colors.danger};
     transform: translate3d(-80px, 0, 0);
     opacity: 0;
   }
@@ -250,11 +250,12 @@ cssClassOnHover(cls.sidebarHeaderIcon, {
 cssClass(cls.sidebarWidthAdjuster, {
   position: "absolute",
   top: 0,
-  right: -1,
-  width: 2,
+  right: -2,
+  width: 4,
   bottom: 0,
-  backgroundColor: "rgba(255, 255, 255, 0.1)",
   cursor: "col-resize",
+  transition: "background-color 200ms ease-out",
+  transitionDelay: "50ms",
 });
 
 cssClassOnHover(cls.sidebarWidthAdjuster, {

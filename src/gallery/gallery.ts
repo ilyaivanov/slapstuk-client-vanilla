@@ -6,25 +6,23 @@ import * as style from "./style";
 
 let gallery: HTMLElement;
 let currentCols = 0;
-let currentItems: Item[] = [];
 
 export const rerenderIfColumnsChanged = () => {
   const colsCount = Math.max(1, getColsCountFor());
   if (colsCount != currentCols) {
     currentCols = colsCount;
-    renderGallery();
+    rerenderGallery();
   }
 };
 const getColsCountFor = () =>
   Math.round((gallery.clientWidth - style.gap) / (320 + style.gap));
 
-const renderGallery = () => dom.set(gallery, viewGallery());
+export const rerenderGallery = () => dom.set(gallery, viewGallery());
 
 window.addEventListener("resize", rerenderIfColumnsChanged);
 
-export const renderItems = (itemsToRender: Item[]) => {
+export const renderItems = () => {
   gallery = dom.findFirstByClass(cls.galleryScrollyContainer);
-  currentItems = itemsToRender;
   currentCols = getColsCountFor();
 
   galleryTransition(gallery, viewGallery());
@@ -45,7 +43,8 @@ const viewGallery = () => ({
 
   children: utils.generateNumbers(currentCols).map((rowNumber) => ({
     className: cls.column1,
-    children: currentItems
+    children: items
+      .getChildren(items.selectedItemId)
       .filter((_, index) => index % currentCols == rowNumber)
       .map(card.viewCard),
   })),
@@ -62,7 +61,7 @@ export const onGalleryScroll = (e: MouseEvent) => {
     loadItemChildren(item).then((response) => {
       items.doneLoadingPage(item, response);
       hideGalleryTopLoadingIndicator();
-      renderItems(items.getChildren(items.selectedItemId));
+      renderItems();
     });
   }
 };
@@ -89,14 +88,12 @@ const galleryTransition = (parent: HTMLElement, nextContent: DivDefinition) => {
 
   styles.cancelAllCurrentAnimations(parent);
   const animation = parent.animate([from, toHide], {
-    fill: "forwards",
     duration: 200,
     easing: "ease-in",
   });
   animation.addEventListener("finish", () => {
     dom.set(parent, nextContent);
     gallery.animate([toAppear, from], {
-      fill: "forwards",
       duration: 200,
       easing: "ease-out",
     });

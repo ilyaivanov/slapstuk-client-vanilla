@@ -1,4 +1,13 @@
-import { anim, cls, dom, ids, DivDefinition, styles, utils } from "../infra";
+import {
+  anim,
+  cls,
+  dom,
+  ids,
+  DivDefinition,
+  styles,
+  utils,
+  itemEvents,
+} from "../infra";
 import * as style from "./style";
 import * as player from "../player/controller";
 import * as sidebar from "../sidebar/controller";
@@ -49,6 +58,11 @@ export const viewCard = (item: Item): DivDefinition => ({
             items.isContainer(item) ? cls.cardTextForFolder : cls.none,
           ],
           children: item.title,
+          ref: (ref) => {
+            itemEvents.addItemListener("title-changed", ref, (i) => {
+              if (item.id == i.id) ref.innerText = i.title;
+            });
+          },
         },
       ],
     },
@@ -77,7 +91,7 @@ export const viewCard = (item: Item): DivDefinition => ({
       on: {
         click: () => {
           const card = dom.findById(ids.card(item.id));
-          dom.findFirstByClass(cls.gallery).scrollTo({
+          dom.findFirstByClass(cls.galleryScrollyContainer).scrollTo({
             top: card.offsetTop - style.gap,
             behavior: "smooth",
           });
@@ -182,7 +196,15 @@ export const viewSubtrack = (item: Item): DivDefinition => ({
         attributes: { src: items.getFirstImage(item) },
       },
     },
-    { type: "span", children: item.title },
+    {
+      type: "span",
+      children: item.title,
+      ref: (ref) => {
+        itemEvents.addItemListener("title-changed", ref, (i) => {
+          if (item.id == i.id) ref.innerText = i.title;
+        });
+      },
+    },
   ],
 });
 

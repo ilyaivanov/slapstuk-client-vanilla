@@ -14,6 +14,15 @@ export const ids = {
 } as const;
 
 export const cls = {
+  todoContainer: "tc",
+  input: "i",
+  row: "row",
+  table: "t",
+  cell: "cell",
+  cellsContainer: "ccc",
+  doneButton: "row-bd",
+  rowDone: "row-d",
+  removeButton: "removeButton",
   page: "page",
   ctrlKeyPressed: "ctp",
   sidebar: "sidebar",

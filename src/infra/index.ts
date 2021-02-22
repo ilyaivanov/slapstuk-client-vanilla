@@ -20,6 +20,7 @@ export * as icons from "./icons";
 export * as anim from "./animations";
 export * as colors from "./colors";
 export * as utils from "./utils";
+export * as itemEvents from "./events";
 import * as dom from "./dom";
 import * as anim from "./animations";
 import {
@@ -28,8 +29,10 @@ import {
   cssClassOnHover,
   cssClassOnActive,
   cssText,
+  Styles,
 } from "./style";
 export const s = {
+  id: (id: string, style: Styles) => selector("#" + id, style),
   selector,
   class: cssClass,
   active: cssClassOnActive,

@@ -41,3 +41,9 @@ export const resolvePromiseIn = <T>(val: T, delay: number): Promise<T> =>
       resolve(val);
     }, delay);
   });
+export function generateRandomColorHsl() {
+  const hue = Math.floor(Math.random() * 360);
+  const saturation = Math.floor(Math.random() * (100 + 1)) + "%";
+  const lightness = Math.floor(Math.random() * (100 / 2 + 1)) + "%";
+  return "hsl(" + hue + ", " + saturation + ", " + lightness + ")";
+}

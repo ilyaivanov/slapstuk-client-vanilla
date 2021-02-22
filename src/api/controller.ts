@@ -54,6 +54,7 @@ export const saveUserSettings = (
 };
 
 const onAuthStateChanged = (user: any) => {
+  console.log(user.uid);
   if (user) notifyListeners("login", user.uid);
   else notifyListeners("logout", undefined);
 };

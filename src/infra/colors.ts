@@ -27,4 +27,4 @@ export const playlistColor = "#31B237";
 export const channelColor = "#2186EB";
 export const videoColor = "#DA4A91";
 
-export const danger = "red";
+export const danger = "#af4448";
